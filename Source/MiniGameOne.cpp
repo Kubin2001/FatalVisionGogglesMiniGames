@@ -3,6 +3,7 @@
 #include "GlobalVariables.h"
 #include "TextureManager.h"
 #include "Colision.h"
+#include <string>
 
 SDL_Rect* PopingCricle::GetRectangle() {
 	return &rectangle;
@@ -57,23 +58,28 @@ void MiniGameOne::ManageTime() {
 }
 
 void MiniGameOne::OnClick(SDL_Event &event) {
-
 	if (event.button.button == SDL_BUTTON_LEFT) {
-		int x, y;
-		SDL_GetMouseState(&x,&y);
-		SDL_Rect mouse{ x,y,1,1 };
-		for (size_t i = 0; i < PopingCircles.size(); i++)
-		{
-			if (CircleMouseCollision(*PopingCircles[i].GetRectangle(), mouse)) {
+		if (delay < 1) {
+			clicks++;
+			int x, y;
+			SDL_GetMouseState(&x, &y);
+			SDL_Rect mouse{ x,y,1,1 };
+			for (size_t i = 0; i < PopingCircles.size(); i++)
+			{
+				if (CircleMouseCollision(*PopingCircles[i].GetRectangle(), mouse)) {
 
-				score++;
-				PopingCircles.erase(PopingCircles.begin() + i);
-				break;
+					score++;
+					PopingCircles.erase(PopingCircles.begin() + i);
+					break;
+				}
 			}
+			delay = 6;
 		}
 
 
+
 	}
+	delay--;
 
 }
 
@@ -82,6 +88,37 @@ void MiniGameOne::Render() {
 	{
 		SDL_RenderCopy(renderer, texture, NULL, it.GetRectangle());
 	}
+}
+
+void MiniGameOne::Finisch(UI* ui) {
+	ui->ClearAllButtons();
+	double accuracy = 0;
+	int accuracyInt = 0;
+	if (clicks > 0) {
+		accuracy = (static_cast<double>(score) / static_cast<double>(clicks)) * 100;
+		accuracyInt = static_cast<int>(accuracy);
+	}
+	else
+	{
+		accuracyInt = 0;
+	}
+
+	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth *0.5, 200,
+		TextureManager::GetTextureByName("buttonModernBlueBorder"), "Final Score: " + std::to_string(score), 27, 24, 3, 40);
+
+	ui->CreateButton("FinalAccuracy", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 200,
+		TextureManager::GetTextureByName("buttonModernBlueBorder"), "Accuracy: " + std::to_string(accuracyInt) + "%", 27, 24, 3, 40);
+
+
+	ui->CreateButton("MainMenuIcon", 200, 400, 200, 200, TextureManager::GetTextureByName("MenuIcon"));
+
+	ui->CreateInteractionBox("MainMenuButton", 200, 600, 200, 100,
+		TextureManager::GetTextureByName("buttonModernBlueBorder"), "Main Menu;", 24, 22, 3, 40);
+
+	ui->CreateButton("RetryIcon", Global::windowWidth - 400, 400, 200, 200, TextureManager::GetTextureByName("RetryIcon"));
+
+	ui->CreateInteractionBox("RetryButton", Global::windowWidth -400, 600, 200, 100,
+		TextureManager::GetTextureByName("buttonModernBlueBorder"), "Retry;", 24, 22, 3, 40);
 }
 
 

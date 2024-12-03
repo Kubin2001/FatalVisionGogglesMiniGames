@@ -9,10 +9,10 @@ private:
     SDL_Rect rectangle{ 0,0,29,29 };
     std::vector<SDL_Rect> sourceRectangles;
     SDL_Texture* texture = nullptr;
-    int size = 68;
+    int size = 0;
 
 public:
-    Font();
+    Font(const int characterAmount);
 
     SDL_Rect* GetRectangle();
 

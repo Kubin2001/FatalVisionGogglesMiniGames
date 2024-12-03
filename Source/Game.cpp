@@ -36,10 +36,10 @@ void Game::SetUpState() {
                 TextureManager::GetTextureByName("buttonModernBlueBorder"), "Choose a test", 40, 35, 3, 40);
 
             ui->CreateButton("GameTab1", 150, 200, 200, 200,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Precision", 20, 18, 3, 40);
+                TextureManager::GetTextureByName("GameIcon1"), "", 20, 18, 3, 40);
 
             ui->CreateInteractionBox("GameSubTab1", 150, 410, 200, 50,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Game1", 20, 18, 2, 10);
+                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Precission Test", 15, 13, 0, 10);
 
             ui->CreateButton("GameTab2", 450, 200, 200, 200,
                 TextureManager::GetTextureByName("buttonModernBlueBorder"), "Precision2", 20, 18, 3, 40);
@@ -93,24 +93,37 @@ void Game::SetUpState() {
                     ui->CreateButton("TimeButton", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 150,
                         TextureManager::GetTextureByName("buttonModernBlueBorder"), "Time: " + std::to_string(miniGameOne->GetTime()), 40, 35, 3, 40);
                     break;
+                case 2:
+                    miniGameTwo = std::make_unique<MiniGameTwo>(renderer);
+                    ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
+                        TextureManager::GetTextureByName("buttonModernBlueBorder"), "Score: 0", 40, 35, 3, 40);
+                    ui->CreateButton("TimesLeftButton", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 150,
+                        TextureManager::GetTextureByName("buttonModernBlueBorder"), "Times Left: ", 40, 35, 3, 40);
+                    miniGameTwo->SetUpSquares();
+                    break;
             }
             break;
     }
 }
 
 void Game::ClearState() {
-    ui->ClearAllButtons();
+
     switch (gamestate) {
         case 0:
-
+            ui->ClearAllButtons();
             break;
         case 1:
             switch (currentGame) {
                 case 1:
                     miniGameOne.reset();
-
+                    break;
+                case 2:
+                    miniGameTwo.reset();
                     break;
             }
+            break;
+        case 2:
+            ui->ClearAllButtons();
             break;
     }
 }
@@ -186,10 +199,11 @@ void Game::OneSecondTickEvents() {
                 case 1:
                     miniGameOne->ManageTime();
                     ui->GetButtons()[1]->SetText("Time: " + std::to_string(miniGameOne->GetTime()));
-                    if (miniGameOne->GetTime() < 1) {
+                    if (miniGameOne->GetTime() < 28) { //bazowo na 1
+                        miniGameOne->Finisch(ui.get());
                         ClearState();
-                        gamestate = 0;
-                        currentGame = 0;
+                        gamestate = 2;
+                        currentGame = 1;
                         SetUpState();
                     }
                     
@@ -230,6 +244,13 @@ void Game::EventsConstant() {
                     currentGame = 1;
                     SetUpState();
                 }
+                else if (ui->GetInterctionBoxByName("GameSubTab2")->GetStatus()) {
+                    ui->GetInterctionBoxByName("GameSubTab2")->SetStatus(0);
+                    ClearState();
+                    gamestate = 1;
+                    currentGame = 2;
+                    SetUpState();
+                }
                 break;
             case 1:
                 switch (currentGame) {
@@ -239,6 +260,28 @@ void Game::EventsConstant() {
 
                         break;
                 }
+                break;
+            case 2:     
+                switch (currentGame) {
+                    case 1:
+                        if (ui->GetInterctionBoxByName("MainMenuButton")->GetStatus()) {
+                            ui->GetInterctionBoxByName("MainMenuButton")->SetStatus(0);
+                            ClearState();
+                            gamestate = 0;
+                            currentGame = 0;
+                            SetUpState();
+                        }
+                        else if (ui->GetInterctionBoxByName("RetryButton")->GetStatus()) {
+                            ui->GetInterctionBoxByName("RetryButton")->SetStatus(0);
+                            ClearState();
+                            gamestate = 1;
+                            currentGame = 1;
+                            SetUpState();
+                        }
+
+                        break;
+                }
+
                 break;
         }
 
@@ -270,6 +313,9 @@ void Game::Render() {
             switch (currentGame) {
                 case 1:
                     miniGameOne->Render();
+                    break;
+                case 2:
+                    miniGameTwo->Render();
                     break;
             }
             break;

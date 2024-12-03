@@ -2,8 +2,8 @@
 #include <SDL.h>
 #include "Font.h"
 
-Font::Font() {
-
+Font::Font(const int characterAmount) {
+    this->size = characterAmount;
 }
 
 SDL_Texture* Font::GetTexture() {
@@ -323,7 +323,31 @@ void Font::RenderText(SDL_Renderer* renderer, std::string text, int x, int y, in
             SDL_RenderCopy(renderer, texture, &sourceRectangles[67], &rectangle);
             rectangle.x += step;
             break;
+        case '%':
+            SDL_RenderCopy(renderer, texture, &sourceRectangles[68], &rectangle);
+            rectangle.x += step;
+            break;
+        case '*':
+            SDL_RenderCopy(renderer, texture, &sourceRectangles[69], &rectangle);
+            rectangle.x += step;
+            break;
         case '/':
+            SDL_RenderCopy(renderer, texture, &sourceRectangles[70], &rectangle);
+            rectangle.x += step;
+            break;
+        case '=':
+            SDL_RenderCopy(renderer, texture, &sourceRectangles[71], &rectangle);
+            rectangle.x += step;
+            break;
+        case '!':
+            SDL_RenderCopy(renderer, texture, &sourceRectangles[72], &rectangle);
+            rectangle.x += step;
+            break;
+        case '?':
+            SDL_RenderCopy(renderer, texture, &sourceRectangles[73], &rectangle);
+            rectangle.x += step;
+            break;
+        case ';':
             rectangle.y += step;
             rectangle.x = x;
             break;

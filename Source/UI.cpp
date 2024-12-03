@@ -121,7 +121,7 @@ void InteractionBox::SetStatus(bool value) {
 //InteractionBox
 
 UI::UI(SDL_Renderer *renderer){
-    font = new Font();
+    font = new Font(74);
     this->renderer = renderer;
 }
 
@@ -129,6 +129,7 @@ UI::UI(SDL_Renderer *renderer){
 void UI::LoadTextures() {
     TextureManager::LoadMultipleTextures("Textures/Interface");
     TextureManager::LoadMultipleTextures("Textures/Interface/Fonts");
+    TextureManager::LoadMultipleTextures("Textures/Interface/Others");
 }
 
 void UI::Render() {

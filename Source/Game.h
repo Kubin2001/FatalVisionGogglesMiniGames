@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include "MiniGameOne.h"
+#include "MiniGameTwo.h"
 #include "UI.h"
 #include <memory>
 
@@ -10,11 +11,12 @@ private:
     SDL_Renderer* renderer;
     SDL_Event event;
 
-    int gamestate = 0; //0 Menu 1 Gra 2 Wyniki???
+    int gamestate = 0; //0 Menu 1 Gra 2 Wyniki
     int currentGame = 0; //O Brak Gry Inna wartosæ jakaœ gra
 
 
     std::unique_ptr<MiniGameOne> miniGameOne;
+    std::unique_ptr<MiniGameTwo> miniGameTwo;
     std::unique_ptr<UI> ui;
 
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include <vector>
+#include "UI.h"
 
 class PopingCricle{
 	private:
@@ -22,6 +23,8 @@ class MiniGameOne{
 		SDL_Texture* texture = nullptr;
 		int score = 0;
 		unsigned short time = 30;
+		unsigned int clicks = 0;
+		int delay = 15;
 	public:
 		MiniGameOne(SDL_Renderer *renderer);
 
@@ -37,7 +40,11 @@ class MiniGameOne{
 
 		void Render();
 
+		void Finisch(UI *ui);
+
 		int GetScore();
 
 		unsigned short GetTime();
+
+
 };
