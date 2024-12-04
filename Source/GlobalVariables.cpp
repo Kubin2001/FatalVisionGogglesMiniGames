@@ -10,4 +10,5 @@ namespace Global {
 	unsigned int TickTimer = 0;
 	unsigned int LogicTimeEnd = 0;
 	unsigned int RenderingTimeEnd = 0;
+	unsigned char defaultDrawColor[3] = { 0,0,0 };
 }

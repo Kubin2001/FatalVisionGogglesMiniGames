@@ -19,7 +19,10 @@ void Game::Start() {
     window = SDL_CreateWindow("Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Global::windowWidth, Global::windowHeight, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1,SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-    SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
+    Global::defaultDrawColor[0] = 30;
+    Global::defaultDrawColor[1] = 30;
+    Global::defaultDrawColor[2] = 30;
+    SDL_SetRenderDrawColor(renderer, Global::defaultDrawColor[0], Global::defaultDrawColor[1], Global::defaultDrawColor[2], 255);
     TextureManager::Start(renderer);
     LoadTextures();
 
@@ -33,55 +36,72 @@ void Game::SetUpState() {
     switch (gamestate) {
         case 0:
             ui->CreateButton("MenuInfo", 300, 0, Global::windowWidth * 0.5, 150,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Choose a test", 40, 35, 3, 40);
+                TextureManager::GetTextureByName("buttonModern"), "Choose a test", 40, 35, 3, 40, 5);
+            ui->SetUIElementBorderColor("MenuInfo", 135, 206, 250);
 
             ui->CreateButton("GameTab1", 150, 200, 200, 200,
-                TextureManager::GetTextureByName("GameIcon1"), "", 20, 18, 3, 40);
+                TextureManager::GetTextureByName("GameIcon1"), "", 20, 18, 3, 40,5);
+            ui->SetUIElementBorderColor("GameTab1", 135, 206, 250);
 
             ui->CreateInteractionBox("GameSubTab1", 150, 410, 200, 50,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Precission Test", 15, 13, 0, 10);
+                TextureManager::GetTextureByName("buttonModern"), "Precission Test", 15, 13, 0, 10,5);
+            ui->SetUIElementBorderColor("GameSubTab1", 135, 206, 250);
 
             ui->CreateButton("GameTab2", 450, 200, 200, 200,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Precision2", 20, 18, 3, 40);
+                TextureManager::GetTextureByName("buttonModern"), "Precision2", 20, 18, 3, 40,5);
+            ui->SetUIElementBorderColor("GameTab2", 135, 206, 250);
 
             ui->CreateInteractionBox("GameSubTab2", 450, 410, 200, 50,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Game2", 20, 18, 2, 10);
+                TextureManager::GetTextureByName("buttonModern"), "Game2", 20, 18, 2, 10,5);
+            ui->SetUIElementBorderColor("GameSubTab2", 135, 206, 250);
 
             ui->CreateButton("GameTab3", 750, 200, 200, 200,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Precision3", 20, 18, 3, 40);
+                TextureManager::GetTextureByName("buttonModern"), "Precision3", 20, 18, 3, 40,5);
+            ui->SetUIElementBorderColor("GameTab3", 135, 206, 250);
 
             ui->CreateInteractionBox("GameSubTab3", 750, 410, 200, 50,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Game3", 20, 18, 2, 10);
+                TextureManager::GetTextureByName("buttonModern"), "Game3", 20, 18, 2, 10,5);
+            ui->SetUIElementBorderColor("GameSubTab3", 135, 206, 250);
 
             ui->CreateButton("GameTab4", 1050, 200, 200, 200,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Precision4", 20, 18, 3, 40);
+                TextureManager::GetTextureByName("buttonModern"), "Precision4", 20, 18, 3, 40,5);
+            ui->SetUIElementBorderColor("GameTab4", 135, 206, 250);
 
             ui->CreateInteractionBox("GameSubTab4", 1050, 410, 200, 50,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Game4", 20, 18, 2, 10);
+                TextureManager::GetTextureByName("buttonModern"), "Game4", 20, 18, 2, 10,5);
+            ui->SetUIElementBorderColor("GameSubTab4", 135, 206, 250);
 
             ui->CreateButton("GameTab5", 150, 500, 200, 200,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Precision", 20, 18, 3, 40);
+                TextureManager::GetTextureByName("buttonModern"), "Precision", 20, 18, 3, 40,5);
+            ui->SetUIElementBorderColor("GameTab5", 135, 206, 250);
 
             ui->CreateInteractionBox("GameSubTab5", 150, 710, 200, 50,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Game5", 20, 18, 2, 10);
+                TextureManager::GetTextureByName("buttonModern"), "Game5", 20, 18, 2, 10,5);
+            ui->SetUIElementBorderColor("GameSubTab5", 135, 206, 250);
 
             ui->CreateButton("GameTab6", 450, 500, 200, 200,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Precision2", 20, 18, 3, 40);
+                TextureManager::GetTextureByName("buttonModern"), "Precision2", 20, 18, 3, 40,5);
+            ui->SetUIElementBorderColor("GameTab6", 135, 206, 250);
 
             ui->CreateInteractionBox("GameSubTab6", 450, 710, 200, 50,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Game6", 20, 18, 2, 10);
+                TextureManager::GetTextureByName("buttonModern"), "Game6", 20, 18, 2, 10,5);
+            ui->SetUIElementBorderColor("GameSubTab6", 135, 206, 250);
 
             ui->CreateButton("GameTab7", 750, 500, 200, 200,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Precision3", 20, 18, 3, 40);
+                TextureManager::GetTextureByName("buttonModern"), "Precision3", 20, 18, 3, 40,5);
+            ui->SetUIElementBorderColor("GameTab7", 135, 206, 250);
 
             ui->CreateInteractionBox("GameSubTab7", 750, 710, 200, 50,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Game7", 20, 18, 2, 10);
+                TextureManager::GetTextureByName("buttonModern"), "Game7", 20, 18, 2, 10,5);
+            ui->SetUIElementBorderColor("GameSubTab7", 135, 206, 250);
 
             ui->CreateButton("GameTab8", 1050, 500, 200, 200,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Precision4", 20, 18, 3, 40);
+                TextureManager::GetTextureByName("buttonModern"), "Precision4", 20, 18, 3, 40,5);
+            ui->SetUIElementBorderColor("GameTab8", 135, 206, 250);
 
-            ui->CreateInteractionBox("GameSubTab7", 1050, 710, 200, 50,
-                TextureManager::GetTextureByName("buttonModernBlueBorder"), "Game8", 20, 18, 2, 10);
+            ui->CreateInteractionBox("GameSubTab8", 1050, 710, 200, 50,
+                TextureManager::GetTextureByName("buttonModern"), "Game8", 20, 18, 2, 10,5);
+            ui->SetUIElementBorderColor("GameSubTab8", 135, 206, 250);
 
             break;
         case 1:
@@ -89,16 +109,22 @@ void Game::SetUpState() {
                 case 1:
                     miniGameOne = std::make_unique<MiniGameOne>(renderer);
                     ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150, 
-                        TextureManager::GetTextureByName("buttonModernBlueBorder"), "Score: 0", 40, 35, 3, 40);
+                        TextureManager::GetTextureByName("buttonModern"), "Score: 0", 40, 35, 3, 40,5);
+                    ui->SetUIElementBorderColor("ScoreButton", 135, 206, 250);
+
                     ui->CreateButton("TimeButton", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 150,
-                        TextureManager::GetTextureByName("buttonModernBlueBorder"), "Time: " + std::to_string(miniGameOne->GetTime()), 40, 35, 3, 40);
+                        TextureManager::GetTextureByName("buttonModern"), "Time: " + std::to_string(miniGameOne->GetTime()), 40, 35, 3, 40,5);
+                    ui->SetUIElementBorderColor("TimeButton", 135, 206, 250);
                     break;
                 case 2:
                     miniGameTwo = std::make_unique<MiniGameTwo>(renderer);
                     ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
-                        TextureManager::GetTextureByName("buttonModernBlueBorder"), "Score: 0", 40, 35, 3, 40);
+                        TextureManager::GetTextureByName("buttonModernr"), "Score: 0", 40, 35, 3, 40,5);
+                    ui->SetUIElementBorderColor("ScoreButton", 135, 206, 250);
+
                     ui->CreateButton("TimesLeftButton", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 150,
-                        TextureManager::GetTextureByName("buttonModernBlueBorder"), "Times Left: ", 40, 35, 3, 40);
+                        TextureManager::GetTextureByName("buttonModern"), "Times Left: ", 40, 35, 3, 40,5);
+                    ui->SetUIElementBorderColor("TimesLeftButton", 135, 206, 250);
                     miniGameTwo->SetUpSquares();
                     break;
             }

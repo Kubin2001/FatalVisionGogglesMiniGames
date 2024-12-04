@@ -26,7 +26,7 @@ public:
 
     void LoadText(int stepW, int stepH);
 
-    void RenderText(SDL_Renderer* renderer, std::string text, int x, int y, int w, int h, int step, int borderSizeX=0, int borderSizeY=0);
+    void RenderText(SDL_Renderer* renderer, std::string text, int x, int y, int w, int h, int step, int textStartX=0, int textStartY=0);
 
     ~Font();
 };

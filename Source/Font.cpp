@@ -41,9 +41,9 @@ void Font::LoadText(int stepW,int stepH) {
     }
 }
 
-void Font::RenderText(SDL_Renderer* renderer, std::string text, int x, int y, int w, int h, int step,int borderSizeX,int borderSizeY) {
-    rectangle.x = x +borderSizeX;
-    rectangle.y = y +borderSizeY;
+void Font::RenderText(SDL_Renderer* renderer, std::string text, int x, int y, int w, int h, int step,int textStartX,int textStartY) {
+    rectangle.x = x + textStartX;
+    rectangle.y = y + textStartY;
     rectangle.w = w;
     rectangle.h = h;
     int temp = rectangle.x;

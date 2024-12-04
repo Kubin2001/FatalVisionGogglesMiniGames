@@ -92,21 +92,27 @@ void MiniGameTwo::Finisch(UI* ui) {
 	}
 
 	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth * 0.5, 200,
-		TextureManager::GetTextureByName("buttonModernBlueBorder"), "Final Score: " + std::to_string(score), 27, 24, 3, 40);
+		TextureManager::GetTextureByName("buttonModernBlueBorder"), "Final Score: " + std::to_string(score), 27, 24, 3, 40,5);
+	ui->SetUIElementBorderColor("FinalScore", 135, 206, 250);
 
 	ui->CreateButton("FinalAccuracy", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 200,
-		TextureManager::GetTextureByName("buttonModernBlueBorder"), "Accuracy: " + std::to_string(accuracyInt) + "%", 27, 24, 3, 40);
+		TextureManager::GetTextureByName("buttonModernBlueBorder"), "Accuracy: " + std::to_string(accuracyInt) + "%", 27, 24, 3, 40,5);
+	ui->SetUIElementBorderColor("FinalAccuracy", 135, 206, 250);
 
 
-	ui->CreateButton("MainMenuIcon", 200, 400, 200, 200, TextureManager::GetTextureByName("MenuIcon"));
+	ui->CreateButton("MainMenuIcon", 200, 400, 200, 200, TextureManager::GetTextureByName("MenuIcon"),"",0,0,0,0,5);
+	ui->SetUIElementBorderColor("MainMenuIcon", 135, 206, 250);
 
 	ui->CreateInteractionBox("MainMenuButton", 200, 600, 200, 100,
-		TextureManager::GetTextureByName("buttonModernBlueBorder"), "Main Menu;", 24, 22, 3, 40);
+		TextureManager::GetTextureByName("buttonModernBlueBorder"), "Main Menu;", 24, 22, 3, 40,5);
+	ui->SetUIElementBorderColor("MainMenuButton", 135, 206, 250);
 
-	ui->CreateButton("RetryIcon", Global::windowWidth - 400, 400, 200, 200, TextureManager::GetTextureByName("RetryIcon"));
+	ui->CreateButton("RetryIcon", Global::windowWidth - 400, 400, 200, 200, TextureManager::GetTextureByName("RetryIcon"), "", 0, 0, 0, 0, 5);
+	ui->SetUIElementBorderColor("RetryIcon", 135, 206, 250);
 
 	ui->CreateInteractionBox("RetryButton", Global::windowWidth - 400, 600, 200, 100,
-		TextureManager::GetTextureByName("buttonModernBlueBorder"), "Retry;", 24, 22, 3, 40);
+		TextureManager::GetTextureByName("buttonModernBlueBorder"), "Retry;", 24, 22, 3, 40,5);
+	ui->SetUIElementBorderColor("RetryButton", 135, 206, 250);
 }
 
 

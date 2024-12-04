@@ -15,8 +15,15 @@ class TemplateUIElement {
         std::string text;
         int textSize;
         int textStep;
-        int borderX = 0;
-        int borderY = 0;
+
+        bool border = false;
+
+        int borderThickness = 0;
+
+        int textStartX = 0;
+        int textStartY = 0;
+
+        unsigned char borderRGB[3] = {0,0,0};
 
     public:
 
@@ -37,10 +44,23 @@ class TemplateUIElement {
         void SetTextSize(int temp);
         int GetTextStep();
         void SetTextStep(int temp);
-        int GetBorderX();
-        void SetBorderX(int temp);
-        int GetBorderY();
-        void SetBorderY(int temp);
+
+        bool GetBorder();
+
+        void SetBorder(bool temp);
+
+        int GetBorderThickness(int temp);
+
+        void SetBorderThickness(int temp);
+
+        int GetTextStartX();
+        void SetTextStartX(int temp);
+        int GetTextStartY();
+        void SetTextStartY(int temp);
+
+        void SetBorderRGB(unsigned char R, unsigned char G, unsigned char B);
+
+        void RenderBorder(SDL_Renderer* renderer);
         
 };
 
@@ -96,17 +116,22 @@ class UI
 
         void LoadTextures();
 
-        void CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture* texture, std::string text = "", int textSize = 20, int textStep = 18,int borderX=0,int borderY=0);
+        void CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture* texture, 
+            std::string text = "", int textSize = 20, int textStep = 18, int textStartX=0, int textStartY=0, int borderThickness = 0);
 
-        void CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, int textSize=20, int textStep=18,int borderX = 0, int borderY = 0, bool autoFormating=false);
+        void CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture,
+            int textSize=20, int textStep=18, int textStartX = 0, int textStartY = 0 , int borderThickness = 0,bool autoFormating=false);
 
-        void CreateInteractionBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, std::string text="", int textSize = 20, int textStep = 18, int borderX = 0, int borderY = 0);
+        void CreateInteractionBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture,
+            std::string text="", int textSize = 20, int textStep = 18, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
 
         void CheckMasageBoxInteraction(SDL_Event& event);
 
         void ManageMassageBoxTextInput(SDL_Event& event);
 
         void CheckInteractionBoxes(SDL_Event& event);
+
+        void SetUIElementBorderColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B);
 
         void ManageInput(SDL_Event& event);
 
