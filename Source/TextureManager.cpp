@@ -61,4 +61,5 @@ void TextureManager::Clear() {
     for (auto& pair : Textures) {
         SDL_DestroyTexture(pair.second);
     }
+    Textures.clear();
 }

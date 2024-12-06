@@ -36,7 +36,8 @@ void Game::SetUpState() {
     switch (gamestate) {
         case 0:
             ui->CreateButton("MenuInfo", 300, 0, Global::windowWidth * 0.5, 150,
-                TextureManager::GetTextureByName("buttonModern"), "Choose a test", 40, 35, 3, 40, 5);
+                nullptr, "Choose a test", 40, 35, 3, 40, 5);
+            ui->SetUIElementColor("MenuInfo", 30, 30, 30);
             ui->SetUIElementBorderColor("MenuInfo", 135, 206, 250);
 
             ui->CreateButton("GameTab1", 150, 200, 200, 200,

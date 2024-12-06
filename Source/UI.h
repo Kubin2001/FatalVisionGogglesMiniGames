@@ -23,6 +23,8 @@ class TemplateUIElement {
         int textStartX = 0;
         int textStartY = 0;
 
+        unsigned char buttonColor[3] = { 0,0,0 };
+
         unsigned char borderRGB[3] = {0,0,0};
 
     public:
@@ -49,7 +51,7 @@ class TemplateUIElement {
 
         void SetBorder(bool temp);
 
-        int GetBorderThickness(int temp);
+        int GetBorderThickness();
 
         void SetBorderThickness(int temp);
 
@@ -58,7 +60,11 @@ class TemplateUIElement {
         int GetTextStartY();
         void SetTextStartY(int temp);
 
+        void SetButtonColor(unsigned char R, unsigned char G, unsigned char B);
+
         void SetBorderRGB(unsigned char R, unsigned char G, unsigned char B);
+
+        void RenderItslelf(SDL_Renderer* renderer);
 
         void RenderBorder(SDL_Renderer* renderer);
         
@@ -130,6 +136,8 @@ class UI
         void ManageMassageBoxTextInput(SDL_Event& event);
 
         void CheckInteractionBoxes(SDL_Event& event);
+
+        void SetUIElementColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B);
 
         void SetUIElementBorderColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B);
 
