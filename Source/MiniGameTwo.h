@@ -26,10 +26,16 @@ class MiniGameTwo {
 	SDL_Renderer* renderer = nullptr;
 	Square staticSquare;
 	Square movingSquare;
-	int score = 0;
+	SDL_Rect colliderStatic;
+	SDL_Rect colliderMoving;
+	int score = 10000;
 	unsigned short tries = 6;
 	unsigned int clicks = 0;
 	int delay = 15;
+	bool colided = false;
+
+	unsigned short moveSpeed = 6;
+
 	public:
 	MiniGameTwo(SDL_Renderer* renderer);
 
@@ -40,7 +46,15 @@ class MiniGameTwo {
 
 	void Render();
 
+	void UpdateColliders();
+
+	void MoveSquares();
+
 	void Finisch(UI* ui);
 
 	int GetScore();
+
+	unsigned short getTries();
+
+	void UpdateScore(UI* ui);
 };

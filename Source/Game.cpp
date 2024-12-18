@@ -11,6 +11,7 @@ Game::Game() {
     window = nullptr;
     renderer = nullptr;
     miniGameOne = nullptr;
+    miniGameTwo = nullptr;
     ui = nullptr;
 }
 
@@ -26,10 +27,11 @@ void Game::Start() {
     TextureManager::Start(renderer);
     LoadTextures();
 
-    ui = std::make_unique<UI>(renderer);
+    ui = std::make_unique<UI>(renderer,1);
     ui->LoadTextures();
     ui->font->LoadText(29, 29);
-    ui->font->SetTexture(TextureManager::GetTextureByName("fontOrange"));
+    ui->font->SetTexture(TextureManager::GetTextureByName("fontStandard"));
+    ui->SetFontColor(255, 168, 0);
 }
 
 void Game::SetUpState() {
@@ -120,7 +122,7 @@ void Game::SetUpState() {
                 case 2:
                     miniGameTwo = std::make_unique<MiniGameTwo>(renderer);
                     ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
-                        TextureManager::GetTextureByName("buttonModernr"), "Score: 0", 40, 35, 3, 40,5);
+                        TextureManager::GetTextureByName("buttonModern"), "Score: 0", 40, 35, 3, 40,5);
                     ui->SetUIElementBorderColor("ScoreButton", 135, 206, 250);
 
                     ui->CreateButton("TimesLeftButton", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 150,
@@ -175,6 +177,8 @@ void Game::EventsLogic() {
                     miniGameOne->ManageCreation();
                     miniGameOne->ManageLifespan();
                     break;
+                case 2:
+                    miniGameTwo->UpdateScore(ui.get());
             }
             break;
     }
@@ -183,7 +187,20 @@ void Game::EventsLogic() {
 }
 
 void Game::MovementLogic() {
+    switch (gamestate) {
+        case 0:
+            break;
+        case 1:
+            switch (currentGame) {
+                case 1:
 
+                    break;
+                case 2:
+                    miniGameTwo->MoveSquares();
+                    break;
+            }
+            break;
+    }
 }
 
 void Game::FiveTickEvents() {
@@ -226,7 +243,7 @@ void Game::OneSecondTickEvents() {
                 case 1:
                     miniGameOne->ManageTime();
                     ui->GetButtons()[1]->SetText("Time: " + std::to_string(miniGameOne->GetTime()));
-                    if (miniGameOne->GetTime() < 28) { //bazowo na 1
+                    if (miniGameOne->GetTime() < 1) { //bazowo na 1
                         miniGameOne->Finisch(ui.get());
                         ClearState();
                         gamestate = 2;
@@ -234,6 +251,15 @@ void Game::OneSecondTickEvents() {
                         SetUpState();
                     }
                     
+                    break;
+                case 2:
+                    if (miniGameTwo->getTries() == 0) {
+                        miniGameTwo->Finisch(ui.get());
+                        ClearState();
+                        gamestate = 2;
+                        currentGame = 2;
+                        SetUpState();
+                    }
                     break;
             }
             break;
@@ -284,8 +310,11 @@ void Game::EventsConstant() {
                     case 1:
                         miniGameOne->OnClick(event);
                         ui->GetButtons()[0]->SetText("Score: " + std::to_string(miniGameOne->GetScore()));
-
                         break;
+                    case 2:
+                        miniGameTwo->OnClick(event);
+                        break;
+
                 }
                 break;
             case 2:     
@@ -306,6 +335,22 @@ void Game::EventsConstant() {
                             SetUpState();
                         }
 
+                        break;
+                    case 2:
+                        if (ui->GetInterctionBoxByName("MainMenuButton")->GetStatus()) {
+                            ui->GetInterctionBoxByName("MainMenuButton")->SetStatus(0);
+                            ClearState();
+                            gamestate = 0;
+                            currentGame = 0;
+                            SetUpState();
+                        }
+                        else if (ui->GetInterctionBoxByName("RetryButton")->GetStatus()) {
+                            ui->GetInterctionBoxByName("RetryButton")->SetStatus(0);
+                            ClearState();
+                            gamestate = 1;
+                            currentGame = 2;
+                            SetUpState();
+                        }
                         break;
                 }
 
