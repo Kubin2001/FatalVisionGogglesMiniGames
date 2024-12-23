@@ -39,11 +39,22 @@ MiniGameTwo::MiniGameTwo(SDL_Renderer* renderer) {
 	movingSquare.SetTexture(TextureManager::GetTextureByName("GenericOrangeSquare"));
 }
 
+void MiniGameTwo::Innit(UI* ui) {
+	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
+		TextureManager::GetTextureByName("buttonModern"), "Score: 0", 40, 35, 3, 40, 5);
+	ui->SetUIElementBorderColor("ScoreButton", 135, 206, 250);
+
+	ui->CreateButton("TimesLeftButton", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 150,
+		TextureManager::GetTextureByName("buttonModern"), "Times Left: ", 40, 35, 3, 40, 5);
+	ui->SetUIElementBorderColor("TimesLeftButton", 135, 206, 250);
+	SetUpSquares();
+}
+
 
 void MiniGameTwo::SetUpSquares() {
 	int w1 = 200;
 	int h1 = 200;
-	int x1 = 100;
+	int x1 = (Global::windowWidth * 0.5) - 100;
 	int y1 = (Global::windowHeight *0.5);
 
 	SDL_Rect rect{ x1,y1,w1,h1 };

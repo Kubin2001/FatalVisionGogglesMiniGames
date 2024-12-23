@@ -28,6 +28,8 @@ class MiniGameOne{
 	public:
 		MiniGameOne(SDL_Renderer *renderer);
 
+		void Innit(UI* ui);
+
 		void CreateCircle(int x, int y, int w, int h);	
 
 		void ManageLifespan();

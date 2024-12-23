@@ -39,6 +39,8 @@ class MiniGameTwo {
 	public:
 	MiniGameTwo(SDL_Renderer* renderer);
 
+	void Innit(UI *ui);
+
 	void SetUpSquares();
 
 

@@ -18,6 +18,17 @@ PopingCricle::PopingCricle(int x, int y, int w, int h) {
 	this->rectangle.h = h;
 }
 /////////////////////////////////////////////
+
+void MiniGameOne::Innit(UI* ui) {
+	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
+		TextureManager::GetTextureByName("buttonModern"), "Score: 0", 40, 35, 3, 40, 5);
+	ui->SetUIElementBorderColor("ScoreButton", 135, 206, 250);
+
+	ui->CreateButton("TimeButton", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 150,
+		TextureManager::GetTextureByName("buttonModern"), "Time: " + std::to_string(GetTime()), 40, 35, 3, 40, 5);
+	ui->SetUIElementBorderColor("TimeButton", 135, 206, 250);
+}
+
 MiniGameOne::MiniGameOne(SDL_Renderer* renderer) {
 	this->renderer = renderer;
 	this->texture = TextureManager::GetTextureByName("Cricle");

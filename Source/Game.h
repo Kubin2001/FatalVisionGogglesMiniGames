@@ -1,5 +1,6 @@
 #pragma once
 #include <SDL.h>
+#include "MainMenu.h"
 #include "MiniGameOne.h"
 #include "MiniGameTwo.h"
 #include "UI.h"
@@ -14,10 +15,13 @@ private:
     int gamestate = 0; //0 Menu 1 Gra 2 Wyniki
     int currentGame = 0; //O Brak Gry Inna wartosæ jakaœ gra
 
+    std::unique_ptr<UI> ui;
+
+    std::unique_ptr<MainMenu> mainMenu;
 
     std::unique_ptr<MiniGameOne> miniGameOne;
     std::unique_ptr<MiniGameTwo> miniGameTwo;
-    std::unique_ptr<UI> ui;
+
 
 
 
