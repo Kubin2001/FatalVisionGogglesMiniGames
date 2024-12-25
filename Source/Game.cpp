@@ -12,6 +12,9 @@ Game::Game() {
     renderer = nullptr;
     miniGameOne = nullptr;
     miniGameTwo = nullptr;
+    miniGameThree = nullptr;
+    miniGameFour = nullptr;
+
     ui = nullptr;
     mainMenu = nullptr;
 }
@@ -52,6 +55,14 @@ void Game::SetUpState() {
                     miniGameTwo = std::make_unique<MiniGameTwo>(renderer);
                     miniGameTwo->Innit(ui.get());
                     break;
+                case 3:
+                    miniGameThree = std::make_unique<MiniGameThree>(renderer);
+                    miniGameThree->Innit(ui.get());
+                    break;
+                case 4:
+                    miniGameFour = std::make_unique<MiniGameFour>(renderer);
+                    miniGameFour->Innit(ui.get());
+                    break;
             }
             break;
     }
@@ -70,6 +81,12 @@ void Game::ClearState() {
                     break;
                 case 2:
                     miniGameTwo.reset();
+                    break;
+                case 3:
+                    miniGameThree.reset();
+                    break;
+                case 4:
+                    miniGameFour.reset();
                     break;
             }
             break;
@@ -101,6 +118,20 @@ void Game::EventsLogic() {
                     break;
                 case 2:
                     miniGameTwo->UpdateScore(ui.get());
+                    break;
+                case 3:
+                    if (miniGameThree->Collision(ui.get())) {
+                        miniGameThree->Finisch(ui.get());
+                        ClearState();
+                        gamestate = 2;
+                        currentGame = 3;
+                        SetUpState();
+                    }
+                    break;
+                case 4:
+                    miniGameFour->ManageCreation();
+                    miniGameFour->ManageLifespan();
+                    break;
             }
             break;
     }
@@ -119,6 +150,10 @@ void Game::MovementLogic() {
                     break;
                 case 2:
                     miniGameTwo->MoveSquares();
+                    break;
+
+                case 3:
+                    miniGameThree->Movement();
                     break;
             }
             break;
@@ -183,6 +218,20 @@ void Game::OneSecondTickEvents() {
                         SetUpState();
                     }
                     break;
+                case 3:
+                    miniGameThree->UpdateTime(ui.get());
+                    break;
+                case 4:
+                    miniGameFour->ManageTime();
+                    ui->GetButtons()[1]->SetText("Time: " + std::to_string(miniGameFour->GetTime()));
+                    if (miniGameFour->GetTime() < 1) { //bazowo na 1
+                        miniGameFour->Finisch(ui.get());
+                        ClearState();
+                        gamestate = 2;
+                        currentGame = 4;
+                        SetUpState();
+                    }
+                    break;
             }
             break;
     }
@@ -226,6 +275,20 @@ void Game::EventsConstant() {
                     currentGame = 2;
                     SetUpState();
                 }
+                else if (ui->GetInterctionBoxByName("GameSubTab3")->GetStatus()) {
+                    ui->GetInterctionBoxByName("GameSubTab3")->SetStatus(0);
+                    ClearState();
+                    gamestate = 1;
+                    currentGame = 3;
+                    SetUpState();
+                }
+                else if (ui->GetInterctionBoxByName("GameSubTab4")->GetStatus()) {
+                    ui->GetInterctionBoxByName("GameSubTab4")->SetStatus(0);
+                    ClearState();
+                    gamestate = 1;
+                    currentGame = 4;
+                    SetUpState();
+                }
                 break;
             case 1:
                 switch (currentGame) {
@@ -235,6 +298,13 @@ void Game::EventsConstant() {
                         break;
                     case 2:
                         miniGameTwo->OnClick(event);
+                        break;
+                    case 3:
+                        miniGameThree->OnClick(event);
+                        break;
+                    case 4:
+                        miniGameFour->OnClick(event);
+                        ui->GetButtons()[0]->SetText("Score: " + std::to_string(miniGameFour->GetScore()));
                         break;
 
                 }
@@ -274,6 +344,39 @@ void Game::EventsConstant() {
                             SetUpState();
                         }
                         break;
+                    case 3:
+                        if (ui->GetInterctionBoxByName("MainMenuButton")->GetStatus()) {
+                            ui->GetInterctionBoxByName("MainMenuButton")->SetStatus(0);
+                            ClearState();
+                            gamestate = 0;
+                            currentGame = 0;
+                            SetUpState();
+                        }
+                        else if (ui->GetInterctionBoxByName("RetryButton")->GetStatus()) {
+                            ui->GetInterctionBoxByName("RetryButton")->SetStatus(0);
+                            ClearState();
+                            gamestate = 1;
+                            currentGame = 3;
+                            SetUpState();
+                        }
+                        break;
+                    case 4:
+                        if (ui->GetInterctionBoxByName("MainMenuButton")->GetStatus()) {
+                            ui->GetInterctionBoxByName("MainMenuButton")->SetStatus(0);
+                            ClearState();
+                            gamestate = 0;
+                            currentGame = 0;
+                            SetUpState();
+                        }
+                        else if (ui->GetInterctionBoxByName("RetryButton")->GetStatus()) {
+                            ui->GetInterctionBoxByName("RetryButton")->SetStatus(0);
+                            ClearState();
+                            gamestate = 1;
+                            currentGame = 4;
+                            SetUpState();
+                        }
+
+                        break;
                 }
 
                 break;
@@ -310,6 +413,12 @@ void Game::Render() {
                     break;
                 case 2:
                     miniGameTwo->Render();
+                    break;
+                case 3:
+                    miniGameThree->Render();
+                    break;
+                case 4:
+                    miniGameFour->Render();
                     break;
             }
             break;

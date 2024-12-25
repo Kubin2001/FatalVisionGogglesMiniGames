@@ -2,16 +2,13 @@
 #include <SDL.h>
 #include <vector>
 #include "UI.h"
+#include "Basics.h"
 
-class PopingCricle{
+class PopingCricle :public GameObjectBasic{
 	private:
-		SDL_Rect rectangle;
-
-
 
 	public:
 		int lifeSpan = 200; //5 sekund
-		SDL_Rect* GetRectangle();
 		PopingCricle(int x, int y, int w, int h);
 };
 

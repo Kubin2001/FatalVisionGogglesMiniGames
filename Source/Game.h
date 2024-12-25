@@ -3,6 +3,8 @@
 #include "MainMenu.h"
 #include "MiniGameOne.h"
 #include "MiniGameTwo.h"
+#include "MiniGameThree.h"
+#include "MiniGameFour.h"
 #include "UI.h"
 #include <memory>
 
@@ -21,6 +23,8 @@ private:
 
     std::unique_ptr<MiniGameOne> miniGameOne;
     std::unique_ptr<MiniGameTwo> miniGameTwo;
+    std::unique_ptr<MiniGameThree> miniGameThree;
+    std::unique_ptr<MiniGameFour> miniGameFour;
 
 
 

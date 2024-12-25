@@ -1,20 +1,33 @@
 
-#include "MiniGameOne.h"
+#include "MiniGameFour.h"
 #include "GlobalVariables.h"
 #include "TextureManager.h"
 #include "Colision.h"
 #include <string>
 
 
-PopingCricle::PopingCricle(int x, int y, int w, int h) {
+PopingCricleTwo::PopingCricleTwo(int x, int y, int w, int h) {
 	this->rectangle.x = x;
 	this->rectangle.y = y;
 	this->rectangle.w = w;
 	this->rectangle.h = h;
+	unsigned short random = rand() % 3;
+	switch (random)
+	{
+		case 0:
+			texture = TextureManager::GetTextureByName("CricleDim1");
+			break;
+		case 1:
+			texture = TextureManager::GetTextureByName("CricleDim2");
+			break;
+		case 2:
+			texture = TextureManager::GetTextureByName("CricleDim3");
+			break;
+	}
 }
 /////////////////////////////////////////////
 
-void MiniGameOne::Innit(UI* ui) {
+void MiniGameFour::Innit(UI* ui) {
 	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
 		TextureManager::GetTextureByName("buttonModern"), "Score: 0", 40, 35, 3, 40, 5);
 	ui->SetUIElementBorderColor("ScoreButton", 135, 206, 250);
@@ -24,16 +37,15 @@ void MiniGameOne::Innit(UI* ui) {
 	ui->SetUIElementBorderColor("TimeButton", 135, 206, 250);
 }
 
-MiniGameOne::MiniGameOne(SDL_Renderer* renderer) {
+MiniGameFour::MiniGameFour(SDL_Renderer* renderer) {
 	this->renderer = renderer;
-	this->texture = TextureManager::GetTextureByName("Cricle");
 }
 
-void MiniGameOne::CreateCircle(int x, int y, int w, int h) {
-	PopingCircles.emplace_back(x,y,w,h);
+void MiniGameFour::CreateCircle(int x, int y, int w, int h) {
+	PopingCircles.emplace_back(x, y, w, h);
 }
 
-void MiniGameOne::ManageLifespan() {
+void MiniGameFour::ManageLifespan() {
 	for (size_t i = 0; i < PopingCircles.size(); i++) {
 		PopingCircles[i].lifeSpan--;
 		if (PopingCircles[i].lifeSpan < 1) {
@@ -46,7 +58,7 @@ void MiniGameOne::ManageLifespan() {
 	}
 }
 
-void MiniGameOne::ManageCreation() {
+void MiniGameFour::ManageCreation() {
 	if (PopingCircles.size() < 20) {
 		int random = rand() % 60;
 		if (random == 0) {
@@ -59,11 +71,11 @@ void MiniGameOne::ManageCreation() {
 	}
 }
 
-void MiniGameOne::ManageTime() {
+void MiniGameFour::ManageTime() {
 	time--;
 }
 
-void MiniGameOne::OnClick(SDL_Event &event) {
+void MiniGameFour::OnClick(SDL_Event& event) {
 	if (event.button.button == SDL_BUTTON_LEFT) {
 		if (delay < 1) {
 			clicks++;
@@ -89,14 +101,14 @@ void MiniGameOne::OnClick(SDL_Event &event) {
 
 }
 
-void MiniGameOne::Render() {
-	for (auto &it: PopingCircles)
+void MiniGameFour::Render() {
+	for (auto& it : PopingCircles)
 	{
-		SDL_RenderCopy(renderer, texture, NULL, it.GetRectangle());
+		SDL_RenderCopy(renderer, it.GetTexture(), NULL, it.GetRectangle());
 	}
 }
 
-void MiniGameOne::Finisch(UI* ui) {
+void MiniGameFour::Finisch(UI* ui) {
 	ui->ClearAllButtons();
 	double accuracy = 0;
 	int accuracyInt = 0;
@@ -133,10 +145,10 @@ void MiniGameOne::Finisch(UI* ui) {
 }
 
 
-int MiniGameOne::GetScore() {
+int MiniGameFour::GetScore() {
 	return score;
 }
 
-unsigned short MiniGameOne::GetTime() {
+unsigned short MiniGameFour::GetTime() {
 	return time;
 }

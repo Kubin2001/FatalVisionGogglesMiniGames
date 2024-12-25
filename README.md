@@ -3,8 +3,8 @@ A set of simple games designed to test the effect of FatalVisionGoggles
 
 Added:
 - Added Completion Screen
-- Finisched first game with png
+- 4 unique games
 To add: 
 - Completion Screen
-- 7 Other Games
-- 6 png for games in menu
+- 4 Other Games
+- 4 png for games in menu

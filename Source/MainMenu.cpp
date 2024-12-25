@@ -12,31 +12,31 @@ void MainMenu::Innit(UI *ui) {
     ui->SetUIElementBorderColor("GameTab1", 135, 206, 250);
 
     ui->CreateInteractionBox("GameSubTab1", 150, 410, 200, 50,
-        TextureManager::GetTextureByName("buttonModern"), "Precission Test", 15, 13, 0, 10, 5);
+        TextureManager::GetTextureByName("buttonModern"), "Precission Test", 15, 13, 3, 10, 5);
     ui->SetUIElementBorderColor("GameSubTab1", 135, 206, 250);
 
     ui->CreateButton("GameTab2", 450, 200, 200, 200,
-        TextureManager::GetTextureByName("buttonModern"), "Precision2", 20, 18, 3, 40, 5);
+        TextureManager::GetTextureByName("GameIcon2"), "", 20, 18, 3, 40, 5);
     ui->SetUIElementBorderColor("GameTab2", 135, 206, 250);
 
     ui->CreateInteractionBox("GameSubTab2", 450, 410, 200, 50,
-        TextureManager::GetTextureByName("buttonModern"), "Game2", 20, 18, 2, 10, 5);
+        TextureManager::GetTextureByName("buttonModern"), "Reaction Test", 15, 13, 3, 10, 5);
     ui->SetUIElementBorderColor("GameSubTab2", 135, 206, 250);
 
     ui->CreateButton("GameTab3", 750, 200, 200, 200,
-        TextureManager::GetTextureByName("buttonModern"), "Precision3", 20, 18, 3, 40, 5);
+        TextureManager::GetTextureByName("GameIcon3"), "", 20, 18, 3, 40, 5);
     ui->SetUIElementBorderColor("GameTab3", 135, 206, 250);
 
     ui->CreateInteractionBox("GameSubTab3", 750, 410, 200, 50,
-        TextureManager::GetTextureByName("buttonModern"), "Game3", 20, 18, 2, 10, 5);
+        TextureManager::GetTextureByName("buttonModern"), "Concentration ;Test", 15, 13, 3, 10, 5);
     ui->SetUIElementBorderColor("GameSubTab3", 135, 206, 250);
 
     ui->CreateButton("GameTab4", 1050, 200, 200, 200,
-        TextureManager::GetTextureByName("buttonModern"), "Precision4", 20, 18, 3, 40, 5);
+        TextureManager::GetTextureByName("GameIcon4"), "", 20, 18, 3, 40, 5);
     ui->SetUIElementBorderColor("GameTab4", 135, 206, 250);
 
     ui->CreateInteractionBox("GameSubTab4", 1050, 410, 200, 50,
-        TextureManager::GetTextureByName("buttonModern"), "Game4", 20, 18, 2, 10, 5);
+        TextureManager::GetTextureByName("buttonModern"), "Vision Test", 20, 18, 2, 10, 5);
     ui->SetUIElementBorderColor("GameSubTab4", 135, 206, 250);
 
     ui->CreateButton("GameTab5", 150, 500, 200, 200,
