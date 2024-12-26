@@ -6,9 +6,10 @@
 #include <map>
 #include "Font.h"
 #include "TextureManager.h"
+#include "unordered_map"
 
 class TemplateUIElement {
-    private:
+private:
     SDL_Texture* texture;
     SDL_Rect rectangle;
     std::string name;
@@ -23,11 +24,12 @@ class TemplateUIElement {
     int textStartX = 0;
     int textStartY = 0;
 
+    bool buttonTransparent = false;
     unsigned char buttonColor[3] = { 0,0,0 };
 
     unsigned char borderRGB[3] = { 0,0,0 };
 
-    public:
+public:
 
     SDL_Texture* GetTexture();
 
@@ -60,6 +62,9 @@ class TemplateUIElement {
     int GetTextStartY();
     void SetTextStartY(int temp);
 
+    bool GetTransparent();
+    void SetTransparent(bool temp);
+
     void SetButtonColor(unsigned char R, unsigned char G, unsigned char B);
 
     void SetBorderRGB(unsigned char R, unsigned char G, unsigned char B);
@@ -71,20 +76,20 @@ class TemplateUIElement {
 };
 
 class InteractionBox : public TemplateUIElement {
-    private:
+private:
     bool status = false;
-    public:
+public:
     bool GetStatus();
 
     void SetStatus(bool value);
 };
 
 class MassageBox : public TemplateUIElement {
-    private:
+private:
     bool turnedOn = false;
     bool autoFormating = false;
     int formatingStep = 0;
-    public:
+public:
 
     int formatingXtune = 0;
     int formatingYtune = 0;
@@ -108,14 +113,18 @@ class Button : public TemplateUIElement {
 
 class UI
 {
-    private:
+private:
     SDL_Renderer* renderer;
 
     std::vector<Button*> Buttons;
     std::vector<MassageBox*> MassageBoxes;
     std::vector<InteractionBox*> InteractionBoxes;
 
-    public:
+    std::unordered_map<std::string, Button*> ButtonsMap;
+    std::unordered_map<std::string, MassageBox*> MassageBoxesMap;
+    std::unordered_map<std::string, InteractionBox*> InteractionBoxesMap;
+
+public:
     Font* font;
 
     UI(SDL_Renderer* renderer, bool setUpFont);
@@ -139,19 +148,23 @@ class UI
 
     void CheckInteractionBoxes(SDL_Event& event);
 
+    Button* GetButtonByName(const std::string& name);
+    MassageBox* GetMassageBoxByName(const std::string& name);
+    InteractionBox* GetInteractionBoxByName(const std::string& name);
+
     void SetUIElementColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B);
 
     void SetUIElementBorderColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B);
 
     void ManageInput(SDL_Event& event);
 
-    void DeleteButton(const std::string& name);
+    bool DeleteButton(const std::string& name);
 
-    void DeleteMassageBox(const std::string& name);
+    bool DeleteMassageBox(const std::string& name);
 
-    void DeleteInteractionBox(const std::string& name);
+    bool DeleteInteractionBox(const std::string& name);
 
-    void DeleteAnyButton(const std::string& name);
+    bool DeleteAnyButton(const std::string& name);
 
     void Render();
 
@@ -166,12 +179,6 @@ class UI
     std::vector<MassageBox*>& GetMassageBoxes();
 
     std::vector<InteractionBox*>& GetInteractionBoxes();
-
-    Button* GetButtonByName(const std::string& name);
-
-    MassageBox* GetMassageBoxByName(const std::string& name);
-
-    InteractionBox* GetInterctionBoxByName(const std::string& name);
 
     void ClearAllButtons();
 

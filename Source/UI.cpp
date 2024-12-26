@@ -81,7 +81,18 @@ void TemplateUIElement::SetTextStartY(int temp) {
     textStartY = temp;
 }
 
+bool TemplateUIElement::GetTransparent() {
+    return buttonTransparent;
+}
+
+void TemplateUIElement::SetTransparent(bool temp) {
+    buttonTransparent = temp;
+}
+
 void TemplateUIElement::SetButtonColor(unsigned char R, unsigned char G, unsigned char B) {
+    if (buttonTransparent) {
+        buttonTransparent = false;
+    }
     buttonColor[0] = R;
     buttonColor[1] = G;
     buttonColor[2] = B;
@@ -95,19 +106,20 @@ void TemplateUIElement::SetBorderRGB(unsigned char R, unsigned char G, unsigned 
 }
 
 void TemplateUIElement::RenderItslelf(SDL_Renderer* renderer) {
+    if (!buttonTransparent) {
+        SDL_SetRenderDrawColor(renderer, buttonColor[0], buttonColor[1], buttonColor[2], 255);
 
-    SDL_SetRenderDrawColor(renderer, buttonColor[0], buttonColor[1], buttonColor[2], 255);
+        SDL_RenderFillRect(renderer, &rectangle);
 
-    SDL_RenderFillRect(renderer, &rectangle);
-
-    SDL_SetRenderDrawColor(renderer, Global::defaultDrawColor[0], Global::defaultDrawColor[1], Global::defaultDrawColor[2], 255);
+        SDL_SetRenderDrawColor(renderer, Global::defaultDrawColor[0], Global::defaultDrawColor[1], Global::defaultDrawColor[2], 255);
+    }
 }
 
 void TemplateUIElement::RenderBorder(SDL_Renderer* renderer) {
-    SDL_Rect leftLine(rectangle.x, rectangle.y, borderThickness, rectangle.h);
-    SDL_Rect upperLine(rectangle.x, rectangle.y, rectangle.w, borderThickness);
-    SDL_Rect rightLine((rectangle.x + rectangle.w - borderThickness), rectangle.y, borderThickness, rectangle.h);
-    SDL_Rect downLine(rectangle.x, (rectangle.y + rectangle.h - borderThickness), rectangle.w, borderThickness);
+    SDL_Rect leftLine{ rectangle.x, rectangle.y, borderThickness, rectangle.h };
+    SDL_Rect upperLine{ rectangle.x, rectangle.y, rectangle.w, borderThickness };
+    SDL_Rect rightLine{ (rectangle.x + rectangle.w - borderThickness), rectangle.y, borderThickness, rectangle.h };
+    SDL_Rect downLine{ rectangle.x, (rectangle.y + rectangle.h - borderThickness), rectangle.w, borderThickness };
 
     SDL_SetRenderDrawColor(renderer, borderRGB[0], borderRGB[1], borderRGB[2], 255);
 
@@ -175,7 +187,7 @@ void InteractionBox::SetStatus(bool value) {
 }
 //InteractionBox
 
-UI::UI(SDL_Renderer* renderer,bool setUpFont) {
+UI::UI(SDL_Renderer* renderer, bool setUpFont) {
     font = new Font(74);
     this->renderer = renderer;
     if (setUpFont) {
@@ -224,7 +236,9 @@ void UI::CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture*
     Buttons.back()->GetRectangle()->h = h;
 
     Buttons.back()->SetTexture(texture);
-
+    if (texture == nullptr) {
+        Buttons.back()->SetTransparent(true);
+    }
 
     Buttons.back()->SetText(text);
     Buttons.back()->SetTextSize(textSize);
@@ -238,6 +252,8 @@ void UI::CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture*
         Buttons.back()->SetBorderThickness(borderThickness);
         Buttons.back()->SetBorder(true);
     }
+
+    ButtonsMap.emplace(Buttons.back()->GetName(), Buttons.back());
 }
 
 void UI::CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, int textSize, int textStep, int textStartX, int textStartY, int borderThickness, bool autoFormating) {
@@ -249,6 +265,9 @@ void UI::CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Text
     MassageBoxes.back()->GetRectangle()->h = h;
 
     MassageBoxes.back()->SetTexture(texture);
+    if (texture == nullptr) {
+        MassageBoxes.back()->SetTransparent(true);
+    }
 
     MassageBoxes.back()->SetText("");
 
@@ -269,6 +288,8 @@ void UI::CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Text
         MassageBoxes.back()->SetBorder(true);
     }
 
+    MassageBoxesMap.emplace(MassageBoxes.back()->GetName(), MassageBoxes.back());
+
 
 }
 
@@ -281,6 +302,9 @@ void UI::CreateInteractionBox(std::string name, int x, int y, int w, int h, SDL_
     InteractionBoxes.back()->GetRectangle()->h = h;
 
     InteractionBoxes.back()->SetTexture(texture);
+    if (texture == nullptr) {
+        InteractionBoxes.back()->SetTransparent(true);
+    }
 
     InteractionBoxes.back()->SetText(text);
 
@@ -296,6 +320,8 @@ void UI::CreateInteractionBox(std::string name, int x, int y, int w, int h, SDL_
         InteractionBoxes.back()->SetBorderThickness(borderThickness);
         InteractionBoxes.back()->SetBorder(true);
     }
+
+    InteractionBoxesMap.emplace(InteractionBoxes.back()->GetName(), InteractionBoxes.back());
 }
 
 void  UI::CheckMasageBoxInteraction(SDL_Event& event) {
@@ -313,7 +339,7 @@ void UI::ManageMassageBoxTextInput(SDL_Event& event) {
 void UI::CheckInteractionBoxes(SDL_Event& event) {
     for (size_t i = 0; i < InteractionBoxes.size(); i++)
     {
-        if (event.button.button == SDL_BUTTON_LEFT) {
+        if (event.type == SDL_MOUSEBUTTONUP) {
             SDL_Rect temprect{ event.button.x ,event.button.y,1,1 };
             if (SimpleCollision(*InteractionBoxes[i]->GetRectangle(), temprect)) {
                 InteractionBoxes[i]->SetStatus(true);
@@ -323,51 +349,74 @@ void UI::CheckInteractionBoxes(SDL_Event& event) {
 
 }
 
+Button* UI::GetButtonByName(const std::string& name) {
+    auto btnFind = ButtonsMap.find(name);
+    if (btnFind != ButtonsMap.end()) {
+        return btnFind->second;
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+MassageBox* UI::GetMassageBoxByName(const std::string& name) {
+    auto msBoxFind = MassageBoxesMap.find(name);
+    if (msBoxFind != MassageBoxesMap.end()) {
+        return msBoxFind->second;
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+InteractionBox* UI::GetInteractionBoxByName(const std::string& name) {
+    auto interBoxFind = InteractionBoxesMap.find(name);
+    if (interBoxFind != InteractionBoxesMap.end()) {
+        return interBoxFind->second;
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
 void UI::SetUIElementColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B) {
-    for (const auto& it : Buttons)
-    {
-        if (it->GetName() == name) {
-            it->SetButtonColor(R, G, B);
-            return;
-        }
+    Button* button = GetButtonByName(name);
+    if (button != nullptr) {
+        button->SetButtonColor(R, G, B);
+        return;
     }
-    for (const auto& it : MassageBoxes)
-    {
-        if (it->GetName() == name) {
-            it->SetButtonColor(R, G, B);
-            return;
-        }
+
+    MassageBox* massageBox = GetMassageBoxByName(name);
+    if (massageBox != nullptr) {
+        massageBox->SetButtonColor(R, G, B);
+        return;
     }
-    for (const auto& it : InteractionBoxes)
-    {
-        if (it->GetName() == name) {
-            it->SetButtonColor(R, G, B);
-            return;
-        }
+
+    InteractionBox* interactionBox = GetInteractionBoxByName(name);
+    if (interactionBox != nullptr) {
+        interactionBox->SetButtonColor(R, G, B);
+        return;
     }
 }
 
 void UI::SetUIElementBorderColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B) {
-    for (const auto& it : Buttons)
-    {
-        if (it->GetName() == name) {
-            it->SetBorderRGB(R, G, B);
-            return;
-        }
+    Button* button = GetButtonByName(name);
+    if (button != nullptr) {
+        button->SetBorderRGB(R, G, B);
+        return;
     }
-    for (const auto& it : MassageBoxes)
-    {
-        if (it->GetName() == name) {
-            it->SetBorderRGB(R, G, B);
-            return;
-        }
+
+    MassageBox* massageBox = GetMassageBoxByName(name);
+    if (massageBox != nullptr) {
+        massageBox->SetBorderRGB(R, G, B);
+        return;
     }
-    for (const auto& it : InteractionBoxes)
-    {
-        if (it->GetName() == name) {
-            it->SetBorderRGB(R, G, B);
-            return;
-        }
+
+    InteractionBox* interactionBox = GetInteractionBoxByName(name);
+    if (interactionBox != nullptr) {
+        interactionBox->SetBorderRGB(R, G, B);
+        return;
     }
 }
 
@@ -379,58 +428,50 @@ void UI::ManageInput(SDL_Event& event) {
     CheckInteractionBoxes(event);
 }
 
-void UI::DeleteButton(const std::string& name) {
+bool UI::DeleteButton(const std::string& name) {
+    ButtonsMap.erase(name);
     for (size_t i = 0; i < Buttons.size(); i++)
     {
         if (Buttons[i]->GetName() == name) {
+            delete Buttons[i];
             Buttons.erase(Buttons.begin() + i);
-            return;
+            return true;
         }
     }
+    return false;
 }
 
-void UI::DeleteMassageBox(const std::string& name) {
+bool UI::DeleteMassageBox(const std::string& name) {
+    MassageBoxesMap.erase(name);
     for (size_t i = 0; i < MassageBoxes.size(); i++)
     {
         if (MassageBoxes[i]->GetName() == name) {
+            delete MassageBoxes[i];
             MassageBoxes.erase(MassageBoxes.begin() + i);
-            return;
+            return true;
         }
     }
+    return false;
 }
 
-void UI::DeleteInteractionBox(const std::string& name) {
+bool UI::DeleteInteractionBox(const std::string& name) {
+    InteractionBoxesMap.erase(name);
     for (size_t i = 0; i < InteractionBoxes.size(); i++)
     {
         if (InteractionBoxes[i]->GetName() == name) {
+            delete InteractionBoxes[i];
             InteractionBoxes.erase(InteractionBoxes.begin() + i);
-            return;
+            return true;
         }
     }
+    return false;
 }
 
-void UI::DeleteAnyButton(const std::string& name) {
-    for (size_t i = 0; i < Buttons.size(); i++)
-    {
-        if (Buttons[i]->GetName() == name) {
-            Buttons.erase(Buttons.begin() + i);
-            return;
-        }
-    }
-    for (size_t i = 0; i < MassageBoxes.size(); i++)
-    {
-        if (MassageBoxes[i]->GetName() == name) {
-            MassageBoxes.erase(MassageBoxes.begin() + i);
-            return;
-        }
-    }
-    for (size_t i = 0; i < InteractionBoxes.size(); i++)
-    {
-        if (InteractionBoxes[i]->GetName() == name) {
-            InteractionBoxes.erase(InteractionBoxes.begin() + i);
-            return;
-        }
-    }
+bool UI::DeleteAnyButton(const std::string& name) {
+    if (DeleteButton(name)) { return true; }
+    if (DeleteMassageBox(name)) { return true; }
+    if (DeleteInteractionBox(name)) { return true; }
+    return false;
 }
 
 void UI::RenderButton(int index) {
@@ -508,35 +549,6 @@ std::vector<InteractionBox*>& UI::GetInteractionBoxes() {
     return InteractionBoxes;
 }
 
-Button* UI::GetButtonByName(const std::string& name) {
-    for (auto it = Buttons.begin(); it != Buttons.end(); ++it) {
-        if ((*it)->GetName() == name) {
-            return *it;
-            break;
-        }
-    }
-    return nullptr;
-}
-
-MassageBox* UI::GetMassageBoxByName(const std::string& name) {
-    for (auto it = MassageBoxes.begin(); it != MassageBoxes.end(); ++it) {
-        if ((*it)->GetName() == name) {
-            return *it;
-            break;
-        }
-    }
-    return nullptr;
-}
-
-InteractionBox* UI::GetInterctionBoxByName(const std::string& name) {
-    for (auto it = InteractionBoxes.begin(); it != InteractionBoxes.end(); ++it) {
-        if ((*it)->GetName() == name) {
-            return *it;
-            break;
-        }
-    }
-    return nullptr;
-}
 
 
 void UI::ClearAllButtons() {
@@ -552,6 +564,9 @@ void UI::ClearAllButtons() {
     Buttons.clear();
     MassageBoxes.clear();
     InteractionBoxes.clear();
+    ButtonsMap.clear();
+    MassageBoxesMap.clear();
+    InteractionBoxesMap.clear();
 }
 
 

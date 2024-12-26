@@ -261,29 +261,29 @@ void Game::EventsConstant() {
         ui->ManageInput(event);
         switch (gamestate) {
             case 0:
-                if (ui->GetInterctionBoxByName("GameSubTab1")->GetStatus()) {
-                    ui->GetInterctionBoxByName("GameSubTab1")->SetStatus(0);
+                if (ui->GetInteractionBoxByName("GameSubTab1")->GetStatus()) {
+                    ui->GetInteractionBoxByName("GameSubTab1")->SetStatus(0);
                     ClearState();
                     gamestate = 1;
                     currentGame = 1;
                     SetUpState();
                 }
-                else if (ui->GetInterctionBoxByName("GameSubTab2")->GetStatus()) {
-                    ui->GetInterctionBoxByName("GameSubTab2")->SetStatus(0);
+                else if (ui->GetInteractionBoxByName("GameSubTab2")->GetStatus()) {
+                    ui->GetInteractionBoxByName("GameSubTab2")->SetStatus(0);
                     ClearState();
                     gamestate = 1;
                     currentGame = 2;
                     SetUpState();
                 }
-                else if (ui->GetInterctionBoxByName("GameSubTab3")->GetStatus()) {
-                    ui->GetInterctionBoxByName("GameSubTab3")->SetStatus(0);
+                else if (ui->GetInteractionBoxByName("GameSubTab3")->GetStatus()) {
+                    ui->GetInteractionBoxByName("GameSubTab3")->SetStatus(0);
                     ClearState();
                     gamestate = 1;
                     currentGame = 3;
                     SetUpState();
                 }
-                else if (ui->GetInterctionBoxByName("GameSubTab4")->GetStatus()) {
-                    ui->GetInterctionBoxByName("GameSubTab4")->SetStatus(0);
+                else if (ui->GetInteractionBoxByName("GameSubTab4")->GetStatus()) {
+                    ui->GetInteractionBoxByName("GameSubTab4")->SetStatus(0);
                     ClearState();
                     gamestate = 1;
                     currentGame = 4;
@@ -312,15 +312,15 @@ void Game::EventsConstant() {
             case 2:     
                 switch (currentGame) {
                     case 1:
-                        if (ui->GetInterctionBoxByName("MainMenuButton")->GetStatus()) {
-                            ui->GetInterctionBoxByName("MainMenuButton")->SetStatus(0);
+                        if (ui->GetInteractionBoxByName("MainMenuButton")->GetStatus()) {
+                            ui->GetInteractionBoxByName("MainMenuButton")->SetStatus(0);
                             ClearState();
                             gamestate = 0;
                             currentGame = 0;
                             SetUpState();
                         }
-                        else if (ui->GetInterctionBoxByName("RetryButton")->GetStatus()) {
-                            ui->GetInterctionBoxByName("RetryButton")->SetStatus(0);
+                        else if (ui->GetInteractionBoxByName("RetryButton")->GetStatus()) {
+                            ui->GetInteractionBoxByName("RetryButton")->SetStatus(0);
                             ClearState();
                             gamestate = 1;
                             currentGame = 1;
@@ -329,15 +329,15 @@ void Game::EventsConstant() {
 
                         break;
                     case 2:
-                        if (ui->GetInterctionBoxByName("MainMenuButton")->GetStatus()) {
-                            ui->GetInterctionBoxByName("MainMenuButton")->SetStatus(0);
+                        if (ui->GetInteractionBoxByName("MainMenuButton")->GetStatus()) {
+                            ui->GetInteractionBoxByName("MainMenuButton")->SetStatus(0);
                             ClearState();
                             gamestate = 0;
                             currentGame = 0;
                             SetUpState();
                         }
-                        else if (ui->GetInterctionBoxByName("RetryButton")->GetStatus()) {
-                            ui->GetInterctionBoxByName("RetryButton")->SetStatus(0);
+                        else if (ui->GetInteractionBoxByName("RetryButton")->GetStatus()) {
+                            ui->GetInteractionBoxByName("RetryButton")->SetStatus(0);
                             ClearState();
                             gamestate = 1;
                             currentGame = 2;
@@ -345,15 +345,15 @@ void Game::EventsConstant() {
                         }
                         break;
                     case 3:
-                        if (ui->GetInterctionBoxByName("MainMenuButton")->GetStatus()) {
-                            ui->GetInterctionBoxByName("MainMenuButton")->SetStatus(0);
+                        if (ui->GetInteractionBoxByName("MainMenuButton")->GetStatus()) {
+                            ui->GetInteractionBoxByName("MainMenuButton")->SetStatus(0);
                             ClearState();
                             gamestate = 0;
                             currentGame = 0;
                             SetUpState();
                         }
-                        else if (ui->GetInterctionBoxByName("RetryButton")->GetStatus()) {
-                            ui->GetInterctionBoxByName("RetryButton")->SetStatus(0);
+                        else if (ui->GetInteractionBoxByName("RetryButton")->GetStatus()) {
+                            ui->GetInteractionBoxByName("RetryButton")->SetStatus(0);
                             ClearState();
                             gamestate = 1;
                             currentGame = 3;
@@ -361,15 +361,15 @@ void Game::EventsConstant() {
                         }
                         break;
                     case 4:
-                        if (ui->GetInterctionBoxByName("MainMenuButton")->GetStatus()) {
-                            ui->GetInterctionBoxByName("MainMenuButton")->SetStatus(0);
+                        if (ui->GetInteractionBoxByName("MainMenuButton")->GetStatus()) {
+                            ui->GetInteractionBoxByName("MainMenuButton")->SetStatus(0);
                             ClearState();
                             gamestate = 0;
                             currentGame = 0;
                             SetUpState();
                         }
-                        else if (ui->GetInterctionBoxByName("RetryButton")->GetStatus()) {
-                            ui->GetInterctionBoxByName("RetryButton")->SetStatus(0);
+                        else if (ui->GetInteractionBoxByName("RetryButton")->GetStatus()) {
+                            ui->GetInteractionBoxByName("RetryButton")->SetStatus(0);
                             ClearState();
                             gamestate = 1;
                             currentGame = 4;
