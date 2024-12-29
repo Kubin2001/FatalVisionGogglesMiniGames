@@ -8,100 +8,102 @@
 #include "TextureManager.h"
 #include "unordered_map"
 
+
 class TemplateUIElement {
-private:
-    SDL_Texture* texture;
-    SDL_Rect rectangle;
-    std::string name;
-    std::string text;
-    int textSize;
-    int textStep;
+    protected:
+        SDL_Texture* texture;
+        SDL_Rect rectangle;
+        std::string name;
+        std::string text;
+        float textScale = 1.0f;
+        int interLine = 20;
 
-    bool border = false;
+        bool border = false;
 
-    int borderThickness = 0;
+        int borderThickness = 0;
 
-    int textStartX = 0;
-    int textStartY = 0;
+        int textStartX = 0;
+        int textStartY = 0;
 
-    bool buttonTransparent = false;
-    unsigned char buttonColor[3] = { 0,0,0 };
+        bool buttonTransparent = false;
+        unsigned char buttonColor[3] = { 255,255,255 };
 
-    unsigned char borderRGB[3] = { 0,0,0 };
+        unsigned char borderRGB[3] = { 255,255,255 };
 
-public:
+        unsigned char fontRGB[3] = { 255,255,255 };
 
-    SDL_Texture* GetTexture();
+        Font* font = nullptr;
 
-    void SetTexture(SDL_Texture* temp);
+    public:
 
-    SDL_Rect* GetRectangle();
+        SDL_Texture* GetTexture();
 
-    std::string& GetName();
+        void SetTexture(SDL_Texture* temp);
 
-    void SetName(const std::string value);
+        SDL_Rect* GetRectangle();
 
-    std::string& GetText();
-    void SetText(std::string temptext);
+        std::string& GetName();
 
-    int GetTextSize();
-    void SetTextSize(int temp);
-    int GetTextStep();
-    void SetTextStep(int temp);
+        void SetName(const std::string value);
 
-    bool GetBorder();
+        std::string& GetText();
+        void SetText(std::string temptext);
 
-    void SetBorder(bool temp);
+        float GetTextScale();
+        void SetTextScale(float temp);
+        int GetInterLine();
+        void SetInterLine(int temp);
 
-    int GetBorderThickness();
+        bool GetBorder();
 
-    void SetBorderThickness(int temp);
+        void SetBorder(bool temp);
 
-    int GetTextStartX();
-    void SetTextStartX(int temp);
-    int GetTextStartY();
-    void SetTextStartY(int temp);
+        int GetBorderThickness();
 
-    bool GetTransparent();
-    void SetTransparent(bool temp);
+        void SetBorderThickness(int temp);
 
-    void SetButtonColor(unsigned char R, unsigned char G, unsigned char B);
+        int GetTextStartX();
+        void SetTextStartX(int temp);
+        int GetTextStartY();
+        void SetTextStartY(int temp);
 
-    void SetBorderRGB(unsigned char R, unsigned char G, unsigned char B);
+        bool GetTransparent();
+        void SetTransparent(bool temp);
 
-    void RenderItslelf(SDL_Renderer* renderer);
+        Font* GetFont();
 
-    void RenderBorder(SDL_Renderer* renderer);
+        void SetFont(Font *font);
+
+        void SetButtonColor(unsigned char R, unsigned char G, unsigned char B);
+
+        void SetBorderRGB(unsigned char R, unsigned char G, unsigned char B);
+
+        void SetFontColor(unsigned char R, unsigned char G, unsigned char B);
+
+        void RenderItslelf(SDL_Renderer* renderer);
+
+        void RenderBorder(SDL_Renderer* renderer);
+
+        void RenderText(SDL_Renderer* renderer);
 
 };
 
 class InteractionBox : public TemplateUIElement {
-private:
+    private:
     bool status = false;
-public:
+    public:
     bool GetStatus();
 
     void SetStatus(bool value);
 };
 
 class MassageBox : public TemplateUIElement {
-private:
+    private:
     bool turnedOn = false;
-    bool autoFormating = false;
-    int formatingStep = 0;
-public:
-
-    int formatingXtune = 0;
-    int formatingYtune = 0;
+    public:
     void CheckInteraction(SDL_Event& event);
 
     void ManageTextInput(SDL_Event& event);
-
-    bool GetAutoFormating();
-
-    void SetAutoFormating(bool value);
-
-
 };
 
 
@@ -113,7 +115,7 @@ class Button : public TemplateUIElement {
 
 class UI
 {
-private:
+    private:
     SDL_Renderer* renderer;
 
     std::vector<Button*> Buttons;
@@ -124,23 +126,22 @@ private:
     std::unordered_map<std::string, MassageBox*> MassageBoxesMap;
     std::unordered_map<std::string, InteractionBox*> InteractionBoxesMap;
 
-public:
-    Font* font;
+    FontManager* fontManager;
 
-    UI(SDL_Renderer* renderer, bool setUpFont);
+    public:
+
+    UI(SDL_Renderer* renderer);
 
     void LoadTextures();
 
-    void SetFontColor(const unsigned char R, const unsigned char G, const unsigned char B);
+    void CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture* texture,Font *font = nullptr,
+        std::string text = "", float textScale = 1.0f, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
 
-    void CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture* texture,
-        std::string text = "", int textSize = 20, int textStep = 18, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
+    void CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font = nullptr,
+        std::string text = "", float textScale = 1.0f, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
 
-    void CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture,
-        int textSize = 20, int textStep = 18, int textStartX = 0, int textStartY = 0, int borderThickness = 0, bool autoFormating = false);
-
-    void CreateInteractionBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture,
-        std::string text = "", int textSize = 20, int textStep = 18, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
+    void CreateInteractionBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font = nullptr,
+        std::string text = "", float textScale = 1.0f, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
 
     void CheckMasageBoxInteraction(SDL_Event& event);
 
@@ -148,13 +149,14 @@ public:
 
     void CheckInteractionBoxes(SDL_Event& event);
 
-    Button* GetButtonByName(const std::string& name);
-    MassageBox* GetMassageBoxByName(const std::string& name);
-    InteractionBox* GetInteractionBoxByName(const std::string& name);
+    Button* GetButtonByName(const std::string &name);
+    MassageBox* GetMassageBoxByName(const std::string &name);
+    InteractionBox* GetInteractionBoxByName(const std::string &name);
 
     void SetUIElementColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B);
 
     void SetUIElementBorderColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B);
+    void SetUIElementFontColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B);
 
     void ManageInput(SDL_Event& event);
 
@@ -179,6 +181,10 @@ public:
     std::vector<MassageBox*>& GetMassageBoxes();
 
     std::vector<InteractionBox*>& GetInteractionBoxes();
+
+    void CreateFont(const std::string& name, SDL_Texture* texture, const std::string& jsonPath);
+
+    Font* GetFont(const std::string& name);
 
     void ClearAllButtons();
 

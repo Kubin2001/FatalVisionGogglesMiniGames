@@ -10,10 +10,12 @@
 Game::Game() {
     window = nullptr;
     renderer = nullptr;
+
     miniGameOne = nullptr;
     miniGameTwo = nullptr;
     miniGameThree = nullptr;
     miniGameFour = nullptr;
+    miniGameFive = nullptr;
 
     ui = nullptr;
     mainMenu = nullptr;
@@ -31,11 +33,11 @@ void Game::Start() {
     TextureManager::Start(renderer);
     LoadTextures();
 
-    ui = std::make_unique<UI>(renderer,1);
+    ui = std::make_unique<UI>(renderer);
     ui->LoadTextures();
-    ui->font->LoadText(29, 29);
-    ui->font->SetTexture(TextureManager::GetTextureByName("fontStandard"));
-    ui->SetFontColor(255, 168, 0);
+    ui->CreateFont("arial40px", TextureManager::GetTextureByName("arial40px"), "Textures/Interface/Fonts/arial40px.json");
+    ui->CreateFont("arial20px", TextureManager::GetTextureByName("arial20px"), "Textures/Interface/Fonts/arial20px.json");
+    ui->CreateFont("arial12px", TextureManager::GetTextureByName("arial12px"), "Textures/Interface/Fonts/arial12px.json");
 }
 
 void Game::SetUpState() {
@@ -63,6 +65,10 @@ void Game::SetUpState() {
                     miniGameFour = std::make_unique<MiniGameFour>(renderer);
                     miniGameFour->Innit(ui.get());
                     break;
+                case 5:
+                    miniGameFive = std::make_unique<MiniGameFive>(renderer);
+                    miniGameFive->Innit(ui.get());
+                    break;
             }
             break;
     }
@@ -87,6 +93,9 @@ void Game::ClearState() {
                     break;
                 case 4:
                     miniGameFour.reset();
+                    break;
+                case 5:
+                    miniGameFive.reset();
                     break;
             }
             break;
@@ -131,6 +140,9 @@ void Game::EventsLogic() {
                 case 4:
                     miniGameFour->ManageCreation();
                     miniGameFour->ManageLifespan();
+                    break;
+                case 5:
+                    miniGameFive->ManageStages(ui.get());
                     break;
             }
             break;
@@ -200,7 +212,7 @@ void Game::OneSecondTickEvents() {
                 case 1:
                     miniGameOne->ManageTime();
                     ui->GetButtons()[1]->SetText("Time: " + std::to_string(miniGameOne->GetTime()));
-                    if (miniGameOne->GetTime() < 1) { //bazowo na 1
+                    if (miniGameOne->GetTime() < 29) { //bazowo na 1
                         miniGameOne->Finisch(ui.get());
                         ClearState();
                         gamestate = 2;
@@ -287,6 +299,13 @@ void Game::EventsConstant() {
                     ClearState();
                     gamestate = 1;
                     currentGame = 4;
+                    SetUpState();
+                }
+                else if (ui->GetInteractionBoxByName("GameSubTab5")->GetStatus()) {
+                    ui->GetInteractionBoxByName("GameSubTab5")->SetStatus(0);
+                    ClearState();
+                    gamestate = 1;
+                    currentGame = 5;
                     SetUpState();
                 }
                 break;
@@ -419,6 +438,9 @@ void Game::Render() {
                     break;
                 case 4:
                     miniGameFour->Render();
+                    break;
+                case 5:
+                    miniGameFive->Render();
                     break;
             }
             break;

@@ -6,27 +6,42 @@
 
 class Font {
 private:
-    SDL_Rect rectangle{ 0,0,29,29 };
-    std::vector<SDL_Rect> sourceRectangles;
+    std::string name;
     SDL_Texture* texture = nullptr;
-    int size = 0;
-
+    SDL_Rect rectangle{ 0,0,0,0 };
+    std::vector<SDL_Rect> sourceRectangles;
+    int standardInterLine = 0;
 public:
-    Font(const int characterAmount);
+    Font(const std::string& name, SDL_Texture* texture, const std::string& jsonPath);
+
+    std::string GetName();
 
     SDL_Rect* GetRectangle();
 
     SDL_Texture* GetTexture();
 
-    int GetSize();
+    int GetStandardInterline();
 
-    void SetSize(int temp);
+    void SetStandardInterline(int temp);
 
     void SetTexture(SDL_Texture* temptex);
 
-    void LoadText(int stepW, int stepH);
+    bool LoadTextInfo(const std::string& jsonPath);
 
-    void RenderText(SDL_Renderer* renderer, std::string text, int x, int y, int w, int h, int step, int textStartX=0, int textStartY=0);
+    void RenderText(SDL_Renderer* renderer, std::string text, int x, int y, float scale = 1.0, int interline = 20, int textStartX = 0, int textStartY = 0);
+};
 
-    ~Font();
+class FontManager {
+private:
+
+public:
+    std::vector<Font*> fonts;
+
+    FontManager();
+
+    bool CreateFont(const std::string& name, SDL_Texture* texture, const std::string& jsonPath);
+
+    Font* GetFont(const std::string& name);
+
+    ~FontManager();
 };

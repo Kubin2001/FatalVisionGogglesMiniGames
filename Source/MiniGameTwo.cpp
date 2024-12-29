@@ -41,12 +41,14 @@ MiniGameTwo::MiniGameTwo(SDL_Renderer* renderer) {
 
 void MiniGameTwo::Innit(UI* ui) {
 	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
-		TextureManager::GetTextureByName("buttonModern"), "Score: 0", 40, 35, 3, 40, 5);
+		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"), "Score: 0", 1, 8, 12, 5);
 	ui->SetUIElementBorderColor("ScoreButton", 135, 206, 250);
+	ui->SetUIElementFontColor("ScoreButton", 255, 168, 0);
 
 	ui->CreateButton("TimesLeftButton", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 150,
-		TextureManager::GetTextureByName("buttonModern"), "Times Left: ", 40, 35, 3, 40, 5);
+		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"), "Times Left: ", 1, 8, 12, 5);
 	ui->SetUIElementBorderColor("TimesLeftButton", 135, 206, 250);
+	ui->SetUIElementFontColor("TimesLeftButton", 255, 168, 0);
 	SetUpSquares();
 }
 
@@ -163,22 +165,30 @@ void MiniGameTwo::Render() {
 void MiniGameTwo::Finisch(UI* ui) {
 	ui->ClearAllButtons();
 	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth * 0.5, 200,
-		TextureManager::GetTextureByName("buttonModern"), "Final Score: " + std::to_string(score), 27, 24, 3, 40,5);
+		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+		"Final Score: " + std::to_string(score), 1, 8, 12, 5);
 	ui->SetUIElementBorderColor("FinalScore", 135, 206, 250);
+	ui->SetUIElementFontColor("FinalScore", 255, 168, 0);
 
-	ui->CreateButton("MainMenuIcon", 200, 400, 200, 200, TextureManager::GetTextureByName("MenuIcon"),"",0,0,0,0,5);
+	ui->CreateButton("MainMenuIcon", 200, 400, 200, 200, TextureManager::GetTextureByName("MenuIcon"), ui->GetFont("arial20px"),
+		"", 0, 0, 0, 5);
 	ui->SetUIElementBorderColor("MainMenuIcon", 135, 206, 250);
 
 	ui->CreateInteractionBox("MainMenuButton", 200, 600, 200, 100,
-		TextureManager::GetTextureByName("buttonModern"), "Main Menu;", 24, 22, 3, 40,5);
+		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+		"      Main Menu", 1, 8, 40, 5);
 	ui->SetUIElementBorderColor("MainMenuButton", 135, 206, 250);
+	ui->SetUIElementFontColor("MainMenuButton", 255, 168, 0);
 
-	ui->CreateButton("RetryIcon", Global::windowWidth - 400, 400, 200, 200, TextureManager::GetTextureByName("RetryIcon"), "", 0, 0, 0, 0, 5);
+	ui->CreateButton("RetryIcon", Global::windowWidth - 400, 400, 200, 200, TextureManager::GetTextureByName("RetryIcon"), ui->GetFont("arial20px"),
+		"", 0, 0, 0, 5);
 	ui->SetUIElementBorderColor("RetryIcon", 135, 206, 250);
 
 	ui->CreateInteractionBox("RetryButton", Global::windowWidth - 400, 600, 200, 100,
-		TextureManager::GetTextureByName("buttonModern"), "Retry;", 24, 22, 3, 40,5);
+		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+		"         Retry", 1, 8, 40, 5);
 	ui->SetUIElementBorderColor("RetryButton", 135, 206, 250);
+	ui->SetUIElementFontColor("RetryButton", 255, 168, 0);
 }
 
 

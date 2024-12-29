@@ -5,6 +5,7 @@
 #include "MiniGameTwo.h"
 #include "MiniGameThree.h"
 #include "MiniGameFour.h"
+#include "MiniGameFive.h"
 #include "UI.h"
 #include <memory>
 
@@ -25,6 +26,7 @@ private:
     std::unique_ptr<MiniGameTwo> miniGameTwo;
     std::unique_ptr<MiniGameThree> miniGameThree;
     std::unique_ptr<MiniGameFour> miniGameFour;
+    std::unique_ptr<MiniGameFive> miniGameFive;
 
 
 
