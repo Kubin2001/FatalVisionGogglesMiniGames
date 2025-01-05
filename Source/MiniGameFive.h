@@ -6,9 +6,9 @@
 
 class PopingFigure :public GameObject {
 private:
-	int figureType = 0;
 	unsigned char color[3];
 public:
+	int figureType = 0;
 	PopingFigure(int x, int y, int w, int h, int type);
 
 	void Render(SDL_Renderer *renderer);
@@ -21,9 +21,15 @@ private:
 	std::vector<PopingFigure> PopingFigures;
 	SDL_Texture* texture = nullptr;
 	int score = 0;
-	unsigned short time = 30;
+	unsigned short time = 10;
 	int currentGameState = 0;
 	int timer = 0;
+
+	int tries = 5;
+
+	int starCount = 0;
+	int triangleCount = 0;
+	int thunderCount = 0;
 public:
 	MiniGameFive(SDL_Renderer* renderer);
 
@@ -44,6 +50,8 @@ public:
 	int GetScore();
 
 	unsigned short GetTime();
+
+	int GetTries();
 
 
 };

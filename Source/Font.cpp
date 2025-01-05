@@ -53,8 +53,6 @@ bool Font::LoadTextInfo(const std::string& jsonPath) {
                 << " W: " << sourceRectangles[i].w << " H: " << sourceRectangles[i].h << "\n";
 
         }*/
-        std::cout << "InterLine: " << standardInterLine << "\n";
-
     }
     else
     {
@@ -81,7 +79,7 @@ void Font::RenderText(SDL_Renderer* renderer, std::string text, int x, int y, fl
             }
             else
             {
-                rectangle.y += interline;
+                rectangle.y += interline * scale;
                 rectangle.x = temp;
             }
         }

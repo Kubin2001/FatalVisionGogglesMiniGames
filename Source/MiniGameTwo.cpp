@@ -77,7 +77,6 @@ void MiniGameTwo::OnClick(SDL_Event& event) {
 		if (event.key.keysym.sym == SDLK_SPACE) {
 			if (delay < 1) {
 				tries--;
-				std::cout << "Clicked\n";
 				score -= CalculateEuclidean(colliderMoving.x, colliderStatic.x, colliderMoving.y, colliderStatic.y);
 				colided = true;
 				delay = 20;

@@ -5,8 +5,8 @@
 
 int main(int argv, char* argc[])
 {
-    //srand(time(0));
-    srand(0);
+    srand(time(0));
+    //srand(0);
 
     Game* game = new Game();
 

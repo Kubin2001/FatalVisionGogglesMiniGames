@@ -212,7 +212,7 @@ void Game::OneSecondTickEvents() {
                 case 1:
                     miniGameOne->ManageTime();
                     ui->GetButtons()[1]->SetText("Time: " + std::to_string(miniGameOne->GetTime()));
-                    if (miniGameOne->GetTime() < 29) { //bazowo na 1
+                    if (miniGameOne->GetTime() < 1) { //bazowo na 1
                         miniGameOne->Finisch(ui.get());
                         ClearState();
                         gamestate = 2;
@@ -241,6 +241,15 @@ void Game::OneSecondTickEvents() {
                         ClearState();
                         gamestate = 2;
                         currentGame = 4;
+                        SetUpState();
+                    }
+                    break;
+                case 5:
+                    if (miniGameFive->GetTries() == 0) {
+                        miniGameFive->Finisch(ui.get());
+                        ClearState();
+                        gamestate = 2;
+                        currentGame = 5;
                         SetUpState();
                     }
                     break;
@@ -392,6 +401,24 @@ void Game::EventsConstant() {
                             ClearState();
                             gamestate = 1;
                             currentGame = 4;
+                            SetUpState();
+                        }
+
+                        break;
+
+                    case 5:
+                        if (ui->GetInteractionBoxByName("MainMenuButton")->GetStatus()) {
+                            ui->GetInteractionBoxByName("MainMenuButton")->SetStatus(0);
+                            ClearState();
+                            gamestate = 0;
+                            currentGame = 0;
+                            SetUpState();
+                        }
+                        else if (ui->GetInteractionBoxByName("RetryButton")->GetStatus()) {
+                            ui->GetInteractionBoxByName("RetryButton")->SetStatus(0);
+                            ClearState();
+                            gamestate = 1;
+                            currentGame = 5;
                             SetUpState();
                         }
 

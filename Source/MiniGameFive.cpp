@@ -4,6 +4,12 @@
 #include "TextureManager.h"
 #include "Colision.h"
 #include <string>
+#include <algorithm>
+#include <cctype>
+
+bool IsNumeric(const std::string& str) {
+	return std::all_of(str.begin(), str.end(), ::isdigit);
+}
 
 
 PopingFigure::PopingFigure(int x, int y, int w, int h, int type) {
@@ -53,6 +59,7 @@ void MiniGameFive::Innit(UI* ui) {
 		"Time: " + std::to_string(GetTime()), 1, 8, 12, 5);
 	ui->SetUIElementBorderColor("TimeButton", 135, 206, 250);
 	ui->SetUIElementFontColor("TimeButton", 255, 168, 0);
+	currentGameState = 0;
 }
 
 MiniGameFive::MiniGameFive(SDL_Renderer* renderer) {
@@ -68,27 +75,101 @@ void MiniGameFive::SetUpShowingStage() {
 		currentPos += 100;
 	}
 	std::cout << PopingFigures.size() << "\n";
+	starCount = 0;
+	triangleCount = 0;
+	thunderCount = 0;
+	for (auto& it : PopingFigures) {
+		switch (it.figureType) {
+			case 0:
+				starCount++;
+				break;
+			case 1:
+				thunderCount++;
+				break;
+			case 2:
+				triangleCount++;
+				break;
+		}
+	}
+	std::cout << "Stars: " << starCount << " Thunders: " << thunderCount << " Triangles: " << triangleCount << "\n";
 	timer = Global::frameCounter;
 }
 
 
 void MiniGameFive::SetUpQuestionStage(UI* ui) {
-	ui->CreateButton("StarsIcon", 100, 300, 100, 100, nullptr, nullptr,"",1.0f,0,0,5);
-	ui->CreateButton("TrianglesIcon", 400, 300, 100, 100, nullptr, nullptr, "", 1.0f, 0, 0, 5);
-	ui->CreateButton("ThundersIcon", 700, 300, 100, 100, nullptr, nullptr, "", 1.0f, 0, 0, 5);
+	ui->CreateButton("StarsIcon", 100, 300, 100, 100, TextureManager::GetTextureByName("StarIcon"), nullptr, "", 1.0f, 0, 0, 5);
+	ui->SetUIElementBorderColor("StarsIcon", 135, 206, 250);
+	ui->CreateButton("TrianglesIcon", 650, 300, 100, 100, TextureManager::GetTextureByName("TriangleIcon"), nullptr, "", 1.0f, 0, 0, 5);
+	ui->SetUIElementBorderColor("TrianglesIcon", 135, 206, 250);
+	ui->CreateButton("ThundersIcon", 1200, 300, 100, 100, TextureManager::GetTextureByName("ThunderIcon"), nullptr, "", 1.0f, 0, 0, 5);
+	ui->SetUIElementBorderColor("ThundersIcon", 135, 206, 250);
 
-	ui->CreateMassageBox("StarsIconMS", 100, 500, 100, 100, nullptr, ui->GetFont("arial20px"), "", 1.0f, 6, 6, 5);
-	ui->CreateMassageBox("TrianglesIconMS", 400, 500, 100, 100, nullptr, ui->GetFont("arial20px"), "", 1.0f, 6, 6, 5);
-	ui->CreateMassageBox("ThundersIconMS", 700, 500, 100, 100, nullptr, ui->GetFont("arial20px"), "", 1.0f, 6, 6, 5);
+	ui->CreateMassageBox("StarsIconMS", 100, 450, 100, 100, nullptr, ui->GetFont("arial40px"), "", 1.0f, 30, 30, 5);
+	ui->CreateMassageBox("TrianglesIconMS", 650, 450, 100, 100, nullptr, ui->GetFont("arial40px"), "", 1.0f, 30, 30, 5);
+	ui->CreateMassageBox("ThundersIconMS", 1200, 450, 100, 100, nullptr, ui->GetFont("arial40px"), "", 1.0f, 30, 30, 5);
+
+	ui->CreateInteractionBox("SubmitButton", 500, 600, 400, 100, nullptr, ui->GetFont("arial40px"), "   Submit", 1.0f, 10, 10, 5);
+	ui->SetUIElementBorderColor("SubmitButton", 60, 179, 113);
 }
 
 
 void MiniGameFive::ManageStages(UI* ui) {
-	if (Global::frameCounter - timer > 60 && currentGameState == 0) {// 600 = 10 sekund
-		SetUpQuestionStage(ui);
-		PopingFigures.clear();
-		currentGameState = 1;
+	ui->GetButtonByName("ScoreButton")->SetText("Score: " + std::to_string(score));
+	if (currentGameState == 0) {
+		if (Global::frameCounter % 60 == 0) {
+			time--;
+		}
+		ui->GetButtonByName("TimeButton")->SetText("Time: " + std::to_string(GetTime()));
+		if (Global::frameCounter - timer > 600) {// 600 = 10 sekund
+			SetUpQuestionStage(ui);
+			PopingFigures.clear();
+			currentGameState = 1;
+		}
 	}
+	else
+	{
+		std::string text1 = ui->GetMassageBoxByName("StarsIconMS")->GetText();;
+		std::string text2 = ui->GetMassageBoxByName("TrianglesIconMS")->GetText();
+		std::string text3 = ui->GetMassageBoxByName("ThundersIconMS")->GetText();
+		if (ui->GetMassageBoxByName("StarsIconMS")->GetText().length() > 2) {
+			text1 = text1.substr(0, 2); 
+			ui->GetMassageBoxByName("StarsIconMS")->SetText(text1);
+		}
+		if (ui->GetMassageBoxByName("TrianglesIconMS")->GetText().length() > 2) {
+			text2 = text2.substr(0, 2); 
+			ui->GetMassageBoxByName("TrianglesIconMS")->SetText(text2);
+		}
+		if (ui->GetMassageBoxByName("ThundersIconMS")->GetText().length() > 2) {
+			text3 = text3.substr(0, 2); 
+			ui->GetMassageBoxByName("ThundersIconMS")->SetText(text3);
+		}
+
+		if (ui->GetInteractionBoxByName("SubmitButton")->GetStatus() && !text1.empty() && !text2.empty()&& !text3.empty()) {
+			ui->GetInteractionBoxByName("SubmitButton")->SetStatus(0);
+			if (IsNumeric(text1) && IsNumeric(text2) && IsNumeric(text3)) {
+				if (std::stoi(text1) == starCount) {
+					score++;
+				}
+				if (std::stoi(text2) == triangleCount) {
+					score++;
+				}
+				if (std::stoi(text3) == thunderCount) {
+					score++;
+				}
+				ui->ClearAllButtons();
+				tries--;
+				Innit(ui);
+				time = 10;
+			}
+		}
+		else
+		{
+			ui->GetInteractionBoxByName("SubmitButton")->SetStatus(0);
+		}
+
+
+	}
+
 }
 
 void MiniGameFive::OnClick(SDL_Event& event) {
@@ -143,4 +224,8 @@ int MiniGameFive::GetScore() {
 
 unsigned short MiniGameFive::GetTime() {
 	return time;
+}
+
+int MiniGameFive::GetTries() {
+	return tries;
 }

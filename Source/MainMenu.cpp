@@ -54,14 +54,14 @@ void MainMenu::Innit(UI *ui) {
     ui->SetUIElementFontColor("GameSubTab4", 255, 168, 0);
 
     ui->CreateButton("GameTab5", 150, 500, 200, 200,
-        TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
-        "Precision", 1, 8, 12, 5);
+        TextureManager::GetTextureByName("GameIcon5"), ui->GetFont("arial20px"),
+        "", 1, 8, 12, 5);
     ui->SetUIElementBorderColor("GameTab5", 135, 206, 250);
     ui->SetUIElementFontColor("GameTab5", 255, 168, 0);
 
     ui->CreateInteractionBox("GameSubTab5", 150, 710, 200, 50,
         TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
-        "Game5", 1, 8, 12, 5);
+        "Memory Test", 1, 8, 12, 5);
     ui->SetUIElementBorderColor("GameSubTab5", 135, 206, 250);
     ui->SetUIElementFontColor("GameSubTab5", 255, 168, 0);
 
