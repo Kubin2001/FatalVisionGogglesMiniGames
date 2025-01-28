@@ -19,6 +19,7 @@ Game::Game() {
 
     ui = nullptr;
     mainMenu = nullptr;
+    endScreen = nullptr;
 }
 
 void Game::Start() {
@@ -34,7 +35,6 @@ void Game::Start() {
     LoadTextures();
 
     ui = std::make_unique<UI>(renderer);
-    ui->LoadTextures();
     ui->CreateFont("arial40px", TextureManager::GetTextureByName("arial40px"), "Textures/Interface/Fonts/arial40px.json");
     ui->CreateFont("arial20px", TextureManager::GetTextureByName("arial20px"), "Textures/Interface/Fonts/arial20px.json");
     ui->CreateFont("arial12px", TextureManager::GetTextureByName("arial12px"), "Textures/Interface/Fonts/arial12px.json");
@@ -70,6 +70,11 @@ void Game::SetUpState() {
                     miniGameFive->Innit(ui.get());
                     break;
             }
+            break;
+
+        case 2:
+            endScreen = std::make_unique<EndScreen>(ui.get());
+            
             break;
     }
 }
@@ -212,7 +217,7 @@ void Game::OneSecondTickEvents() {
                 case 1:
                     miniGameOne->ManageTime();
                     ui->GetButtons()[1]->SetText("Time: " + std::to_string(miniGameOne->GetTime()));
-                    if (miniGameOne->GetTime() < 1) { //bazowo na 1
+                    if (miniGameOne->GetTime() < 29) { //bazowo na 1
                         miniGameOne->Finisch(ui.get());
                         ClearState();
                         gamestate = 2;
@@ -337,97 +342,33 @@ void Game::EventsConstant() {
 
                 }
                 break;
-            case 2:     
-                switch (currentGame) {
-                    case 1:
-                        if (ui->GetInteractionBoxByName("MainMenuButton")->GetStatus()) {
-                            ui->GetInteractionBoxByName("MainMenuButton")->SetStatus(0);
-                            ClearState();
-                            gamestate = 0;
-                            currentGame = 0;
-                            SetUpState();
-                        }
-                        else if (ui->GetInteractionBoxByName("RetryButton")->GetStatus()) {
-                            ui->GetInteractionBoxByName("RetryButton")->SetStatus(0);
-                            ClearState();
-                            gamestate = 1;
-                            currentGame = 1;
-                            SetUpState();
-                        }
-
-                        break;
-                    case 2:
-                        if (ui->GetInteractionBoxByName("MainMenuButton")->GetStatus()) {
-                            ui->GetInteractionBoxByName("MainMenuButton")->SetStatus(0);
-                            ClearState();
-                            gamestate = 0;
-                            currentGame = 0;
-                            SetUpState();
-                        }
-                        else if (ui->GetInteractionBoxByName("RetryButton")->GetStatus()) {
-                            ui->GetInteractionBoxByName("RetryButton")->SetStatus(0);
-                            ClearState();
-                            gamestate = 1;
-                            currentGame = 2;
-                            SetUpState();
-                        }
-                        break;
-                    case 3:
-                        if (ui->GetInteractionBoxByName("MainMenuButton")->GetStatus()) {
-                            ui->GetInteractionBoxByName("MainMenuButton")->SetStatus(0);
-                            ClearState();
-                            gamestate = 0;
-                            currentGame = 0;
-                            SetUpState();
-                        }
-                        else if (ui->GetInteractionBoxByName("RetryButton")->GetStatus()) {
-                            ui->GetInteractionBoxByName("RetryButton")->SetStatus(0);
-                            ClearState();
-                            gamestate = 1;
-                            currentGame = 3;
-                            SetUpState();
-                        }
-                        break;
-                    case 4:
-                        if (ui->GetInteractionBoxByName("MainMenuButton")->GetStatus()) {
-                            ui->GetInteractionBoxByName("MainMenuButton")->SetStatus(0);
-                            ClearState();
-                            gamestate = 0;
-                            currentGame = 0;
-                            SetUpState();
-                        }
-                        else if (ui->GetInteractionBoxByName("RetryButton")->GetStatus()) {
-                            ui->GetInteractionBoxByName("RetryButton")->SetStatus(0);
-                            ClearState();
-                            gamestate = 1;
-                            currentGame = 4;
-                            SetUpState();
-                        }
-
-                        break;
-
-                    case 5:
-                        if (ui->GetInteractionBoxByName("MainMenuButton")->GetStatus()) {
-                            ui->GetInteractionBoxByName("MainMenuButton")->SetStatus(0);
-                            ClearState();
-                            gamestate = 0;
-                            currentGame = 0;
-                            SetUpState();
-                        }
-                        else if (ui->GetInteractionBoxByName("RetryButton")->GetStatus()) {
-                            ui->GetInteractionBoxByName("RetryButton")->SetStatus(0);
-                            ClearState();
-                            gamestate = 1;
-                            currentGame = 5;
-                            SetUpState();
-                        }
-
-                        break;
+            case 2:
+                endScreen->ScoreBoardInput(event);
+                int beforeGameState = gamestate;
+                int beforeCurrentGame = currentGame;
+                if (endScreen->ManageInput(gamestate, currentGame)) {
+                    int temp1 = gamestate;
+                    int temp2 = currentGame;
+                    gamestate = beforeGameState;
+                    currentGame = beforeCurrentGame;
+                    ClearState();
+                    gamestate = temp1;
+                    currentGame = temp2;
+                    SetUpState();
                 }
 
                 break;
         }
+    }
 
+    switch (gamestate) {
+        case 0:
+            break;
+        case 1:
+            break;
+        case 2:
+            endScreen->ManageScoreBoard();
+            break;
     }
 }
 

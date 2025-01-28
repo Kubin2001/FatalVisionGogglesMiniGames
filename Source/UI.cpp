@@ -151,15 +151,33 @@ void TemplateUIElement::RenderBorder(SDL_Renderer* renderer) {
 
 void TemplateUIElement::RenderText(SDL_Renderer* renderer) {
     if (font != nullptr) {
-
-        SDL_SetTextureColorMod(font->GetTexture(), 255, 255, 255); // Reset tak czy siak niewa¿ne czy bia³e czy nie
+        SDL_SetTextureColorMod(font->GetTexture(), 255, 255, 255); // Reset anyway no matter the color
         SDL_SetTextureColorMod(font->GetTexture(), fontRGB[0], fontRGB[1], fontRGB[2]);
-        font->RenderText(renderer, text, rectangle.x,
-            rectangle.y, textScale, interLine
-            , textStartX, textStartY);
+        switch (textRenderType) {
+            case 1:
+                font->RenderText(renderer, text, rectangle, textScale, interLine, textStartX, textStartY);
+                break;
+            case 2:
+                font->RenderTextCenter(renderer, text, rectangle, textScale, interLine, textStartX, textStartY);
+                break;
+            case 3:
+                font->RenderTextFromRight(renderer, text, rectangle, textScale, interLine, textStartX, textStartY);
+                break;
+            case 4:
+                predefinedSize = font->CalculatePredefinedSize(text, interLine);
+                font->RenderTextCenterPred(renderer, text, rectangle,predefinedSize, textScale, interLine, textStartX, textStartY);
+                break;
+            default: // Standardowa opcja
+                font->RenderText(renderer, text, rectangle, textScale, interLine, textStartX, textStartY);
+                break;
+        }
+
     }
 }
 
+void TemplateUIElement::SetRenderTextType(const unsigned short textRenderType) {
+    this->textRenderType = textRenderType;
+}
 
 //BUTTON
 //MassageBox
@@ -204,11 +222,34 @@ bool InteractionBox::GetStatus() {
 void InteractionBox::SetStatus(bool value) {
     status = value;
 }
+
+bool InteractionBox::ConsumeStatus() {
+    if (status) {
+        status = false;
+        return true;
+    }
+    return false;
+}
+
+void InteractionBox::TurnOn() {
+    turnedOn = true;
+}
+
+void InteractionBox::TurnOff() {
+    turnedOn = false;
+}
+
+bool InteractionBox::IsOn() {
+    return turnedOn;
+}
 //InteractionBox
 
 UI::UI(SDL_Renderer* renderer) {
     fontManager = new FontManager();
     this->renderer = renderer;
+    if (TextureManager::isWorking()) {
+        LoadTextures();
+    }
 }
 
 
@@ -217,10 +258,6 @@ void UI::LoadTextures() {
     TextureManager::LoadMultipleTextures("Textures/Interface/Fonts");
     TextureManager::LoadMultipleTextures("Textures/Interface/Others");
 }
-
-
-
-
 
 void UI::Render() {
     for (size_t i = 0; i < Buttons.size(); i++)
@@ -241,6 +278,11 @@ void UI::Render() {
 
 void UI::CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font,
     std::string text, float textScale, int textStartX, int textStartY, int borderThickness) {
+
+    if (GetButtonByName(name) != nullptr) {
+        std::cout << "Warning name collision button with name: " << name << " already exists addition abborted\n";
+        return;
+    }
 
     Buttons.emplace_back(new Button());
     Buttons.back()->SetName(name);
@@ -275,6 +317,11 @@ void UI::CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture*
 
 void UI::CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font,
     std::string text, float textScale, int textStartX, int textStartY, int borderThickness) {
+
+    if (GetMassageBoxByName(name) != nullptr) {
+        std::cout << "Warning name collision massage box with name: " << name << " already exists addition abborted\n";
+        return;
+    }
 
     MassageBoxes.emplace_back(new MassageBox());
     MassageBoxes.back()->SetName(name);
@@ -313,6 +360,11 @@ void UI::CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Text
 
 void UI::CreateInteractionBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font,
     std::string text, float textScale, int textStartX, int textStartY, int borderThickness) {
+
+    if (GetInteractionBoxByName(name) != nullptr) {
+        std::cout << "Warning name collision interaction box with name: " << name << " already exists addition abborted\n";
+        return;
+    }
 
     InteractionBoxes.emplace_back(new InteractionBox());
     InteractionBoxes.back()->SetName(name);
@@ -359,16 +411,16 @@ void UI::ManageMassageBoxTextInput(SDL_Event& event) {
 }
 
 void UI::CheckInteractionBoxes(SDL_Event& event) {
-    for (size_t i = 0; i < InteractionBoxes.size(); i++)
-    {
-        if (event.type == SDL_MOUSEBUTTONUP) {
-            SDL_Rect temprect{ event.button.x ,event.button.y,1,1 };
-            if (SimpleCollision(*InteractionBoxes[i]->GetRectangle(), temprect)) {
-                InteractionBoxes[i]->SetStatus(true);
+    if (event.type == SDL_MOUSEBUTTONUP) {
+        for (size_t i = 0; i < InteractionBoxes.size(); i++) {
+            if (InteractionBoxes[i]->IsOn()) {
+                SDL_Rect temprect{ event.button.x ,event.button.y,1,1 };
+                if (SimpleCollision(*InteractionBoxes[i]->GetRectangle(), temprect)) {
+                    InteractionBoxes[i]->SetStatus(true);
+                }
             }
         }
     }
-
 }
 
 Button* UI::GetButtonByName(const std::string& name) {
@@ -578,11 +630,17 @@ std::vector<InteractionBox*>& UI::GetInteractionBoxes() {
 }
 
 void UI::CreateFont(const std::string& name, SDL_Texture* texture, const std::string& jsonPath) {
-    fontManager->CreateFont(name,texture,jsonPath);
+    fontManager->CreateFont(name, texture, jsonPath);
 }
 
 Font* UI::GetFont(const std::string& name) {
     return fontManager->GetFont(name);
+}
+
+void UI::ScanFont(const std::string& texturePath, const std::string& charactersDataPath,
+    unsigned char fR, unsigned char fG, unsigned char fB, unsigned char bR, unsigned char bG, unsigned char bB, Point size,
+    const std::string& outputPath) {
+    fontManager->ScanFont(texturePath, charactersDataPath, fR, fG, fB, bR, bG, bB, size.x, size.y);
 }
 
 void UI::ClearAllButtons() {
@@ -607,4 +665,5 @@ void UI::ClearAllButtons() {
 
 UI::~UI() {
     ClearAllButtons();
+    delete fontManager;
 }

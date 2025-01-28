@@ -10,112 +10,130 @@
 
 
 class TemplateUIElement {
-    protected:
-        SDL_Texture* texture;
-        SDL_Rect rectangle;
-        std::string name;
-        std::string text;
-        float textScale = 1.0f;
-        int interLine = 20;
+protected:
+    SDL_Texture* texture;
+    SDL_Rect rectangle;
+    std::string name;
+    std::string text;
+    float textScale = 1.0f;
+    int interLine = 20;
 
-        bool border = false;
+    bool border = false;
 
-        int borderThickness = 0;
+    int borderThickness = 0;
 
-        int textStartX = 0;
-        int textStartY = 0;
+    int textStartX = 0;
+    int textStartY = 0;
 
-        bool buttonTransparent = false;
-        unsigned char buttonColor[3] = { 255,255,255 };
+    bool buttonTransparent = false;
+    unsigned char buttonColor[3] = { 255,255,255 };
 
-        unsigned char borderRGB[3] = { 255,255,255 };
+    unsigned char borderRGB[3] = { 255,255,255 };
 
-        unsigned char fontRGB[3] = { 255,255,255 };
+    unsigned char fontRGB[3] = { 255,255,255 };
 
-        Font* font = nullptr;
+    Font* font = nullptr;
 
-    public:
+    unsigned short textRenderType = 1;
 
-        SDL_Texture* GetTexture();
+    Point predefinedSize;
 
-        void SetTexture(SDL_Texture* temp);
+public:
 
-        SDL_Rect* GetRectangle();
+    SDL_Texture* GetTexture();
 
-        std::string& GetName();
+    void SetTexture(SDL_Texture* temp);
 
-        void SetName(const std::string value);
+    SDL_Rect* GetRectangle();
 
-        std::string& GetText();
-        void SetText(std::string temptext);
+    std::string& GetName();
 
-        float GetTextScale();
-        void SetTextScale(float temp);
-        int GetInterLine();
-        void SetInterLine(int temp);
+    void SetName(const std::string value);
 
-        bool GetBorder();
+    std::string& GetText();
+    void SetText(std::string temptext);
 
-        void SetBorder(bool temp);
+    float GetTextScale();
+    void SetTextScale(float temp);
+    int GetInterLine();
+    void SetInterLine(int temp);
 
-        int GetBorderThickness();
+    bool GetBorder();
 
-        void SetBorderThickness(int temp);
+    void SetBorder(bool temp);
 
-        int GetTextStartX();
-        void SetTextStartX(int temp);
-        int GetTextStartY();
-        void SetTextStartY(int temp);
+    int GetBorderThickness();
 
-        bool GetTransparent();
-        void SetTransparent(bool temp);
+    void SetBorderThickness(int temp);
 
-        Font* GetFont();
+    int GetTextStartX();
+    void SetTextStartX(int temp);
+    int GetTextStartY();
+    void SetTextStartY(int temp);
 
-        void SetFont(Font *font);
+    bool GetTransparent();
+    void SetTransparent(bool temp);
 
-        void SetButtonColor(unsigned char R, unsigned char G, unsigned char B);
+    Font* GetFont();
 
-        void SetBorderRGB(unsigned char R, unsigned char G, unsigned char B);
+    void SetFont(Font* font);
 
-        void SetFontColor(unsigned char R, unsigned char G, unsigned char B);
+    void SetButtonColor(unsigned char R, unsigned char G, unsigned char B);
 
-        void RenderItslelf(SDL_Renderer* renderer);
+    void SetBorderRGB(unsigned char R, unsigned char G, unsigned char B);
 
-        void RenderBorder(SDL_Renderer* renderer);
+    void SetFontColor(unsigned char R, unsigned char G, unsigned char B);
 
-        void RenderText(SDL_Renderer* renderer);
+    void RenderItslelf(SDL_Renderer* renderer);
 
+    void RenderBorder(SDL_Renderer* renderer);
+
+    void RenderText(SDL_Renderer* renderer);
+
+    void SetRenderTextType(const unsigned short textRenderType);
 };
 
+// A button that can be clicked with a mouse
 class InteractionBox : public TemplateUIElement {
-    private:
+private:
     bool status = false;
-    public:
+    bool turnedOn = true;
+public:
     bool GetStatus();
 
     void SetStatus(bool value);
+
+    bool ConsumeStatus();
+
+    void TurnOn();
+
+    void TurnOff();
+
+    bool IsOn();
+
 };
 
+
+// Button that can accept text input
 class MassageBox : public TemplateUIElement {
-    private:
+private:
     bool turnedOn = false;
-    public:
+public:
     void CheckInteraction(SDL_Event& event);
 
     void ManageTextInput(SDL_Event& event);
 };
 
-
+// Basic non interactive button
 class Button : public TemplateUIElement {
 
 
 };
 
-
+// To propelly start the UI you need to pleace manage input function in event loop and render in rendering loop
 class UI
 {
-    private:
+private:
     SDL_Renderer* renderer;
 
     std::vector<Button*> Buttons;
@@ -128,13 +146,13 @@ class UI
 
     FontManager* fontManager;
 
-    public:
+public:
 
     UI(SDL_Renderer* renderer);
 
     void LoadTextures();
 
-    void CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture* texture,Font *font = nullptr,
+    void CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font = nullptr,
         std::string text = "", float textScale = 1.0f, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
 
     void CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font = nullptr,
@@ -149,9 +167,9 @@ class UI
 
     void CheckInteractionBoxes(SDL_Event& event);
 
-    Button* GetButtonByName(const std::string &name);
-    MassageBox* GetMassageBoxByName(const std::string &name);
-    InteractionBox* GetInteractionBoxByName(const std::string &name);
+    Button* GetButtonByName(const std::string& name);
+    MassageBox* GetMassageBoxByName(const std::string& name);
+    InteractionBox* GetInteractionBoxByName(const std::string& name);
 
     void SetUIElementColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B);
 
@@ -182,9 +200,21 @@ class UI
 
     std::vector<InteractionBox*>& GetInteractionBoxes();
 
+    // You need to provide not name (made up by you) texture (needs to be already loaded by texture manager) path to pregenerated json file
     void CreateFont(const std::string& name, SDL_Texture* texture, const std::string& jsonPath);
 
     Font* GetFont(const std::string& name);
+
+    //Function to create json file for font png file that contains charcter glyps separated by lines in other color than the font
+    //Requires provided txt file with ordered glyps
+    //Example:
+    //A
+    //B
+    //C
+    //And so on...
+    void ScanFont(const std::string& texturePath, const std::string& charactersDataPath,
+        unsigned char fR, unsigned char fG, unsigned char fB, unsigned char bR, unsigned char bG, unsigned char bB, Point size,
+        const std::string& outputPath);
 
     void ClearAllButtons();
 

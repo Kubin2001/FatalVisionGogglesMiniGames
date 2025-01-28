@@ -30,7 +30,7 @@ int Collision(const SDL_Rect rect, const SDL_Rect rect2) {
 			rect.x - (width2 - 10) >= rect2.x) {
 			return 1;
 		}
-		
+
 		if (rect.x + width >= rect2.x &&
 			rect.x + width - 10 <= rect2.x) {
 			return 3;
@@ -51,7 +51,7 @@ bool SimpleCollision(const SDL_Rect rect, const SDL_Rect rect2) {
 	if (rect.x + width >= rect2.x &&
 		rect.x - width2 <= rect2.x &&
 		rect.y + height >= rect2.y &&
-		rect.y - height2 <= rect2.y) {	
+		rect.y - height2 <= rect2.y) {
 		return 1;
 	}
 	return 0;
@@ -100,7 +100,7 @@ bool CircleMouseCollision(const SDL_Rect circleRect, const SDL_Rect rect) {
 	int centerCirleY = circleRect.y + (circleRect.h * 0.5);
 	float radius = circleRect.h * 0.5;
 
-	float distance = CalculateEuclidean(centerCirleX,rect.x, centerCirleY,rect.y);
+	float distance = CalculateEuclidean(centerCirleX, rect.x, centerCirleY, rect.y);
 	if (distance <= radius) {
 		return true;
 	}

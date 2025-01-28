@@ -11,4 +11,5 @@ namespace Global {
 	unsigned int LogicTimeEnd = 0;
 	unsigned int RenderingTimeEnd = 0;
 	unsigned char defaultDrawColor[3] = { 0,0,0 };
+	unsigned int inputDelay = 0;
 }

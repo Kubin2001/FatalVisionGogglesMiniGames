@@ -180,6 +180,18 @@ void MiniGameThree::Finisch(UI* ui) {
 		"         Retry", 1, 8, 40, 5);
 	ui->SetUIElementBorderColor("RetryButton", 135, 206, 250);
 	ui->SetUIElementFontColor("RetryButton", 255, 168, 0);
+
+
+
+	ui->CreateButton("ScoreBoardIcon", 600, 400, 200, 200, TextureManager::GetTextureByName("ScoreIcon"), ui->GetFont("arial20px"),
+		"", 0, 0, 0, 5);
+	ui->SetUIElementBorderColor("ScoreBoardIcon", 135, 206, 250);
+
+	ui->CreateInteractionBox("ScoreBoardButton", 600, 600, 200, 100,
+		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+		"      Submit", 1, 8, 40, 5);
+	ui->SetUIElementBorderColor("ScoreBoardButton", 135, 206, 250);
+	ui->SetUIElementFontColor("ScoreBoardButton", 255, 168, 0);
 }
 
 

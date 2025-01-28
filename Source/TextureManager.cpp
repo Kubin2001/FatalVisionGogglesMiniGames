@@ -7,14 +7,28 @@
 
 std::unordered_map<std::string, SDL_Texture*> TextureManager::Textures;
 SDL_Renderer* TextureManager::renderer = nullptr;
+bool TextureManager::isInnit = false;
 
 
-void TextureManager::Start(SDL_Renderer *ren) {
+bool TextureManager::Start(SDL_Renderer *ren) {
    renderer = ren;
+   if (renderer != nullptr) {
+       isInnit = true;
+       return isInnit;
+   }
+   return false;
 }
 
 
+bool TextureManager::isWorking() {
+    return isInnit;
+}
+
 void TextureManager::LoadSingleTexture(const char* filePath, const std::string& name) {
+    if (Textures.find(name) != Textures.end()) {
+        std::cout << "Texture: " << name << " is already loaded\n";
+        return;
+    }
 	SDL_Surface* tmpSurface = IMG_Load(filePath);
 	SDL_Texture* tex = SDL_CreateTextureFromSurface(renderer, tmpSurface);
 	SDL_FreeSurface(tmpSurface);
@@ -55,6 +69,17 @@ bool TextureManager::DeleteTexture(const std::string& name) {
     {
         return false;
     }
+}
+
+Point TextureManager::GetTextureSize(const std::string& name) {
+    Point p(-1, -1);
+    auto it = Textures.find(name);
+    if (it != Textures.end()) {
+        SDL_QueryTexture(it->second, nullptr, nullptr, &p.x, &p.y);
+        return p;
+    }
+    std::cerr << "Texture not found: " << name << "\n";
+    return p;
 }
 
 void TextureManager::Clear() {

@@ -2,28 +2,26 @@
 #include <iostream>
 #include <SDL.h>
 #include "SDL_mixer.h"
+#include <unordered_map>
 
 
 
 class SoundManager
 {
     private:
-
-
+        static std::unordered_map<std::string, Mix_Chunk*> Sounds;
     public:
-        SoundManager();
+		static void Innit();
 
-        static void LoadMenu();
+		static void LoadSound(const char* filePath, const std::string& name);
 
-        static void LoadGame();
+		static void LoadSounds(const std::string& directory);
 
-        static void LoadEditor();
+		static void PlaySound(const std::string& name);
 
-        static void UnLoadMenu();
+		static Mix_Chunk* GetSound(const std::string& name);
 
-        static void UnLoadGame();
+		static bool DeleteSound(const std::string& name);
 
-        static void UnLoadEditor();
-
-        ~SoundManager();
+		static void Clear();
 };

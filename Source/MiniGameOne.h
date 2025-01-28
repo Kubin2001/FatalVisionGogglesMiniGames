@@ -21,7 +21,7 @@ class MiniGameOne{
 		int score = 0;
 		unsigned short time = 30;
 		unsigned int clicks = 0;
-		int delay = 15;
+		unsigned short createdCircles = 0;
 	public:
 		MiniGameOne(SDL_Renderer *renderer);
 

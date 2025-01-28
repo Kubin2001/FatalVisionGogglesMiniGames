@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include "MainMenu.h"
+#include "EndScreen.h"
 #include "MiniGameOne.h"
 #include "MiniGameTwo.h"
 #include "MiniGameThree.h"
@@ -21,6 +22,7 @@ private:
     std::unique_ptr<UI> ui;
 
     std::unique_ptr<MainMenu> mainMenu;
+    std::unique_ptr<EndScreen> endScreen;
 
     std::unique_ptr<MiniGameOne> miniGameOne;
     std::unique_ptr<MiniGameTwo> miniGameTwo;

@@ -35,6 +35,7 @@ MiniGameOne::MiniGameOne(SDL_Renderer* renderer) {
 
 void MiniGameOne::CreateCircle(int x, int y, int w, int h) {
 	PopingCircles.emplace_back(x,y,w,h);
+	createdCircles++;
 }
 
 void MiniGameOne::ManageLifespan() {
@@ -68,29 +69,21 @@ void MiniGameOne::ManageTime() {
 }
 
 void MiniGameOne::OnClick(SDL_Event &event) {
-	if (event.button.button == SDL_BUTTON_LEFT) {
-		if (delay < 1) {
-			clicks++;
-			int x, y;
-			SDL_GetMouseState(&x, &y);
-			SDL_Rect mouse{ x,y,1,1 };
-			for (size_t i = 0; i < PopingCircles.size(); i++)
-			{
-				if (CircleMouseCollision(*PopingCircles[i].GetRectangle(), mouse)) {
+	if (event.type == SDL_MOUSEBUTTONUP){
+		clicks++;
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+		SDL_Rect mouse{ x,y,1,1 };
+		for (size_t i = 0; i < PopingCircles.size(); i++)
+		{
+			if (CircleMouseCollision(*PopingCircles[i].GetRectangle(), mouse)) {
 
-					score++;
-					PopingCircles.erase(PopingCircles.begin() + i);
-					break;
-				}
+				score++;
+				PopingCircles.erase(PopingCircles.begin() + i);
+				break;
 			}
-			delay = 6;
 		}
-
-
-
 	}
-	delay--;
-
 }
 
 void MiniGameOne::Render() {
@@ -108,26 +101,33 @@ void MiniGameOne::Finisch(UI* ui) {
 		accuracy = (static_cast<double>(score) / static_cast<double>(clicks)) * 100;
 		accuracyInt = static_cast<int>(accuracy);
 	}
-	else
-	{
-		accuracyInt = 0;
-	}
-	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth * 0.5, 200,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
-		"Final Score: " + std::to_string(score), 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("FinalScore", 135, 206, 250);
-	ui->SetUIElementFontColor("FinalScore", 255, 168, 0);
+	else{accuracyInt = 0;}
 
-	ui->CreateButton("FinalAccuracy", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 200,
+	int finalScore = (score -(createdCircles - score)) * accuracy; // Chyba nie mo¿e byæ dzielenia przez zero ale jest +1 jakby co
+
+	ui->CreateButton("Circles Clicked", 0, 0, Global::windowWidth /3, 200,
+		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+		"Circles Clicked: " + std::to_string(score) + "/" + std::to_string(createdCircles), 1, 8, 12, 5);
+	ui->SetUIElementBorderColor("Circles Clicked", 135, 206, 250);
+	ui->SetUIElementFontColor("Circles Clicked", 255, 168, 0);
+
+	ui->CreateButton("FinalAccuracy", Global::windowWidth * 0.3, 0, Global::windowWidth /3, 200,
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
 		"Accuracy: " + std::to_string(accuracyInt) + "%", 1, 8, 12, 5);
 	ui->SetUIElementBorderColor("FinalAccuracy", 135, 206, 250);
 	ui->SetUIElementFontColor("FinalAccuracy", 255, 168, 0);
 
+	ui->CreateButton("FinalScore", Global::windowWidth * 0.6, 0, Global::windowWidth - (Global::windowWidth * 0.6), 200,
+		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+		"FinalScore: " + std::to_string(finalScore), 1, 8, 12, 5);
+	ui->SetUIElementBorderColor("FinalScore", 135, 206, 250);
+	ui->SetUIElementFontColor("FinalScore", 255, 168, 0);
+
 
 	ui->CreateButton("MainMenuIcon", 200, 400, 200, 200, TextureManager::GetTextureByName("MenuIcon"), ui->GetFont("arial20px"),
 		"", 0, 0, 0, 5);
 	ui->SetUIElementBorderColor("MainMenuIcon", 135, 206, 250);
+	ui->GetButtonByName("MainMenuIcon")->SetInterLine(finalScore);
 
 	ui->CreateInteractionBox("MainMenuButton", 200, 600, 200, 100,
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
@@ -144,6 +144,18 @@ void MiniGameOne::Finisch(UI* ui) {
 		"         Retry", 1, 8, 40, 5);
 	ui->SetUIElementBorderColor("RetryButton", 135, 206, 250);
 	ui->SetUIElementFontColor("RetryButton", 255, 168, 0);
+
+
+
+	ui->CreateButton("ScoreBoardIcon", 600, 400, 200, 200, TextureManager::GetTextureByName("ScoreIcon"), ui->GetFont("arial20px"),
+		"", 0, 0, 0, 5);
+	ui->SetUIElementBorderColor("ScoreBoardIcon", 135, 206, 250);
+
+	ui->CreateInteractionBox("ScoreBoardButton", 600, 600, 200, 100,
+		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+		"      Submit", 1, 8, 40, 5);
+	ui->SetUIElementBorderColor("ScoreBoardButton", 135, 206, 250);
+	ui->SetUIElementFontColor("ScoreBoardButton", 255, 168, 0);
 }
 
 
