@@ -14,7 +14,17 @@ PopingCricle::PopingCricle(int x, int y, int w, int h) {
 }
 /////////////////////////////////////////////
 
-void MiniGameOne::Innit(UI* ui) {
+void MiniGameOne::Init(SDL_Renderer* renderer, UI* ui) {
+	this->renderer = renderer;
+	this->ui = ui;
+	this->texture = TextureManager::GetTextureByName("Cricle");
+
+	PopingCircles.clear();
+	score = 0;
+	time = 30;
+	clicks = 0;
+	createdCircles = 0;
+
 	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
 		"Score: 0", 1, 8, 12, 5);
@@ -28,9 +38,25 @@ void MiniGameOne::Innit(UI* ui) {
 	ui->SetUIElementFontColor("TimeButton", 255, 168, 0);
 }
 
-MiniGameOne::MiniGameOne(SDL_Renderer* renderer) {
-	this->renderer = renderer;
-	this->texture = TextureManager::GetTextureByName("Cricle");
+
+void MiniGameOne::LogicUpdate() {
+
+}
+
+void MiniGameOne::FrameUpdate() {
+	ui->GetButtons()[0]->SetText("Score: " + std::to_string(GetScore()));
+	if (Global::frameCounter % 60 == 0) {
+		ManageTime();
+		ui->GetButtons()[1]->SetText("Time: " + std::to_string(GetTime()));
+		if (GetTime() < 20) { //bazowo na 1
+			SceneManager::GetData("Game State") = 2;
+			SceneManager::GetData("Current Game") = 1;
+			SceneManager::SwitchScene("EndScreen",renderer,ui);
+
+		}
+	}
+	ManageCreation();
+	ManageLifespan();
 }
 
 void MiniGameOne::CreateCircle(int x, int y, int w, int h) {
@@ -68,7 +94,7 @@ void MiniGameOne::ManageTime() {
 	time--;
 }
 
-void MiniGameOne::OnClick(SDL_Event &event) {
+void MiniGameOne::Input(SDL_Event &event) {
 	if (event.type == SDL_MOUSEBUTTONUP){
 		clicks++;
 		int x, y;
@@ -93,7 +119,7 @@ void MiniGameOne::Render() {
 	}
 }
 
-void MiniGameOne::Finisch(UI* ui) {
+void MiniGameOne::Clear() {
 	ui->ClearAllButtons();
 	double accuracy = 0;
 	int accuracyInt = 0;

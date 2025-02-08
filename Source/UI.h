@@ -38,6 +38,8 @@ protected:
 
     Point predefinedSize;
 
+    bool hidden = false;
+
 public:
 
     SDL_Texture* GetTexture();
@@ -84,6 +86,8 @@ public:
 
     void SetFontColor(unsigned char R, unsigned char G, unsigned char B);
 
+    void Render(SDL_Renderer *renderer);
+
     void RenderItslelf(SDL_Renderer* renderer);
 
     void RenderBorder(SDL_Renderer* renderer);
@@ -91,6 +95,13 @@ public:
     void RenderText(SDL_Renderer* renderer);
 
     void SetRenderTextType(const unsigned short textRenderType);
+
+    bool IsHidden();
+
+    void Hide();
+
+    void Show();
+
 };
 
 // A button that can be clicked with a mouse
@@ -187,12 +198,6 @@ public:
     bool DeleteAnyButton(const std::string& name);
 
     void Render();
-
-    void RenderButton(int index);
-
-    void RenderMassageBox(int index);
-
-    void RenderInteractionBox(int index);
 
     std::vector<Button*>& GetButtons();
 

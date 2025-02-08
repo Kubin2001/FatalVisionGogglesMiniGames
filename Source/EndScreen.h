@@ -1,16 +1,21 @@
 #pragma once
 #include "UI.h"
+#include "SceneManager.h"
 
-class EndScreen {
+class EndScreen : public Scene{
 	private:
-		UI* ui = nullptr;
 		InteractionBox* scoreButtonRef = nullptr;
 		MassageBox* submissionButtonRef = nullptr;
 
 	public:
-		EndScreen(UI* ui);
+		void Init(SDL_Renderer* renderer = nullptr, UI* ui = nullptr) override;
+		void LogicUpdate() override;
+		void FrameUpdate() override;
+		void Input(SDL_Event& event) override;
+		void Render() override;
+		void Clear() override;
 
-		bool ManageInput(int& gamestate, int& currentGame);
+
 
 		void ManageScoreBoard();
 

@@ -33,13 +33,24 @@ Square::Square(int x, int y, int w, int h, SDL_Texture* text) {
 }
 
 /////////////////////////////////////////////
-MiniGameTwo::MiniGameTwo(SDL_Renderer* renderer) {
+
+
+void MiniGameTwo::Init(SDL_Renderer* renderer, UI* ui) {
 	this->renderer = renderer;
+	this->ui = ui;
+
+	score = 10000;
+	tries = 6;
+	clicks = 0;
+	delay = 15;
+	colided = false;
+
+	unsigned short moveSpeed = 6;
+	SetUpSquares();
+
 	staticSquare.SetTexture(TextureManager::GetTextureByName("GenericPurpleSquare"));
 	movingSquare.SetTexture(TextureManager::GetTextureByName("GenericOrangeSquare"));
-}
 
-void MiniGameTwo::Innit(UI* ui) {
 	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"), "Score: 0", 1, 8, 12, 5);
 	ui->SetUIElementBorderColor("ScoreButton", 135, 206, 250);
@@ -49,7 +60,22 @@ void MiniGameTwo::Innit(UI* ui) {
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"), "Times Left: ", 1, 8, 12, 5);
 	ui->SetUIElementBorderColor("TimesLeftButton", 135, 206, 250);
 	ui->SetUIElementFontColor("TimesLeftButton", 255, 168, 0);
-	SetUpSquares();
+}
+
+void MiniGameTwo::LogicUpdate() {
+
+}
+
+void MiniGameTwo::FrameUpdate() {
+	MoveSquares();
+
+	UpdateScore();
+
+	if (getTries() == 0) {
+		SceneManager::GetData("Game State") = 2;
+		SceneManager::GetData("Current Game") = 2;
+		SceneManager::SwitchScene("EndScreen", renderer, ui);
+	}
 }
 
 
@@ -72,7 +98,7 @@ void MiniGameTwo::SetUpSquares() {
 
 }
 
-void MiniGameTwo::OnClick(SDL_Event& event) {
+void MiniGameTwo::Input(SDL_Event& event) {
 	if (event.type == SDL_KEYDOWN) {
 		if (event.key.keysym.sym == SDLK_SPACE) {
 			if (delay < 1) {
@@ -161,7 +187,7 @@ void MiniGameTwo::Render() {
 	SDL_RenderCopy(renderer, movingSquare.GetTexture(), NULL, movingSquare.GetRectangle());
 }
 
-void MiniGameTwo::Finisch(UI* ui) {
+void MiniGameTwo::Clear() {
 	ui->ClearAllButtons();
 	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth * 0.5, 200,
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
@@ -212,7 +238,7 @@ unsigned short MiniGameTwo::getTries() {
 	return tries;
 }
 
-void MiniGameTwo::UpdateScore(UI* ui) {
+void MiniGameTwo::UpdateScore() {
 	ui->GetButtonByName("ScoreButton")->SetText("Score: " + std::to_string(score));
 	ui->GetButtonByName("TimesLeftButton")->SetText("Tries Left: " + std::to_string(tries));
 }

@@ -3,6 +3,7 @@
 #include <vector>
 #include "UI.h"
 #include "Basics.h"
+#include "SceneManager.h"
 
 class PopingCricle :public GameObjectBasic{
 	private:
@@ -13,9 +14,8 @@ class PopingCricle :public GameObjectBasic{
 };
 
 
-class MiniGameOne{
+class MiniGameOne :public Scene {
 	private:
-		SDL_Renderer* renderer = nullptr;
 		std::vector<PopingCricle> PopingCircles;
 		SDL_Texture* texture = nullptr;
 		int score = 0;
@@ -23,27 +23,31 @@ class MiniGameOne{
 		unsigned int clicks = 0;
 		unsigned short createdCircles = 0;
 	public:
-		MiniGameOne(SDL_Renderer *renderer);
+		void Init(SDL_Renderer* renderer = nullptr, UI* ui = nullptr)override;
 
-		void Innit(UI* ui);
+		void LogicUpdate() override;
 
-		void CreateCircle(int x, int y, int w, int h);	
+		void FrameUpdate() override;
+
+		void Input(SDL_Event& event)override;
+
+		void Render()override;
+
+		void Clear()override;
+
+		int GetScore();
+
+		unsigned short GetTime();
+
+	private:
+
+		void CreateCircle(int x, int y, int w, int h);
 
 		void ManageLifespan();
 
 		void ManageCreation();
 
 		void ManageTime();
-
-		void OnClick(SDL_Event& event);
-
-		void Render();
-
-		void Finisch(UI *ui);
-
-		int GetScore();
-
-		unsigned short GetTime();
 
 
 };

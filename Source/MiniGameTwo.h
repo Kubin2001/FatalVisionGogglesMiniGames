@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <vector>
 #include "UI.h"
+#include "SceneManager.h"
 
 
 class Square {
@@ -21,42 +22,43 @@ class Square {
 };
 
 
-class MiniGameTwo {
+class MiniGameTwo : public Scene{
 	private:
-	SDL_Renderer* renderer = nullptr;
-	Square staticSquare;
-	Square movingSquare;
-	SDL_Rect colliderStatic;
-	SDL_Rect colliderMoving;
-	int score = 10000;
-	unsigned short tries = 6;
-	unsigned int clicks = 0;
-	int delay = 15;
-	bool colided = false;
+		Square staticSquare;
+		Square movingSquare;
+		SDL_Rect colliderStatic;
+		SDL_Rect colliderMoving;
+		int score = 10000;
+		unsigned short tries = 6;
+		unsigned int clicks = 0;
+		int delay = 15;
+		bool colided = false;
 
-	unsigned short moveSpeed = 6;
+		unsigned short moveSpeed = 6;
 
 	public:
-	MiniGameTwo(SDL_Renderer* renderer);
+		void Init(SDL_Renderer* renderer = nullptr, UI* ui = nullptr)override;
 
-	void Innit(UI *ui);
+		void LogicUpdate()override;
 
-	void SetUpSquares();
+		void FrameUpdate()override;
 
+		void Input(SDL_Event& event)override;
 
-	void OnClick(SDL_Event& event);
+		void Render()override;
 
-	void Render();
+		void Clear()override;
 
-	void UpdateColliders();
+		int GetScore();
 
-	void MoveSquares();
+		unsigned short getTries();
 
-	void Finisch(UI* ui);
+	private:
+		void SetUpSquares();
 
-	int GetScore();
+		void UpdateColliders();
 
-	unsigned short getTries();
+		void MoveSquares();
 
-	void UpdateScore(UI* ui);
+		void UpdateScore();
 };

@@ -3,6 +3,7 @@
 #include <vector>
 #include "UI.h"
 #include "Basics.h"
+#include "SceneManager.h"
 
 
 
@@ -14,9 +15,8 @@ class Wall {
 };
 
 
-class MiniGameThree {
+class MiniGameThree : public Scene{
 	private:
-		SDL_Renderer* renderer = nullptr;
 		GameObject player;
 		std::vector<Wall> Walls;
 		short playerMovement = 0;
@@ -28,29 +28,28 @@ class MiniGameThree {
 		int wallSpeed = 2;
 
 	public:
-		MiniGameThree(SDL_Renderer* renderer);
+		void Init(SDL_Renderer* renderer = nullptr, UI* ui = nullptr)override;
 
-		void Innit(UI* ui);
+		void Input(SDL_Event& event)override;
 
-		void OnClick(SDL_Event& event);
+		void LogicUpdate()override;
 
-		void MovePlayer();
+		void FrameUpdate()override;
 
-		void MoveWalls();
+		void Render()override;
 
-		void Movement();
+		void Clear()override;
 
-		bool Collision(UI* ui);
+		bool Collision();
 
-		void UpdateTime(UI *ui);
-
-		void Render();
-
-		void Finisch(UI* ui);
+		void UpdateTime();
 
 		int GetScore();
 
 		unsigned short GetTime();
 
+	private:
+		void MovePlayer();
 
+		void MoveWalls();
 }; 

@@ -1,7 +1,13 @@
 #include "MainMenu.h"
 #include "GlobalVariables.h"
+#include <any>
 
-void MainMenu::Innit(UI *ui) {
+void MainMenu::Init(SDL_Renderer* renderer, UI* ui) {
+    this->renderer = renderer;
+
+    this->ui = ui;
+
+
     ui->CreateButton("MenuInfo", 300, 0, Global::windowWidth * 0.5, 150,
         nullptr, ui->GetFont("arial40px"),
         "                Choose a test", 1, 3, 40, 5);
@@ -102,10 +108,47 @@ void MainMenu::Innit(UI *ui) {
     ui->SetUIElementFontColor("GameSubTab8", 255, 168, 0);
 }
 
-void MainMenu::OnClick(UI* ui) {
+
+void MainMenu::LogicUpdate() {
 
 }
 
-void MainMenu::Clear(UI* ui) {
+void MainMenu::FrameUpdate() {
 
+}
+
+void MainMenu::Input(SDL_Event& event) {
+    if (ui->GetInteractionBoxByName("GameSubTab1")->ConsumeStatus()) {
+        SceneManager::GetData("Game State") = 1;
+        SceneManager::GetData("Current Game") = 1;
+        SceneManager::SwitchScene("MiniGameOne", renderer, ui);
+    }
+    else if (ui->GetInteractionBoxByName("GameSubTab2")->ConsumeStatus()) {
+        SceneManager::GetData("Game State") = 1;
+        SceneManager::GetData("Current Game") = 2;
+        SceneManager::SwitchScene("MiniGameTwo", renderer, ui);
+    }
+    else if (ui->GetInteractionBoxByName("GameSubTab3")->ConsumeStatus()) {
+        SceneManager::GetData("Game State") = 1;
+        SceneManager::GetData("Current Game") = 3;
+        SceneManager::SwitchScene("MiniGameThree", renderer, ui);
+    }
+    else if (ui->GetInteractionBoxByName("GameSubTab4")->ConsumeStatus()) {
+        SceneManager::GetData("Game State") = 1;
+        SceneManager::GetData("Current Game") = 4;
+        SceneManager::SwitchScene("MiniGameFour", renderer, ui);
+    }
+    else if (ui->GetInteractionBoxByName("GameSubTab5")->ConsumeStatus()) {
+        SceneManager::GetData("Game State") = 1;
+        SceneManager::GetData("Current Game") = 5;
+        SceneManager::SwitchScene("MiniGameFive", renderer, ui);
+    }
+}
+
+void MainMenu::Render() {
+
+}
+
+void MainMenu::Clear() {
+    ui->ClearAllButtons();
 }

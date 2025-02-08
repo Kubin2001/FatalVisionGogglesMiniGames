@@ -123,6 +123,25 @@ void TemplateUIElement::SetFontColor(unsigned char R, unsigned char G, unsigned 
     }
 }
 
+void TemplateUIElement::Render(SDL_Renderer* renderer) {
+    if (!hidden) {
+        if (GetTexture() == nullptr) {
+            RenderItslelf(renderer);
+        }
+        else
+        {
+            SDL_RenderCopy(renderer, GetTexture(), NULL, GetRectangle());
+        }
+
+
+        if (GetBorder()) {
+            RenderBorder(renderer);
+        }
+
+        RenderText(renderer);
+    }
+}
+
 void TemplateUIElement::RenderItslelf(SDL_Renderer* renderer) {
     if (!buttonTransparent) {
         SDL_SetRenderDrawColor(renderer, buttonColor[0], buttonColor[1], buttonColor[2], 255);
@@ -177,6 +196,19 @@ void TemplateUIElement::RenderText(SDL_Renderer* renderer) {
 
 void TemplateUIElement::SetRenderTextType(const unsigned short textRenderType) {
     this->textRenderType = textRenderType;
+}
+
+
+bool TemplateUIElement::IsHidden() {
+    return hidden;
+}
+
+void TemplateUIElement::Hide() {
+    hidden = true;
+}
+
+void TemplateUIElement::Show() {
+    hidden = false;
 }
 
 //BUTTON
@@ -260,18 +292,19 @@ void UI::LoadTextures() {
 }
 
 void UI::Render() {
-    for (size_t i = 0; i < Buttons.size(); i++)
+    for (const auto &it: Buttons)
     {
-        RenderButton(i);
-    }
-    for (size_t i = 0; i < MassageBoxes.size(); i++)
-    {
-        RenderMassageBox(i);
+        it->Render(renderer);
     }
 
-    for (size_t i = 0; i < InteractionBoxes.size(); i++)
+    for (const auto& it : MassageBoxes)
     {
-        RenderInteractionBox(i);
+        it->Render(renderer);
+    }
+
+    for (const auto& it : InteractionBoxes)
+    {
+        it->Render(renderer);
     }
 }
 
@@ -566,55 +599,6 @@ bool UI::DeleteAnyButton(const std::string& name) {
     if (DeleteMassageBox(name)) { return true; }
     if (DeleteInteractionBox(name)) { return true; }
     return false;
-}
-
-void UI::RenderButton(int index) {
-    if (Buttons[index]->GetTexture() == nullptr) {
-        Buttons[index]->RenderItslelf(renderer);
-    }
-    else
-    {
-        SDL_RenderCopy(renderer, Buttons[index]->GetTexture(), NULL, Buttons[index]->GetRectangle());
-    }
-
-
-    if (Buttons[index]->GetBorder()) {
-        Buttons[index]->RenderBorder(renderer);
-    }
-
-    Buttons[index]->RenderText(renderer);
-}
-
-void UI::RenderMassageBox(int index) {
-    if (MassageBoxes[index]->GetTexture() == nullptr) {
-        MassageBoxes[index]->RenderItslelf(renderer);
-    }
-    else
-    {
-        SDL_RenderCopy(renderer, MassageBoxes[index]->GetTexture(), NULL, MassageBoxes[index]->GetRectangle());
-    }
-
-    if (MassageBoxes[index]->GetBorder()) {
-        MassageBoxes[index]->RenderBorder(renderer);
-    }
-
-    MassageBoxes[index]->RenderText(renderer);
-}
-
-void UI::RenderInteractionBox(int index) {
-    if (InteractionBoxes[index]->GetTexture() == nullptr) {
-        InteractionBoxes[index]->RenderItslelf(renderer);
-    }
-    else
-    {
-        SDL_RenderCopy(renderer, InteractionBoxes[index]->GetTexture(), NULL, InteractionBoxes[index]->GetRectangle());
-    }
-
-    if (InteractionBoxes[index]->GetBorder()) {
-        InteractionBoxes[index]->RenderBorder(renderer);
-    }
-
-    InteractionBoxes[index]->RenderText(renderer);
 }
 
 std::vector<Button*>& UI::GetButtons() {

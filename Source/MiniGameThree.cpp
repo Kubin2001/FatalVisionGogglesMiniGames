@@ -6,11 +6,19 @@
 
 /////////////////////////////////////////////
 
-MiniGameThree::MiniGameThree(SDL_Renderer* renderer) {
+void MiniGameThree::Init(SDL_Renderer* renderer, UI* ui) {
 	this->renderer = renderer;
-}
+	this->ui = ui;
 
-void MiniGameThree::Innit(UI* ui) {
+	playerMovement = 0;
+	playerMoveTimer = 0;
+
+	score = 0;
+	time = 0;
+	maxX = 0;
+	wallSpeed = 2;
+	Walls.clear();
+
 	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
 		"Score: " + std::to_string(GetScore()), 1, 8, 12, 5);
@@ -46,8 +54,27 @@ void MiniGameThree::Innit(UI* ui) {
 	maxX = startX - 800;
 }
 
+void MiniGameThree::LogicUpdate() {
 
-void MiniGameThree::OnClick(SDL_Event& event) {
+}
+
+void MiniGameThree::FrameUpdate() {
+	MovePlayer();
+	MoveWalls();
+	if (Global::frameCounter % 60 == 0) {
+		UpdateTime();
+	}
+
+
+	if (Collision()) {
+		SceneManager::GetData("Game State") = 2;
+		SceneManager::GetData("Current Game") = 3;
+		SceneManager::SwitchScene("EndScreen", renderer, ui);
+	}
+}
+
+
+void MiniGameThree::Input(SDL_Event& event) {
 	if (event.type == SDL_KEYDOWN) {
 		if (event.key.keysym.sym == SDLK_SPACE) {
 			if (playerMoveTimer < 1) {
@@ -94,12 +121,7 @@ void MiniGameThree::MoveWalls() {
 	}
 }
 
-void MiniGameThree::Movement() {
-	MovePlayer();
-	MoveWalls();
-}
-
-bool MiniGameThree::Collision(UI *ui) {
+bool MiniGameThree::Collision() {
 	for (auto& it : Walls)
 	{
 		if (SimpleCollision(*it.centerCollider.GetRectangle(), *player.GetRectangle())) {
@@ -138,7 +160,7 @@ void MiniGameThree::Render() {
 
 }
 
-void MiniGameThree::UpdateTime(UI* ui) {
+void MiniGameThree::UpdateTime() {
 	time++;
 	ui->GetButtonByName("TimeButton")->SetText("Time: " + std::to_string(GetTime()));
 	if (time % 20 == 0) {
@@ -146,7 +168,7 @@ void MiniGameThree::UpdateTime(UI* ui) {
 	}
 }
 
-void MiniGameThree::Finisch(UI* ui) {
+void MiniGameThree::Clear() {
 	ui->ClearAllButtons();
 	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth * 0.5, 200,
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),

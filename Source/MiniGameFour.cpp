@@ -27,7 +27,16 @@ PopingCricleTwo::PopingCricleTwo(int x, int y, int w, int h) {
 }
 /////////////////////////////////////////////
 
-void MiniGameFour::Innit(UI* ui) {
+void MiniGameFour::Init(SDL_Renderer* renderer, UI* ui) {
+	this->renderer = renderer;
+	this->ui = ui;
+
+	PopingCircles.clear();
+	score = 0;
+	time = 30;
+	clicks = 0;
+	delay = 15;
+
 	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
 		"Score: 0", 1, 8, 12, 5);
@@ -41,8 +50,16 @@ void MiniGameFour::Innit(UI* ui) {
 	ui->SetUIElementFontColor("TimeButton", 255, 168, 0);
 }
 
-MiniGameFour::MiniGameFour(SDL_Renderer* renderer) {
-	this->renderer = renderer;
+void MiniGameFour::LogicUpdate() {
+
+}
+
+void MiniGameFour::FrameUpdate() {
+	ManageLifespan();
+	ManageCreation();
+	if (Global::frameCounter % 60 == 0) {
+		ManageTime();
+	}
 }
 
 void MiniGameFour::CreateCircle(int x, int y, int w, int h) {
@@ -77,9 +94,15 @@ void MiniGameFour::ManageCreation() {
 
 void MiniGameFour::ManageTime() {
 	time--;
+	ui->GetButtonByName("TimeButton")->SetText("Time: " + std::to_string(GetTime()));
+	if (GetTime() < 25) { //bazowo na 1
+		SceneManager::GetData("Game State") = 1;
+		SceneManager::GetData("Current Game") = 4;
+		SceneManager::SwitchScene("EndScreen", renderer, ui);
+	}
 }
 
-void MiniGameFour::OnClick(SDL_Event& event) {
+void MiniGameFour::Input(SDL_Event& event) {
 	if (event.button.button == SDL_BUTTON_LEFT) {
 		if (delay < 1) {
 			clicks++;
@@ -92,6 +115,7 @@ void MiniGameFour::OnClick(SDL_Event& event) {
 
 					score++;
 					PopingCircles.erase(PopingCircles.begin() + i);
+					ui->GetButtons()[0]->SetText("Score: " + std::to_string(GetScore()));
 					break;
 				}
 			}
@@ -112,7 +136,7 @@ void MiniGameFour::Render() {
 	}
 }
 
-void MiniGameFour::Finisch(UI* ui) {
+void MiniGameFour::Clear() {
 	ui->ClearAllButtons();
 	double accuracy = 0;
 	int accuracyInt = 0;

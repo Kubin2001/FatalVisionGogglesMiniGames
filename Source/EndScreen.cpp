@@ -13,62 +13,71 @@ bool IsAlphabetic(const std::string& str) {
     return true; 
 }
 
-EndScreen::EndScreen(UI* ui) {
-	this->ui = ui;
+
+
+void EndScreen::Init(SDL_Renderer* renderer, UI* ui) {
+    this->renderer = renderer;
+    this->ui = ui;
 }
 
-bool EndScreen::ManageInput(int& gamestate, int& currentGame) {
-    if (ui->GetInteractionBoxByName("MainMenuButton")->GetStatus()) {
-        ui->GetInteractionBoxByName("MainMenuButton")->SetStatus(0);
-        gamestate = 0;
-        currentGame = 0;
-        return true;
+void EndScreen::LogicUpdate(){}
+void EndScreen::FrameUpdate(){
+    ManageScoreBoard();
+}
+
+void EndScreen::Input(SDL_Event& event) {
+    if (ui->GetInteractionBoxByName("MainMenuButton")->ConsumeStatus()) {
+        SceneManager::GetData("Game State") = 0;
+        SceneManager::GetData("Current Game") = 0;
+        SceneManager::SwitchScene("Main Menu", renderer, ui);
+        return;
     }
+    int currentGame = std::any_cast<int>(SceneManager::GetData("Current Game"));
     switch (currentGame) {
         case 1:
-            if (ui->GetInteractionBoxByName("RetryButton")->GetStatus()) {
-                ui->GetInteractionBoxByName("RetryButton")->SetStatus(0);
-                gamestate = 1;
-                currentGame = 1;
-                return true;
+            if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
+                SceneManager::GetData("Game State") = 1;
+                SceneManager::GetData("Current Game") = 1;
+                SceneManager::SwitchScene("MiniGameOne", renderer, ui);
+                return;
             }
             break;
         case 2:
-            if (ui->GetInteractionBoxByName("RetryButton")->GetStatus()) {
-                ui->GetInteractionBoxByName("RetryButton")->SetStatus(0);
-                gamestate = 1;
-                currentGame = 2;
-                return true;
+            if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
+                SceneManager::GetData("Game State") = 1;
+                SceneManager::GetData("Current Game") = 2;
+                SceneManager::SwitchScene("MiniGameTwo", renderer, ui);
+                return;
             }
             break;
         case 3:
-            if (ui->GetInteractionBoxByName("RetryButton")->GetStatus()) {
-                ui->GetInteractionBoxByName("RetryButton")->SetStatus(0);
-                gamestate = 1;
-                currentGame = 3;
-                return true;
+            if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
+                SceneManager::GetData("Game State") = 1;
+                SceneManager::GetData("Current Game") = 3;
+                SceneManager::SwitchScene("MiniGameThree", renderer, ui);
+                return;
             }
             break;
         case 4:
-            if (ui->GetInteractionBoxByName("RetryButton")->GetStatus()) {
-                ui->GetInteractionBoxByName("RetryButton")->SetStatus(0);
-                gamestate = 1;
-                currentGame = 4;
-                return true;
+            if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
+                SceneManager::GetData("Game State") = 1;
+                SceneManager::GetData("Current Game") = 4;
+                SceneManager::SwitchScene("MiniGameFour", renderer, ui);
+                return;
             }
             break;
 
         case 5:
-            if (ui->GetInteractionBoxByName("RetryButton")->GetStatus()) {
-                ui->GetInteractionBoxByName("RetryButton")->SetStatus(0);
-                gamestate = 1;
-                currentGame = 5;
-                return true;
+            if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
+                SceneManager::GetData("Game State") = 1;
+                SceneManager::GetData("Current Game") = 5;
+                SceneManager::SwitchScene("MiniGameFive", renderer, ui);
+                return;
             }
 
             break;
     }
-    return false;
+    ScoreBoardInput(event);
 }
 
 void EndScreen::ManageScoreBoard() {
@@ -200,3 +209,8 @@ void EndScreen::ScoreBoardInput(SDL_Event& event) {
         }
     }
 }
+
+void EndScreen::Render() {}
+void EndScreen::Clear() {
+    ui->ClearAllButtons();
+};

@@ -46,7 +46,25 @@ void PopingFigure::Render(SDL_Renderer* renderer) {
 }
 /////////////////////////////////////////////
 
-void MiniGameFive::Innit(UI* ui) {
+
+void MiniGameFive::Init(SDL_Renderer* renderer, UI* ui) {
+	this->renderer = renderer;
+	this->ui = ui;
+
+	PopingFigures.clear();
+	this->texture = TextureManager::GetTextureByName("Cricle");
+	score = 0;
+	time = 10;
+	currentGameState = 0;
+	timer = 0;
+
+	tries = 5;
+
+	starCount = 0;
+	triangleCount = 0;
+	thunderCount = 0;
+
+
 	SetUpShowingStage();
 	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
@@ -62,9 +80,35 @@ void MiniGameFive::Innit(UI* ui) {
 	currentGameState = 0;
 }
 
-MiniGameFive::MiniGameFive(SDL_Renderer* renderer) {
-	this->renderer = renderer;
-	this->texture = TextureManager::GetTextureByName("Cricle");
+void MiniGameFive::ReStage() {
+	SetUpShowingStage();
+	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
+		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
+		"Score: 0", 1, 8, 12, 5);
+	ui->SetUIElementBorderColor("ScoreButton", 135, 206, 250);
+	ui->SetUIElementFontColor("ScoreButton", 255, 168, 0);
+
+	ui->CreateButton("TimeButton", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 150,
+		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
+		"Time: " + std::to_string(GetTime()), 1, 8, 12, 5);
+	ui->SetUIElementBorderColor("TimeButton", 135, 206, 250);
+	ui->SetUIElementFontColor("TimeButton", 255, 168, 0);
+	currentGameState = 0;
+}
+
+
+void MiniGameFive::LogicUpdate() {
+
+}
+
+void MiniGameFive::FrameUpdate() {
+	ManageStages();
+
+	if (GetTries() == 0) {
+		SceneManager::GetData("Game State") = 2;
+		SceneManager::GetData("Current Game") = 5;
+		SceneManager::SwitchScene("EndScreen", renderer, ui);
+	}
 }
 
 void MiniGameFive::SetUpShowingStage() {
@@ -96,7 +140,7 @@ void MiniGameFive::SetUpShowingStage() {
 }
 
 
-void MiniGameFive::SetUpQuestionStage(UI* ui) {
+void MiniGameFive::SetUpQuestionStage() {
 	ui->CreateButton("StarsIcon", 100, 300, 100, 100, TextureManager::GetTextureByName("StarIcon"), nullptr, "", 1.0f, 0, 0, 5);
 	ui->SetUIElementBorderColor("StarsIcon", 135, 206, 250);
 	ui->CreateButton("TrianglesIcon", 650, 300, 100, 100, TextureManager::GetTextureByName("TriangleIcon"), nullptr, "", 1.0f, 0, 0, 5);
@@ -113,15 +157,15 @@ void MiniGameFive::SetUpQuestionStage(UI* ui) {
 }
 
 
-void MiniGameFive::ManageStages(UI* ui) {
+void MiniGameFive::ManageStages() {
 	ui->GetButtonByName("ScoreButton")->SetText("Score: " + std::to_string(score));
 	if (currentGameState == 0) {
 		if (Global::frameCounter % 60 == 0) {
 			time--;
 		}
 		ui->GetButtonByName("TimeButton")->SetText("Time: " + std::to_string(GetTime()));
-		if (Global::frameCounter - timer > 600) {// 600 = 10 sekund
-			SetUpQuestionStage(ui);
+		if (Global::frameCounter - timer > 120) {// 600 = 10 sekund
+			SetUpQuestionStage();
 			PopingFigures.clear();
 			currentGameState = 1;
 		}
@@ -158,7 +202,7 @@ void MiniGameFive::ManageStages(UI* ui) {
 				}
 				ui->ClearAllButtons();
 				tries--;
-				Innit(ui);
+				ReStage();
 				time = 10;
 			}
 		}
@@ -172,11 +216,7 @@ void MiniGameFive::ManageStages(UI* ui) {
 
 }
 
-void MiniGameFive::OnClick(SDL_Event& event) {
-	if (event.type == SDL_MOUSEBUTTONUP) {
-
-
-	}
+void MiniGameFive::Input(SDL_Event& event) {
 
 }
 
@@ -187,7 +227,7 @@ void MiniGameFive::Render() {
 	}
 }
 
-void MiniGameFive::Finisch(UI* ui) {
+void MiniGameFive::Clear() {
 	ui->ClearAllButtons();
 	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth * 0.5, 200,
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),

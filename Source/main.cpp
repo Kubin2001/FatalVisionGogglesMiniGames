@@ -11,7 +11,6 @@ int main(int argv, char* argc[])
     Game* game = new Game();
 
     game->Start();
-    game->SetUpState();
     Global::TickTimer = SDL_GetTicks();
     Global::LogicTimeEnd = Global::TickTimer + Global::frameDelay;
     Global::RenderingTimeEnd = Global::TickTimer + 16;
@@ -21,12 +20,12 @@ int main(int argv, char* argc[])
         Global::TickTimer = SDL_GetTicks();
         if (Global::TickTimer > Global::LogicTimeEnd) {
             Global::LogicTimeEnd = Global::TickTimer + Global::frameDelay;
-            game->GameLogic();
+            game->Logic();
         }
 
         if (Global::TickTimer > Global::RenderingTimeEnd) {
             Global::RenderingTimeEnd = Global::TickTimer + 16;
-            game->GameConstant();
+            game->Constant();
         }
     }
 

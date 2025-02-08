@@ -1,10 +1,19 @@
 #pragma once
 
 #include "UI.h"
+#include "SceneManager.h"
 
-class MainMenu {
+class MainMenu :public Scene{
 	public:
-		void Innit(UI* ui);
-		void OnClick(UI* ui);
-		void Clear(UI* ui);
+		void Init(SDL_Renderer* renderer = nullptr, UI* ui = nullptr)override;
+
+		void LogicUpdate()override;
+
+		void FrameUpdate()override;
+
+		void Input(SDL_Event& event)override;
+
+		void Render()override;
+
+		void Clear()override;
 };

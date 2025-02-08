@@ -3,6 +3,7 @@
 #include <vector>
 #include "UI.h"
 #include "Basics.h"
+#include "SceneManager.h"
 
 class PopingFigure :public GameObject {
 private:
@@ -15,9 +16,8 @@ public:
 };
 
 
-class MiniGameFive {
+class MiniGameFive :public Scene{
 private:
-	SDL_Renderer* renderer = nullptr;
 	std::vector<PopingFigure> PopingFigures;
 	SDL_Texture* texture = nullptr;
 	int score = 0;
@@ -31,21 +31,20 @@ private:
 	int triangleCount = 0;
 	int thunderCount = 0;
 public:
-	MiniGameFive(SDL_Renderer* renderer);
 
-	void Innit(UI* ui);
+	void Init(SDL_Renderer* renderer = nullptr, UI* ui = nullptr);
 
-	void SetUpShowingStage();
+	void LogicUpdate()override;
 
-	void SetUpQuestionStage(UI* ui);
+	void FrameUpdate()override;
 
-	void ManageStages(UI* ui);
+	void Input(SDL_Event& event)override;
 
-	void OnClick(SDL_Event& event);
+	void Render()override;
 
-	void Render();
+	void Clear()override;
 
-	void Finisch(UI* ui);
+	void ReStage();
 
 	int GetScore();
 
@@ -53,5 +52,13 @@ public:
 
 	int GetTries();
 
+
+private:
+
+	void SetUpShowingStage();
+
+	void SetUpQuestionStage();
+
+	void ManageStages();
 
 };
