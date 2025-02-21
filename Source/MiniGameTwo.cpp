@@ -72,8 +72,8 @@ void MiniGameTwo::FrameUpdate() {
 	UpdateScore();
 
 	if (getTries() == 0) {
-		SceneManager::GetData("Game State") = 2;
-		SceneManager::GetData("Current Game") = 2;
+		SceneManager::GetData<int>("Game State") = 2;
+		SceneManager::GetData<int>("Current Game") = 2;
 		SceneManager::SwitchScene("EndScreen", renderer, ui);
 	}
 }

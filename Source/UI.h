@@ -40,6 +40,12 @@ protected:
 
     bool hidden = false;
 
+    bool hovered = false; // Is button in collidion with mouse
+
+    bool hoverable = false; // Is hover filter aplied with mouse collisojn
+
+    unsigned char hooverFilter[4] = { 0,0,0,0 };
+
 public:
 
     SDL_Texture* GetTexture();
@@ -101,6 +107,12 @@ public:
     void Hide();
 
     void Show();
+
+    bool IsHovered();
+
+    void SetHover(bool temp);
+
+    void SetHoverFilter(const bool filter,const unsigned char R, const unsigned char G, const unsigned char B, const unsigned char A);
 
 };
 
@@ -171,6 +183,9 @@ public:
 
     void CreateInteractionBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font = nullptr,
         std::string text = "", float textScale = 1.0f, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
+
+
+    void CheckHover();
 
     void CheckMasageBoxInteraction(SDL_Event& event);
 

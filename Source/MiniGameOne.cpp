@@ -49,8 +49,8 @@ void MiniGameOne::FrameUpdate() {
 		ManageTime();
 		ui->GetButtons()[1]->SetText("Time: " + std::to_string(GetTime()));
 		if (GetTime() < 20) { //bazowo na 1
-			SceneManager::GetData("Game State") = 2;
-			SceneManager::GetData("Current Game") = 1;
+			SceneManager::GetData<int>("Game State") = 2;
+			SceneManager::GetData<int>("Current Game") = 1;
 			SceneManager::SwitchScene("EndScreen",renderer,ui);
 
 		}

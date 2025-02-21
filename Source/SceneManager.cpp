@@ -2,8 +2,10 @@
 #include "iostream"
 
 std::unordered_map<std::string, Scene*> SceneManager::Scenes;
-std::unordered_map<std::string, std::any> SceneManager::SharedData;
+std::unordered_map<std::string, std::unique_ptr<AnyData>> SceneManager::SharedData;
 Scene* SceneManager::currentScene = nullptr;
+
+
 
 
 void SceneManager::AddScene(Scene* scene, const std::string& sceneName) {
@@ -57,22 +59,6 @@ Scene* SceneManager::GetCurrentScene() {
 	return currentScene;
 }
 
-
-void SceneManager::AddData(const std::string& key, std::any data) {
-	SharedData[key] = data;
-}
-
-
-std::any &SceneManager::GetData(const std::string& key) {
-	if (SharedData.find(key) != SharedData.end()) {
-		return SharedData[key];
-	}
-	else
-	{
-		std::cout << "Error data: " << key << " not found." << "\n";
-		return SharedData[key];
-	}
-}
 
 void SceneManager::ClearData(const std::string& key) {
 	if (SharedData.find(key) != SharedData.end()) {

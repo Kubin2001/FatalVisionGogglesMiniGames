@@ -128,9 +128,16 @@ void TemplateUIElement::Render(SDL_Renderer* renderer) {
         if (GetTexture() == nullptr) {
             RenderItslelf(renderer);
         }
-        else
-        {
+        else {
             SDL_RenderCopy(renderer, GetTexture(), NULL, GetRectangle());
+            if (hovered && hoverable) {
+                SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+                SDL_SetRenderDrawColor(renderer, hooverFilter[0], hooverFilter[1], hooverFilter[2], hooverFilter[3]);
+                SDL_RenderFillRect(renderer, &rectangle);
+
+                SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+                SDL_SetRenderDrawColor(renderer, Global::defaultDrawColor[0], Global::defaultDrawColor[1], Global::defaultDrawColor[2], 255);
+            }
         }
 
 
@@ -144,11 +151,28 @@ void TemplateUIElement::Render(SDL_Renderer* renderer) {
 
 void TemplateUIElement::RenderItslelf(SDL_Renderer* renderer) {
     if (!buttonTransparent) {
-        SDL_SetRenderDrawColor(renderer, buttonColor[0], buttonColor[1], buttonColor[2], 255);
+        if (hovered && hoverable) {
 
-        SDL_RenderFillRect(renderer, &rectangle);
+            SDL_SetRenderDrawColor(renderer, buttonColor[0], buttonColor[1], buttonColor[2], 255);
 
-        SDL_SetRenderDrawColor(renderer, Global::defaultDrawColor[0], Global::defaultDrawColor[1], Global::defaultDrawColor[2], 255);
+            SDL_RenderFillRect(renderer, &rectangle);
+
+            SDL_SetRenderDrawColor(renderer, Global::defaultDrawColor[0], Global::defaultDrawColor[1], Global::defaultDrawColor[2], 255);
+
+            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+            SDL_SetRenderDrawColor(renderer, hooverFilter[0], hooverFilter[1], hooverFilter[2], hooverFilter[3]);
+            SDL_RenderFillRect(renderer, &rectangle);
+            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+        }
+        else
+        {
+            SDL_SetRenderDrawColor(renderer, buttonColor[0], buttonColor[1], buttonColor[2], 255);
+
+            SDL_RenderFillRect(renderer, &rectangle);
+
+            SDL_SetRenderDrawColor(renderer, Global::defaultDrawColor[0], Global::defaultDrawColor[1], Global::defaultDrawColor[2], 255);
+        }
+
     }
 }
 
@@ -209,6 +233,22 @@ void TemplateUIElement::Hide() {
 
 void TemplateUIElement::Show() {
     hidden = false;
+}
+
+bool TemplateUIElement::IsHovered() {
+    return hovered;
+}
+
+void TemplateUIElement::SetHover(bool temp) {
+    hovered = temp;
+}
+
+void TemplateUIElement::SetHoverFilter(const bool filter, const unsigned char R, const unsigned char G, const unsigned char B, const unsigned char A) {
+    this->hoverable = filter;
+    hooverFilter[0] = R;
+    hooverFilter[1] = G;
+    hooverFilter[2] = B;
+    hooverFilter[3] = A;
 }
 
 //BUTTON
@@ -431,6 +471,41 @@ void UI::CreateInteractionBox(std::string name, int x, int y, int w, int h, SDL_
     InteractionBoxesMap.emplace(InteractionBoxes.back()->GetName(), InteractionBoxes.back());
 }
 
+
+
+void UI::CheckHover() {
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    SDL_Rect rect{ x,y,1,1 };
+    for (auto& it : Buttons) {
+        if (SimpleCollision(*it->GetRectangle(), rect)) {
+            it->SetHover(true);
+        }
+        else
+        {
+            it->SetHover(false);
+        }
+    }
+    for (auto& it : MassageBoxes) {
+        if (SimpleCollision(*it->GetRectangle(), rect)) {
+            it->SetHover(true);
+        }
+        else
+        {
+            it->SetHover(false);
+        }
+    }
+    for (auto& it : InteractionBoxes) {
+        if (SimpleCollision(*it->GetRectangle(), rect)) {
+            it->SetHover(true);
+        }
+        else
+        {
+            it->SetHover(false);
+        }
+    }
+}
+
 void  UI::CheckMasageBoxInteraction(SDL_Event& event) {
     for (auto& it : MassageBoxes) {
         it->CheckInteraction(event);
@@ -548,6 +623,8 @@ void UI::SetUIElementFontColor(const std::string& name, unsigned char R, unsigne
 }
 
 void UI::ManageInput(SDL_Event& event) {
+    CheckHover();
+
     CheckMasageBoxInteraction(event);
 
     ManageMassageBoxTextInput(event);

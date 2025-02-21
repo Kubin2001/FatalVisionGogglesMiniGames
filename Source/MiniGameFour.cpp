@@ -96,8 +96,8 @@ void MiniGameFour::ManageTime() {
 	time--;
 	ui->GetButtonByName("TimeButton")->SetText("Time: " + std::to_string(GetTime()));
 	if (GetTime() < 25) { //bazowo na 1
-		SceneManager::GetData("Game State") = 1;
-		SceneManager::GetData("Current Game") = 4;
+		SceneManager::GetData<int>("Game State") = 1;
+		SceneManager::GetData<int>("Current Game") = 4;
 		SceneManager::SwitchScene("EndScreen", renderer, ui);
 	}
 }

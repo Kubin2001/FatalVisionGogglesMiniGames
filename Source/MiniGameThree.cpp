@@ -67,8 +67,8 @@ void MiniGameThree::FrameUpdate() {
 
 
 	if (Collision()) {
-		SceneManager::GetData("Game State") = 2;
-		SceneManager::GetData("Current Game") = 3;
+		SceneManager::GetData<int>("Game State") = 2;
+		SceneManager::GetData<int>("Current Game") = 3;
 		SceneManager::SwitchScene("EndScreen", renderer, ui);
 	}
 }

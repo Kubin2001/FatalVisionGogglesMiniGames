@@ -105,8 +105,8 @@ void MiniGameFive::FrameUpdate() {
 	ManageStages();
 
 	if (GetTries() == 0) {
-		SceneManager::GetData("Game State") = 2;
-		SceneManager::GetData("Current Game") = 5;
+		SceneManager::GetData<int>("Game State") = 2;
+		SceneManager::GetData<int>("Current Game") = 5;
 		SceneManager::SwitchScene("EndScreen", renderer, ui);
 	}
 }

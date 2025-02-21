@@ -3,8 +3,11 @@
 #include <SDL.h>
 #include <string>
 #include <unordered_map>
-#include <any>
 #include "UI.h"
+#include <memory>
+#include "Addons.h"
+
+
 
 class Scene {
 	protected: 
@@ -32,7 +35,7 @@ class SceneManager {
 
 		static std::unordered_map<std::string, Scene*> Scenes;
 
-		static std::unordered_map<std::string, std::any> SharedData;
+		static std::unordered_map<std::string, std::unique_ptr<AnyData>> SharedData;
 
 	public:
 		static void AddScene(Scene *scene, const std::string &sceneName);
@@ -45,11 +48,31 @@ class SceneManager {
 
 		static Scene* GetCurrentScene();
 
-		static void AddData(const std::string& key, std::any data);
+		template <typename T>
+		static void AddData(const std::string& key, T data);
 
-		static std::any &GetData(const std::string& key);
+		template <typename T>
+		static T& GetData(const std::string& key);
 
 		static void ClearData(const std::string& key);
 
 		static void ClearAllData();
 };
+
+template <typename T>
+static void SceneManager::AddData(const std::string& key, T data) {
+	SharedData[key] = std::make_unique <AnyContatiner<T>>();
+	SharedData[key]->Set(data);
+
+}
+
+template <typename T>
+static T& SceneManager::GetData(const std::string& key) {
+	if (SharedData.find(key) != SharedData.end()) {
+		return SharedData[key]->Get<T>();
+	}
+	else{
+		std::cout << "Error data: " << key << " not found." << "\n";
+		return SharedData[key]->Get<T>();
+	}
+}

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <math.h>
 #include <SDL.h>
+#include <vector>
 
 struct Point
 {
@@ -63,3 +64,155 @@ Point GetRectangleCenter(const SDL_Rect rect);
 unsigned int RectanglePointDistance(const SDL_Rect rect, const Point point);
 
 unsigned int PointsDistance(const Point point, const Point point2);
+
+
+
+
+class AnyData {
+    public:
+    virtual ~AnyData() = default;
+
+    template <typename T>
+    T& Get();
+
+    template <typename T>
+    void Set(T tempData);
+};
+
+
+
+
+
+template <typename T>
+class AnyContatiner : public AnyData {
+    public:
+    T data;
+
+    AnyContatiner() = default;
+
+    AnyContatiner(T temp) {
+        data = temp;
+    }
+
+
+};
+
+template <typename T>
+T& AnyData::Get() {
+    auto temp = static_cast<AnyContatiner<T>*>(this); // Can be static not dynamic cause only one class is using inheritance
+    if (!temp) {
+        std::cerr << "Error: Wrong cast in AnyDataGet deafault value returned\n";
+    }
+    return temp->data;
+}
+
+
+template <typename T>
+void AnyData::Set(T tempData) {
+    auto temp = static_cast<AnyContatiner<T>*>(this); // Can be static not dynamic cause only one class is using inheritance
+    if (!temp) {
+        std::cerr << "Error: Data set uncorrectly in any data\n";
+        return;
+    }
+    temp->data = tempData;
+}
+
+/*Pointer for ref safety in containers like std vector for use with ref Pointer*/
+
+template <typename T>
+class WrappedPointer {
+    private:
+        T* pointer = nullptr;
+
+    public:
+
+        T*& Get() {
+            return pointer;
+        }
+
+        T& GetVal() {
+            return *pointer;
+        }
+
+        T& operator*() {
+            return *pointer;
+        }
+
+        T* operator->() {
+            return pointer;
+        }
+};
+
+/*Designed to work only with Warped Pointer Class*/
+
+template <typename T>
+class RefPointer {
+    private:
+        T* mainArgument = nullptr;
+        std::vector<T**> references;
+    public:
+
+        RefPointer() {
+
+        }
+
+
+        RefPointer(T* mainArg) {
+            mainArgument = mainArg;
+        }
+
+
+        void Make(T* mainArg) {
+            mainArgument = mainArg;
+        }
+
+        T* Get() {
+            return mainArgument;
+        }
+
+        T& GetVal() {
+            return *mainArgument;
+        }
+
+        void AddRef(T*& ref) {
+            ref = mainArgument;
+            references.push_back(&ref);
+        }
+
+        ~RefPointer() {
+            for (auto& it : references) {
+                *it = nullptr;
+            }
+            delete mainArgument;
+        }
+
+        T& operator*() {
+            return *mainArgument;
+        }
+
+        T* operator->() {
+            return mainArgument;
+        }
+
+        size_t RefCount() {
+            return references.size();
+        }
+
+        void ClearRef(T*& ref) {
+
+            for (size_t i = 0; i < references.size(); i++) {
+                if (references[i] == &ref) {
+                    references.erase(references.begin() + i);
+                    break;
+                }
+            }
+        }
+
+        void ClearRefs() {
+            for (auto& it : references) {
+                *it = nullptr;
+            }
+            references.clear();
+        }
+
+};

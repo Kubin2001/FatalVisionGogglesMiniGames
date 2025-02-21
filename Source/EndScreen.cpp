@@ -27,41 +27,41 @@ void EndScreen::FrameUpdate(){
 
 void EndScreen::Input(SDL_Event& event) {
     if (ui->GetInteractionBoxByName("MainMenuButton")->ConsumeStatus()) {
-        SceneManager::GetData("Game State") = 0;
-        SceneManager::GetData("Current Game") = 0;
+        SceneManager::GetData<int>("Game State") = 0;
+        SceneManager::GetData<int>("Current Game") = 0;
         SceneManager::SwitchScene("Main Menu", renderer, ui);
         return;
     }
-    int currentGame = std::any_cast<int>(SceneManager::GetData("Current Game"));
+    int currentGame = SceneManager::GetData<int>("Current Game");
     switch (currentGame) {
         case 1:
             if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
-                SceneManager::GetData("Game State") = 1;
-                SceneManager::GetData("Current Game") = 1;
+                SceneManager::GetData<int>("Game State") = 1;
+                SceneManager::GetData<int>("Current Game") = 1;
                 SceneManager::SwitchScene("MiniGameOne", renderer, ui);
                 return;
             }
             break;
         case 2:
             if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
-                SceneManager::GetData("Game State") = 1;
-                SceneManager::GetData("Current Game") = 2;
+                SceneManager::GetData<int>("Game State") = 1;
+                SceneManager::GetData<int>("Current Game") = 2;
                 SceneManager::SwitchScene("MiniGameTwo", renderer, ui);
                 return;
             }
             break;
         case 3:
             if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
-                SceneManager::GetData("Game State") = 1;
-                SceneManager::GetData("Current Game") = 3;
+                SceneManager::GetData<int>("Game State") = 1;
+                SceneManager::GetData<int>("Current Game") = 3;
                 SceneManager::SwitchScene("MiniGameThree", renderer, ui);
                 return;
             }
             break;
         case 4:
             if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
-                SceneManager::GetData("Game State") = 1;
-                SceneManager::GetData("Current Game") = 4;
+                SceneManager::GetData<int>("Game State") = 1;
+                SceneManager::GetData<int>("Current Game") = 4;
                 SceneManager::SwitchScene("MiniGameFour", renderer, ui);
                 return;
             }
@@ -69,8 +69,8 @@ void EndScreen::Input(SDL_Event& event) {
 
         case 5:
             if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
-                SceneManager::GetData("Game State") = 1;
-                SceneManager::GetData("Current Game") = 5;
+                SceneManager::GetData<int>("Game State") = 1;
+                SceneManager::GetData<int>("Current Game") = 5;
                 SceneManager::SwitchScene("MiniGameFive", renderer, ui);
                 return;
             }
