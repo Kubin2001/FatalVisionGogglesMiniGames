@@ -160,38 +160,8 @@ void MiniGameFour::Clear() {
 	ui->SetUIElementBorderColor("FinalAccuracy", 135, 206, 250);
 	ui->SetUIElementFontColor("FinalAccuracy", 255, 168, 0);
 
-
-	ui->CreateButton("MainMenuIcon", 200, 400, 200, 200, TextureManager::GetTextureByName("MenuIcon"), ui->GetFont("arial20px"),
-		"", 0, 0, 0, 5);
-	ui->SetUIElementBorderColor("MainMenuIcon", 135, 206, 250);
-
-	ui->CreateInteractionBox("MainMenuButton", 200, 600, 200, 100,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
-		"      Main Menu", 1, 8, 40, 5);
-	ui->SetUIElementBorderColor("MainMenuButton", 135, 206, 250);
-	ui->SetUIElementFontColor("MainMenuButton", 255, 168, 0);
-
-	ui->CreateButton("RetryIcon", Global::windowWidth - 400, 400, 200, 200, TextureManager::GetTextureByName("RetryIcon"), ui->GetFont("arial20px"),
-		"", 0, 0, 0, 5);
-	ui->SetUIElementBorderColor("RetryIcon", 135, 206, 250);
-
-	ui->CreateInteractionBox("RetryButton", Global::windowWidth - 400, 600, 200, 100,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
-		"         Retry", 1, 8, 40, 5);
-	ui->SetUIElementBorderColor("RetryButton", 135, 206, 250);
-	ui->SetUIElementFontColor("RetryButton", 255, 168, 0);
-
-
-
-	ui->CreateButton("ScoreBoardIcon", 600, 400, 200, 200, TextureManager::GetTextureByName("ScoreIcon"), ui->GetFont("arial20px"),
-		"", 0, 0, 0, 5);
-	ui->SetUIElementBorderColor("ScoreBoardIcon", 135, 206, 250);
-
-	ui->CreateInteractionBox("ScoreBoardButton", 600, 600, 200, 100,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
-		"      Submit", 1, 8, 40, 5);
-	ui->SetUIElementBorderColor("ScoreBoardButton", 135, 206, 250);
-	ui->SetUIElementFontColor("ScoreBoardButton", 255, 168, 0);
+	SceneManager::AddData<int>("Final Score", score);
+	SceneManager::AddData<std::string>("Score File Path", "Data/gameFourScores.txt");
 }
 
 

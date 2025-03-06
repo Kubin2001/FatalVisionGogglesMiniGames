@@ -14,48 +14,72 @@ struct Point
 
 
 
-struct RegionDestination {
-	int rowsPos = 0; //Du¿e Regiony
-	int columnPos = 0;
+struct MapPos {
+	int rows = 0; //Du¿e Regiony
+	int column = 0;
 
-	int rowsTilePos = 0; //Pole w regionie 
-	int columnTilePos = 0;
+	int rowsTile = 0; //Pole w regionie 
+	int columnTile = 0;
 
-	int absoluteRowsTilePos = 0;
-	int absoluteColumnTilePos = 0;
+	int absTileRows = 0;
+	int absTileColumn = 0;
 
-	static int maxX;
-	static int maxY;
+    MapPos();
 
-	static int regionSize;
-	static int maxHeight;
-	static int minHeight;
-	static int maxWidth;
-	static int minWidth;
+    MapPos(int x, int y);
 
-	RegionDestination();
-	RegionDestination(int x, int y);
+    void CalcRegTile(int x, int y);
 
-	void CalculateRegionPos(int rowsPos, int columnPos);
-	void CalculateTilePos(int regionRowsPos, int regionColumnPos);
-	void CalculateAbsoluteTilePos();
-	void RecalculateFromAbsolute();
+    void CalcRegion(int x, int y);
 
-	bool operator==(const RegionDestination& other) const {
-		return absoluteRowsTilePos == other.absoluteRowsTilePos &&
-			absoluteColumnTilePos == other.absoluteColumnTilePos;
-	}
+    void CalcAbsTile(int x, int y);
+
+    void CalcAll(int x, int y);
+
+    void RecalculateFromAbs();
+
+
+    // It will never work with automaitic check cause like with mouse cause it always is between 0 and tile per region
+    // it is for manual change
+    bool CorrectnessRegionTile();
+
+    bool CorrectnessRegion();
+
+    bool CorrectnessAbsTile();
+
+    bool CorrectnesAbsCol();
+
+    bool CorrectnesAbsRow();
+
+    //Silent checks without cout
+
+    bool CorrectnessRegionTileS();
+
+    bool CorrectnessRegionS();
+
+    bool CorrectnessAbsTileS();
+
+    bool CorrectnesAbsColS();
+
+    bool CorrectnesAbsRowS();
+
+
+
+    static int minX;
+    static int minY;
+    static int tileSize;
+    static int regionSize;
+    static int tilesPerRegion;
+    static int regionsCountWidth;
+    static int regionsCountHeight;
+    static int maxX;
+    static int maxY;
+
+    static void FedData(int mX, int mY, int tSize, int tilesPerReg, int regionsW, int regionsH);
 
 
 };
 
-bool CheckBoundaries(RegionDestination& start, unsigned short rowsSize, unsigned short columnSize);
-
-bool CheckBoundariesAdvanced(RegionDestination& start, unsigned short rowsSize, unsigned short columnSize);
-
-bool CheckSimpleBoundaries(RegionDestination& start, unsigned short rowsSize, unsigned short columnSize);
-
-bool CheckBoundariesAbsolute(RegionDestination& dest);
 
 double CalculateEuclidean(int x1, int x2, int y1, int y2);
 

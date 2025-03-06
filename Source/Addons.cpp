@@ -7,186 +7,259 @@ Point::Point() {
 Point::Point(int x, int y) : x(x), y(y) {}
 
 
-int RegionDestination::maxX = 0;
-int RegionDestination::maxY = 0;
 
-int RegionDestination::regionSize = 0;
-int RegionDestination::maxHeight = 0;
-int RegionDestination::minHeight = 0;
-int RegionDestination::maxWidth = 0;
-int RegionDestination::minWidth = 0;
-
-RegionDestination::RegionDestination() {
+MapPos::MapPos() {
 
 }
 
-RegionDestination::RegionDestination(int rowsPos, int columnPos) : rowsPos(rowsPos), columnPos(columnPos) {
-
-    this->rowsPos = ((columnPos - RegionDestination::maxHeight) / RegionDestination::regionSize);
-    this->columnPos = ((rowsPos - RegionDestination::minWidth) / RegionDestination::regionSize);
-
-
-    if (this->rowsPos > RegionDestination::maxX || this->columnPos > RegionDestination::maxY) {
-        std::cout << "Error Region Calculation out of Bounds to Big\n";
-    }
-
-    if (this->rowsPos < 0 || this->columnPos < 0) {
-        std::cout << "Error Region Calculation out of Bounds to low\n";
-    }
+MapPos::MapPos(int x, int y) {
+	CalcAll(x, y);
 }
 
-void RegionDestination::CalculateRegionPos(int rowsPos, int columnPos) {
-    this->rowsPos = ((columnPos - RegionDestination::maxHeight) / RegionDestination::regionSize);
-    this->columnPos = ((rowsPos - RegionDestination::minWidth) / RegionDestination::regionSize);
 
-    if (this->rowsPos > RegionDestination::maxX || this->columnPos > RegionDestination::maxY) {
-        std::cout << "Error Region Calculation out of Bounds to Big\n";
-    }
 
-    if (this->rowsPos < 0 || this->columnPos < 0) {
-        std::cout << "Error Region Calculation out of Bounds to low\n";
-    }
-}
-void RegionDestination::CalculateTilePos(int regionRowsPos, int regionColumnPos) {
-    regionRowsPos -= RegionDestination::minWidth;
-    regionColumnPos -= RegionDestination::maxHeight;
-    regionRowsPos -= (this->columnPos * 600);
-    regionColumnPos -= (this->rowsPos * 600);
-    regionRowsPos /= 40;
-    regionColumnPos /= 40;
-    this->columnTilePos = regionRowsPos;
-    this->rowsTilePos = regionColumnPos;
-    /*To powinno byæ odwrotnie dlatego na koniec zemieniam je ze sob¹ */
-}
+int MapPos::minX = 0;
+int MapPos::minY = 0;
+int MapPos::tileSize = 0;
+int MapPos::regionSize = 0;
+int MapPos::tilesPerRegion = 0;
+int MapPos::regionsCountWidth = 0;
+int MapPos::regionsCountHeight = 0;
+int MapPos::maxX = 0;
+int MapPos::maxY = 0;
 
-void RegionDestination::CalculateAbsoluteTilePos() {
-    absoluteRowsTilePos = (rowsPos * 15) + rowsTilePos;
-    absoluteColumnTilePos = (columnPos * 15) + columnTilePos;
+void MapPos::FedData(int mX, int mY, int tSize, int tilesPerReg, int regionsW, int regionsH) {
+	MapPos::minX = mX;
+	MapPos::minY = mY;
+	MapPos::tileSize = tSize;
+	MapPos::regionSize = tSize * tilesPerReg;
+	MapPos::tilesPerRegion = tilesPerReg;
+	MapPos::regionsCountWidth = regionsW;
+	MapPos::regionsCountHeight = regionsH;
+	MapPos::maxX = mX + (tSize * tilesPerReg * regionsW);
+	MapPos::maxY = mY + (tSize * tilesPerReg * regionsH);
 }
 
-void RegionDestination::RecalculateFromAbsolute() { // not tested
-	rowsPos = absoluteRowsTilePos / 15;
-	columnPos = absoluteColumnTilePos / 15;
-	rowsTilePos = absoluteRowsTilePos % 15;
-	columnTilePos = absoluteColumnTilePos % 15;
+
+
+
+void MapPos::CalcRegTile(int x, int y) {
+	int localY = (y - MapPos::minY) % MapPos::regionSize;
+	if (localY < 0) { 
+		localY += MapPos::regionSize;
+	}
+	rowsTile = localY / MapPos::tileSize;
+
+	int localX = (x - MapPos::minX) % MapPos::regionSize;
+	if (localX < 0) {
+		localX += MapPos::regionSize;
+	}
+	columnTile = localX / MapPos::tileSize;
 }
 
-bool CheckBoundaries(RegionDestination& start, unsigned short rowsSize, unsigned short columnSize) {
-	if (start.rowsTilePos > 14) {
-		start.rowsTilePos = 0;
-		start.rowsPos++;
-		if (start.rowsPos > rowsSize - 1) {
-			std::cout << "Out of bounds row to big\n";
-			return false;
-		}
+void MapPos::CalcRegion(int x, int y) {
+	rows = (y - MapPos::minY) / MapPos::regionSize;
+	if ((y - MapPos::minY) < 0) {
+		rows -= 1;
 	}
 
-	if (start.rowsTilePos < 0) {
-		start.rowsTilePos = 14;
-		start.rowsPos--;
-		if (start.rowsPos < 0) {
-			std::cout << "Out of bounds row to small\n";
-			return false;
-		}
+	column = (x - MapPos::minX) / MapPos::regionSize;
+	if ((x - MapPos::minX) < 0) {
+		column -= 1;
 	}
-	if (start.columnTilePos > 14) {
-		start.columnTilePos = 0;
-		start.columnPos++;
-		if (start.columnPos > columnSize) {
-			std::cout << "Out of bounds columns to big\n";
-			return false;
-		}
-	}
-	if (start.columnTilePos < 0) {
-		start.columnTilePos = 14;
-		start.columnPos--;
-		if (start.columnPos < 0) {
-			std::cout << "Out of bounds columns to small\n";
-			return false;
-		}
-	}
-	return true;
 }
 
-bool CheckBoundariesAdvanced(RegionDestination& start, unsigned short rowsSize, unsigned short columnSize) {
-	if (start.rowsTilePos > 14) {
-		start.rowsTilePos -= 15;
-		start.rowsPos++;
-		if (start.rowsPos >= rowsSize) {
-			//std::cout << "Out of bounds row too big\n";
-			return false;
-		}
+void MapPos::CalcAbsTile(int x, int y) {
+	absTileRows = (y - MapPos::minY) / MapPos::tileSize;
+	if ((y - MapPos::minY) < 0) {
+		absTileRows -= 1;
 	}
 
-	if (start.rowsTilePos < 0) {
-		start.rowsTilePos = 15 + (start.rowsTilePos % 15);
-		if (start.rowsTilePos == 15) start.rowsTilePos = 0;
-		if (start.rowsPos == 0) {
-			//std::cout << "Out of bounds row too small\n";
-			return false;
-		}
-		start.rowsPos--;
+	absTileColumn = (x - MapPos::minX) / MapPos::tileSize;
+	if ((x - MapPos::minX) < 0) {
+		absTileColumn -= 1;
 	}
+}
 
-	if (start.columnTilePos > 14) {
-		start.columnTilePos -= 15;
-		start.columnPos++;
-		if (start.columnPos >= columnSize) {
-			//std::cout << "Out of bounds column too big\n";
-			return false;
-		}
+void MapPos::CalcAll(int x, int y) {
+	CalcRegTile(x,y);
+	CalcRegion(x,y);
+	CalcAbsTile(x,y);
+}
+
+void MapPos::RecalculateFromAbs() {
+	rows = absTileRows / MapPos::tilesPerRegion;
+	if (absTileRows < 0) { --rows; }
+
+	column = absTileColumn / MapPos::tilesPerRegion;
+	if (absTileColumn < 0) { --column; }
+
+	rowsTile = absTileRows % MapPos::tilesPerRegion;
+	if (rowsTile < 0) {
+		rowsTile += MapPos::tilesPerRegion;
 	}
-
-	if (start.columnTilePos < 0) {
-		start.columnTilePos = 15 + (start.columnTilePos % 15);
-		if (start.columnTilePos == 15) start.columnTilePos = 0;
-		if (start.columnPos == 0) {
-			//std::cout << "Out of bounds column too small\n";
-			return false;
-		}
-		start.columnPos--;
+	columnTile = absTileColumn % MapPos::tilesPerRegion;
+	if (columnTile < 0) {
+		columnTile += MapPos::tilesPerRegion;
 	}
+}
 
-	if (start.rowsTilePos < 0 || start.rowsTilePos > 14) {
-		//std::cout << "Error: rowsTilePos is out of bounds! rowsTilePos = " << start.rowsTilePos << "\n";
+bool MapPos::CorrectnessRegionTile() {
+	if(rowsTile >= MapPos::tilesPerRegion){
+		std::cerr << "MapPos Incorrect tile rows too big\n";
 		return false;
 	}
-	if (start.columnTilePos < 0 || start.columnTilePos > 14) {
-		//std::cout << "Error: columnTilePos is out of bounds! columnTilePos = " << start.columnTilePos << "\n";
+	if (rowsTile < 0) {
+		std::cerr << "MapPos Incorrect tile rows too small\n";
 		return false;
 	}
-
-	return true;
-}
-
-bool CheckSimpleBoundaries(RegionDestination& start, unsigned short rowsSize, unsigned short columnSize) {
-	if (start.rowsPos > rowsSize - 1) {
-		std::cout << "Out of bounds row to big\n";
+	if (columnTile >= MapPos::tilesPerRegion) {
+		std::cerr << "MapPos Incorrect tile columns too big\n";
 		return false;
 	}
-	if (start.rowsPos < 0) {
-		std::cout << "Out of bounds row to small\n";
-		return false;
-	}
-	if (start.columnPos > columnSize) {
-		std::cout << "Out of bounds columns to big\n";
-		return false;
-	}
-	if (start.columnPos < 0) {
-		std::cout << "Out of bounds columns to small\n";
+	if (columnTile < 0) {
+		std::cerr << "MapPos Incorrect tile columns too small\n";
 		return false;
 	}
 	return true;
 }
 
-bool CheckBoundariesAbsolute(RegionDestination& dest) {
-	if (dest.absoluteRowsTilePos < 0) { return false; }
-	if (dest.absoluteColumnTilePos < 0) { return false; }
-	if (dest.absoluteRowsTilePos > 299) { return false; } // Ta liczba z dupy ale niech narazie zostanie
-	if (dest.absoluteColumnTilePos > 299) { return false; }
+bool MapPos::CorrectnessRegion() {
+	if (rows > MapPos::regionsCountHeight -1) {
+		std::cerr << "MapPos Incorrect rows too big\n";
+		return false;
+	}
+	if (rows < 0) {
+		std::cerr << "MapPos Incorrect rows too small\n";
+		return false;
+	}
+	if (column > MapPos::regionsCountWidth -1) {
+		std::cerr << "MapPos Incorrect columns too big\n";
+		return false;
+	}
+	if (column < 0) {
+		std::cerr << "MapPos Incorrect columns too small\n";
+		return false;
+	}
 	return true;
 }
 
+bool MapPos::CorrectnessAbsTile() {
+	int countWidth = MapPos::regionsCountWidth * MapPos::tilesPerRegion;
+	int countHeight = MapPos::regionsCountHeight * MapPos::tilesPerRegion;
+	if (absTileRows >= countHeight) {
+		std::cerr << "MapPos Incorrect abs tile rows too big\n";
+		return false;
+	}
+	if (absTileRows < 0) {
+		std::cerr << "MapPos Incorrect abs tile rows too small\n";
+		return false;
+	}
+	if (absTileColumn >= countWidth) {
+		std::cerr << "MapPos Incorrect abs tile columns too big\n";
+		return false;
+	}
+	if (absTileColumn < 0) {
+		std::cerr << "MapPos Incorrect abs tile columns too small\n";
+		return false;
+	}
+	return true;
+}
+
+bool MapPos::CorrectnesAbsCol() {
+	int countWidth = MapPos::regionsCountWidth * MapPos::tilesPerRegion;
+	if (absTileColumn >= countWidth) {
+		std::cerr << "MapPos Incorrect abs tile columns too big\n";
+		return false;
+	}
+	if (absTileColumn < 0) {
+		std::cerr << "MapPos Incorrect abs tile columns too small\n";
+		return false;
+	}
+}
+
+bool MapPos::CorrectnesAbsRow() {
+	int countHeight = MapPos::regionsCountHeight * MapPos::tilesPerRegion;
+	if (absTileRows >= countHeight) {
+		std::cerr << "MapPos Incorrect abs tile rows too big\n";
+		return false;
+	}
+	if (absTileRows < 0) {
+		std::cerr << "MapPos Incorrect abs tile rows too small\n";
+		return false;
+	}
+}
+//Silent checks
+
+bool MapPos::CorrectnessRegionTileS() {
+	if (rowsTile >= MapPos::tilesPerRegion) {
+		return false;
+	}
+	if (rowsTile < 0) {
+		return false;
+	}
+	if (columnTile >= MapPos::tilesPerRegion) {
+		return false;
+	}
+	if (columnTile < 0) {
+		return false;
+	}
+	return true;
+}
+
+bool MapPos::CorrectnessRegionS() {
+	if (rows > MapPos::regionsCountHeight - 1) {
+		return false;
+	}
+	if (rows < 0) {
+		return false;
+	}
+	if (column > MapPos::regionsCountWidth - 1) {
+		return false;
+	}
+	if (column < 0) {
+		return false;
+	}
+	return true;
+}
+
+bool MapPos::CorrectnessAbsTileS() {
+	int countWidth = MapPos::regionsCountWidth * MapPos::tilesPerRegion;
+	int countHeight = MapPos::regionsCountHeight * MapPos::tilesPerRegion;
+	if (absTileRows >= countHeight) {
+		return false;
+	}
+	if (absTileRows < 0) {
+		return false;
+	}
+	if (absTileColumn >= countWidth) {
+		return false;
+	}
+	if (absTileColumn < 0) {
+		return false;
+	}
+	return true;
+}
+
+bool MapPos::CorrectnesAbsColS() {
+	int countWidth = MapPos::regionsCountWidth * MapPos::tilesPerRegion;
+	if (absTileColumn >= countWidth) {
+		return false;
+	}
+	if (absTileColumn < 0) {
+		return false;
+	}
+}
+
+bool MapPos::CorrectnesAbsRowS() {
+	int countHeight = MapPos::regionsCountHeight * MapPos::tilesPerRegion;
+	if (absTileRows >= countHeight) {
+		return false;
+	}
+	if (absTileRows < 0) {;
+		return false;
+	}
+}
 double CalculateEuclidean(int x1,int x2,int y1,int y2) {
     double x = std::pow(x2 - x1, 2);
     double y = std::pow(y2 - y1, 2);;

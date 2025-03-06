@@ -2,6 +2,7 @@
 #include <iostream>
 #include <SDL.h>
 #include "GlobalVariables.h"
+#include "Addons.h"
 
 class Camera
 {
@@ -12,6 +13,12 @@ class Camera
 
         bool useBorders = false;
 
+        //Borders
+        int minX = 0;
+        int maxX = 0;
+        int minY = 0;
+        int maxY = 0;
+
     public:
         Camera(bool useBorders);
 
@@ -19,7 +26,23 @@ class Camera
 
         SDL_Rect* GetRectangle();
 
-        void UpdatePosition(const Uint8* state);
+        void UseBorders(bool temp);
+
+        void SetBorders(int minX, int maxX, int minY, int maxY);
+
+        void UpdatePosition(const SDL_Event& event, const Uint8* state);
+
+        SDL_Rect CalcScreenPosition(const SDL_Rect& rect);
+
+        SDL_Rect CalcScreenPositionWithZoom(const SDL_Rect& rect);
+
+        Point RecoverPosition(int x, int y);
+
+        Point RecoverZoomPosition(int x, int y);
+
+        int GetScaledWidth();
+
+        int GetScaledHeight();
 
         ~Camera();
 };
