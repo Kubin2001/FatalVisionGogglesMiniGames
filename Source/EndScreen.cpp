@@ -51,6 +51,10 @@ void EndScreen::Init(SDL_Renderer* renderer, UI* ui) {
         "      Submit", 1, 8, 40, 5);
     ui->SetUIElementBorderColor("ScoreBoardButton", 135, 206, 250);
     ui->SetUIElementFontColor("ScoreBoardButton", 255, 168, 0);
+
+    for (auto& it : ui->GetInteractionBoxes()) {
+        it->SetHoverFilter(true, 255, 255, 255, 150);
+    }
 }
 
 void EndScreen::LogicUpdate(){}
@@ -320,6 +324,9 @@ void EndScreen::SetUpScoreBoard(int entries) {
     ui->GetInteractionBoxByName("X")->SetBorderRGB(255, 168, 0);
     ui->GetInteractionBoxByName("X")->SetFontColor(255, 168, 0);
     ui->GetInteractionBoxByName("X")->SetRenderTextType(2);
+    ui->GetInteractionBoxByName("X")->SetHoverFilter(true, 255, 255, 255, 150);
+
+
 
     //Wczytywanie danych do tekstu
     std::ifstream scoreFile(SceneManager::GetData<std::string>("Score File Path"));

@@ -189,8 +189,8 @@ void MiniGameTwo::Render() {
 
 void MiniGameTwo::Clear() {
 	ui->ClearAllButtons();
-	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth * 0.5, 200,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth, 200,
+		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
 		"Final Score: " + std::to_string(score), 1, 8, 12, 5);
 	ui->SetUIElementBorderColor("FinalScore", 135, 206, 250);
 	ui->SetUIElementFontColor("FinalScore", 255, 168, 0);

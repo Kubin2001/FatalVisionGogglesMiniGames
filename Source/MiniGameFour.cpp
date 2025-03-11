@@ -148,9 +148,11 @@ void MiniGameFour::Clear() {
 	{
 		accuracyInt = 0;
 	}
+
+	int finalScore = ((score * 100) * (accuracy / 100));
 	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth * 0.5, 200,
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
-		"Final Score: " + std::to_string(score), 1, 8, 12, 5);
+		"Final Score: " + std::to_string(finalScore), 1, 8, 12, 5);
 	ui->SetUIElementBorderColor("FinalScore", 135, 206, 250);
 	ui->SetUIElementFontColor("FinalScore", 255, 168, 0);
 
@@ -160,7 +162,7 @@ void MiniGameFour::Clear() {
 	ui->SetUIElementBorderColor("FinalAccuracy", 135, 206, 250);
 	ui->SetUIElementFontColor("FinalAccuracy", 255, 168, 0);
 
-	SceneManager::AddData<int>("Final Score", score);
+	SceneManager::AddData<int>("Final Score", finalScore);
 	SceneManager::AddData<std::string>("Score File Path", "Data/gameFourScores.txt");
 }
 

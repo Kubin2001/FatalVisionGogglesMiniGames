@@ -3,9 +3,12 @@
 
 #include <filesystem>
 #include <vector>
+#include <string>
 #include "TextureManager.h"
 
+
 std::unordered_map<std::string, SDL_Texture*> TextureManager::Textures;
+std::vector<std::string> TextureManager::SupportedFormats;
 SDL_Renderer* TextureManager::renderer = nullptr;
 bool TextureManager::isInnit = false;
 
@@ -14,14 +17,34 @@ bool TextureManager::Start(SDL_Renderer *ren) {
    renderer = ren;
    if (renderer != nullptr) {
        isInnit = true;
+       SupportedFormats.emplace_back(".png");
+       SupportedFormats.emplace_back(".jpg");
+       SupportedFormats.emplace_back(".jpeg");
+       SupportedFormats.emplace_back(".bmp");
+       SupportedFormats.emplace_back(".gif");
+       SupportedFormats.emplace_back(".tif");
+       SupportedFormats.emplace_back(".tiff");
+       SupportedFormats.emplace_back(".tga");
+       SupportedFormats.emplace_back(".ico");
+       SupportedFormats.emplace_back(".cur");
+       SupportedFormats.emplace_back(".pcx");
+       SupportedFormats.emplace_back(".xpm");
        return isInnit;
    }
+
    return false;
 }
 
 
 bool TextureManager::isWorking() {
     return isInnit;
+}
+
+bool TextureManager::IsFormatSupported(const std::string& format) {
+    for (const auto& it : SupportedFormats) {
+        if (format == it) { return true; }
+    }
+    return false;
 }
 
 void TextureManager::LoadSingleTexture(const char* filePath, const std::string& name) {
@@ -39,11 +62,21 @@ void TextureManager::LoadSingleTexture(const char* filePath, const std::string& 
 
 void TextureManager::LoadMultipleTextures(const std::string& directory){
     for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(directory)) {
-        if (entry.path().extension() == ".png") {
+        if (IsFormatSupported(entry.path().extension().string())) {
             std::string pathString = entry.path().string();
             const char* path = pathString.c_str();
             std::string name = entry.path().stem().string();
             LoadSingleTexture(path, name);
+        }
+    }
+}
+
+void TextureManager::DeepLoad(const std::string& directory) {
+    LoadMultipleTextures(directory);
+    for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(directory)) {
+        if (entry.is_directory()) {
+            const std::string path = entry.path().string();
+            DeepLoad(path);
         }
     }
 }

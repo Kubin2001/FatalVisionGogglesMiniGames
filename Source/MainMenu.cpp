@@ -106,6 +106,10 @@ void MainMenu::Init(SDL_Renderer* renderer, UI* ui) {
         ui->GetFont("arial20px"), "Game8", 1, 8, 12, 5);
     ui->SetUIElementBorderColor("GameSubTab8", 135, 206, 250);
     ui->SetUIElementFontColor("GameSubTab8", 255, 168, 0);
+
+    for (auto& it : ui->GetInteractionBoxes()) {
+        it->SetHoverFilter(true, 255, 255, 255, 150);
+    }
 }
 
 

@@ -129,7 +129,7 @@ void MiniGameOne::Clear() {
 	}
 	else{accuracyInt = 0;}
 
-	int finalScore = (score -(createdCircles - score)) * accuracy; // Chyba nie mo¿e byæ dzielenia przez zero ale jest +1 jakby co
+	int finalScore = ((score * 100) * (accuracy / 100)) - ((score - createdCircles) *100);// -createdCircles - clicks;
 
 	ui->CreateButton("Circles Clicked", 0, 0, Global::windowWidth /3, 200,
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),

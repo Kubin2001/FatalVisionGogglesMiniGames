@@ -130,14 +130,15 @@ void TemplateUIElement::Render(SDL_Renderer* renderer) {
         }
         else {
             SDL_RenderCopy(renderer, GetTexture(), NULL, GetRectangle());
-            if (hovered && hoverable) {
-                SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-                SDL_SetRenderDrawColor(renderer, hooverFilter[0], hooverFilter[1], hooverFilter[2], hooverFilter[3]);
-                SDL_RenderFillRect(renderer, &rectangle);
+        }
 
-                SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
-                SDL_SetRenderDrawColor(renderer, Global::defaultDrawColor[0], Global::defaultDrawColor[1], Global::defaultDrawColor[2], 255);
-            }
+        if (hovered && hoverable) {
+            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+            SDL_SetRenderDrawColor(renderer, hooverFilter[0], hooverFilter[1], hooverFilter[2], hooverFilter[3]);
+            SDL_RenderFillRect(renderer, &rectangle);
+
+            SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+            SDL_SetRenderDrawColor(renderer, Global::defaultDrawColor[0], Global::defaultDrawColor[1], Global::defaultDrawColor[2], 255);
         }
 
 
