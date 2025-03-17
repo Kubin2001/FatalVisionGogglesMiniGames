@@ -106,6 +106,7 @@ void MiniGameOne::Input(SDL_Event &event) {
 
 				score++;
 				PopingCircles.erase(PopingCircles.begin() + i);
+				SoundManager::PlaySound("coin");
 				break;
 			}
 		}

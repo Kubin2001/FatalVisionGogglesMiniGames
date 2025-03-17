@@ -116,6 +116,7 @@ void MiniGameFour::Input(SDL_Event& event) {
 					score++;
 					PopingCircles.erase(PopingCircles.begin() + i);
 					ui->GetButtons()[0]->SetText("Score: " + std::to_string(GetScore()));
+					SoundManager::PlaySound("coin");
 					break;
 				}
 			}

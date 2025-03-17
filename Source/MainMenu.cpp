@@ -108,7 +108,8 @@ void MainMenu::Init(SDL_Renderer* renderer, UI* ui) {
     ui->SetUIElementFontColor("GameSubTab8", 255, 168, 0);
 
     for (auto& it : ui->GetInteractionBoxes()) {
-        it->SetHoverFilter(true, 255, 255, 255, 150);
+        it->SetHoverFilter(true, 255, 255, 255, 150,"hoverSound");
+        it->SetClickSound("click");
     }
 }
 

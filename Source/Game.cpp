@@ -24,6 +24,8 @@ void Game::Start() {
     Global::defaultDrawColor[2] = 30;
     SDL_SetRenderDrawColor(renderer, Global::defaultDrawColor[0], Global::defaultDrawColor[1], Global::defaultDrawColor[2], 255);
     TextureManager::Start(renderer);
+    SoundManager::Innit();
+    SoundManager::LoadSounds("Sounds");
     LoadTextures();
 
     ui = std::make_unique<UI>(renderer);

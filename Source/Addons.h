@@ -141,102 +141,82 @@ void AnyData::Set(T tempData) {
     temp->data = tempData;
 }
 
-/*Pointer for ref safety in containers like std vector for use with ref Pointer*/
-
+// Wraped Pointer class for container safety
 template <typename T>
-class WrappedPointer {
+class WrapPtr {
     private:
-        T* pointer = nullptr;
+    T* pointer = nullptr;
 
     public:
 
-        T*& Get() {
-            return pointer;
-        }
+    T*& Get() { return pointer; }
 
-        T& GetVal() {
-            return *pointer;
-        }
+    T& GetVal() { return *pointer; }
 
-        T& operator*() {
-            return *pointer;
-        }
+    T& operator*() { return *pointer; }
 
-        T* operator->() {
-            return pointer;
-        }
+    T* operator->() { return pointer; }
 };
 
 /*Designed to work only with Warped Pointer Class*/
 
 template <typename T>
-class RefPointer {
+class RefPtr {
     private:
-        T* mainArgument = nullptr;
-        std::vector<T**> references;
+    T* mainArgument = nullptr;
+    std::vector<T**> references;
     public:
 
-        RefPointer() {
+    RefPtr() = default;
 
+
+    RefPtr(T* mainArg) {
+        mainArgument = mainArg;
+    }
+
+    RefPtr(const RefPtr<T>& other) = delete;
+
+    RefPtr(RefPtr<T>&& other) noexcept {
+        mainArgument = other.mainArgument;
+        other.mainArgument = nullptr;
+
+        references = std::move(other.references);
+    }
+
+    void Make(T* mainArg) {
+        mainArgument = mainArg;
+    }
+
+    T* Get() {
+        return mainArgument;
+    }
+
+    T& GetVal() {
+        return *mainArgument;
+    }
+
+    void AddRef(T*& ref) {
+        ref = mainArgument;
+        references.push_back(&ref);
+    }
+
+    void ClearRefs() {
+        for (auto& it : references) {
+            *it = nullptr;
         }
+    }
 
 
-        RefPointer(T* mainArg) {
-            mainArgument = mainArg;
-        }
+    ~RefPtr() {
+        delete mainArgument;
+    }
 
+    T& operator*() {
+        return *mainArgument;
+    }
 
-        void Make(T* mainArg) {
-            mainArgument = mainArg;
-        }
-
-        T* Get() {
-            return mainArgument;
-        }
-
-        T& GetVal() {
-            return *mainArgument;
-        }
-
-        void AddRef(T*& ref) {
-            ref = mainArgument;
-            references.push_back(&ref);
-        }
-
-        ~RefPointer() {
-            for (auto& it : references) {
-                *it = nullptr;
-            }
-            delete mainArgument;
-        }
-
-        T& operator*() {
-            return *mainArgument;
-        }
-
-        T* operator->() {
-            return mainArgument;
-        }
-
-        size_t RefCount() {
-            return references.size();
-        }
-
-        void ClearRef(T*& ref) {
-
-            for (size_t i = 0; i < references.size(); i++) {
-                if (references[i] == &ref) {
-                    references.erase(references.begin() + i);
-                    break;
-                }
-            }
-        }
-
-        void ClearRefs() {
-            for (auto& it : references) {
-                *it = nullptr;
-            }
-            references.clear();
-        }
+    T* operator->() {
+        return mainArgument;
+    }
 
 };

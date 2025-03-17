@@ -244,12 +244,17 @@ void TemplateUIElement::SetHover(bool temp) {
     hovered = temp;
 }
 
-void TemplateUIElement::SetHoverFilter(const bool filter, const unsigned char R, const unsigned char G, const unsigned char B, const unsigned char A) {
+void TemplateUIElement::SetHoverFilter(const bool filter, const unsigned char R, const unsigned char G, const unsigned char B, const unsigned char A, const std::string& sound) {
     this->hoverable = filter;
     hooverFilter[0] = R;
     hooverFilter[1] = G;
     hooverFilter[2] = B;
     hooverFilter[3] = A;
+    hooverSound = sound;
+}
+
+std::string& TemplateUIElement::GetHooverSound() {
+    return hooverSound;
 }
 
 //BUTTON
@@ -315,6 +320,14 @@ void InteractionBox::TurnOff() {
 bool InteractionBox::IsOn() {
     return turnedOn;
 }
+
+void InteractionBox::SetClickSound(const std::string& temp) {
+    this->clickSound = temp;
+}
+
+std::string& InteractionBox::GetClickSound() {
+    return clickSound;
+}
 //InteractionBox
 
 UI::UI(SDL_Renderer* renderer) {
@@ -323,6 +336,9 @@ UI::UI(SDL_Renderer* renderer) {
     if (TextureManager::isWorking()) {
         LoadTextures();
     }
+
+    lastMousePos.x = -10000000;
+    lastMousePos.y = -10000000;
 }
 
 
@@ -481,6 +497,13 @@ void UI::CheckHover() {
     for (auto& it : Buttons) {
         if (SimpleCollision(*it->GetRectangle(), rect)) {
             it->SetHover(true);
+            // patrzenie czy mo¿e byæ wydany dŸwiêk tylko wtedy zadzia³a gdy mysz pierwszy raz jest na przycisku
+            if (it->GetHooverSound() != "") { 
+                SDL_Rect prevMousePos{ lastMousePos.x,lastMousePos.y,1,1 };
+                if (!SimpleCollision(prevMousePos, *it->GetRectangle())) {
+                    SoundManager::PlaySound(it->GetHooverSound());
+                }
+            }
         }
         else
         {
@@ -490,6 +513,13 @@ void UI::CheckHover() {
     for (auto& it : MassageBoxes) {
         if (SimpleCollision(*it->GetRectangle(), rect)) {
             it->SetHover(true);
+            // patrzenie czy mo¿e byæ wydany dŸwiêk tylko wtedy zadzia³a gdy mysz pierwszy raz jest na przycisku
+            if (it->GetHooverSound() != "") {
+                SDL_Rect prevMousePos{ lastMousePos.x,lastMousePos.y,1,1 };
+                if (!SimpleCollision(prevMousePos, *it->GetRectangle())) {
+                    SoundManager::PlaySound(it->GetHooverSound());
+                }
+            }
         }
         else
         {
@@ -499,6 +529,13 @@ void UI::CheckHover() {
     for (auto& it : InteractionBoxes) {
         if (SimpleCollision(*it->GetRectangle(), rect)) {
             it->SetHover(true);
+            // patrzenie czy mo¿e byæ wydany dŸwiêk tylko wtedy zadzia³a gdy mysz pierwszy raz jest na przycisku
+            if (it->GetHooverSound() != "") {
+                SDL_Rect prevMousePos{ lastMousePos.x,lastMousePos.y,1,1 };
+                if (!SimpleCollision(prevMousePos, *it->GetRectangle())) {
+                    SoundManager::PlaySound(it->GetHooverSound());
+                }
+            }
         }
         else
         {
@@ -526,6 +563,9 @@ void UI::CheckInteractionBoxes(SDL_Event& event) {
                 SDL_Rect temprect{ event.button.x ,event.button.y,1,1 };
                 if (SimpleCollision(*InteractionBoxes[i]->GetRectangle(), temprect)) {
                     InteractionBoxes[i]->SetStatus(true);
+                    if (InteractionBoxes[i]->GetClickSound() != "") {
+                        SoundManager::PlaySound(InteractionBoxes[i]->GetClickSound());
+                    }
                 }
             }
         }
@@ -624,6 +664,8 @@ void UI::SetUIElementFontColor(const std::string& name, unsigned char R, unsigne
 }
 
 void UI::ManageInput(SDL_Event& event) {
+    
+
     CheckHover();
 
     CheckMasageBoxInteraction(event);
@@ -631,6 +673,8 @@ void UI::ManageInput(SDL_Event& event) {
     ManageMassageBoxTextInput(event);
 
     CheckInteractionBoxes(event);
+
+    SDL_GetMouseState(&lastMousePos.x, &lastMousePos.y);
 }
 
 bool UI::DeleteButton(const std::string& name) {

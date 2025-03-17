@@ -77,7 +77,7 @@ bool Font::LoadTextInfo(const std::string& jsonPath) {
 
 
 // Basic text rendering with possition in left up corner of the button
-void Font::RenderText(SDL_Renderer* renderer, std::string text, SDL_Rect &btnRect, float scale, int interline, int textStartX, int textStartY) {
+void Font::RenderText(SDL_Renderer* renderer, const std::string &text, SDL_Rect &btnRect, float scale, int interline, int textStartX, int textStartY) {
     rectangle.x = btnRect.x + textStartX;
     rectangle.y = btnRect.y + textStartY;
     rectangle.w = 0;
@@ -101,7 +101,7 @@ void Font::RenderText(SDL_Renderer* renderer, std::string text, SDL_Rect &btnRec
     }
 }
 
-void Font::RenderTextCenter(SDL_Renderer* renderer, std::string text, SDL_Rect &btnRect, float scale, int interline, int textStartX, int textStartY) {
+void Font::RenderTextCenter(SDL_Renderer* renderer, const std::string& text, SDL_Rect &btnRect, float scale, int interline, int textStartX, int textStartY) {
     Point textSizes = CalculatePredefinedSize(text,interline);
 
     textSizes.x *= 0.5;
@@ -133,7 +133,7 @@ void Font::RenderTextCenter(SDL_Renderer* renderer, std::string text, SDL_Rect &
 }
 
 
-void Font::RenderTextFromRight(SDL_Renderer* renderer, std::string text, SDL_Rect& btnRect, float scale, int interline, int textStartX, int textStartY) {
+void Font::RenderTextFromRight(SDL_Renderer* renderer, const std::string& text, SDL_Rect& btnRect, float scale, int interline, int textStartX, int textStartY) {
     if (text.empty()) {
         return;
     }
@@ -163,7 +163,7 @@ void Font::RenderTextFromRight(SDL_Renderer* renderer, std::string text, SDL_Rec
 
 
 //Only use if button text is static and will not change between frames
-void Font::RenderTextCenterPred(SDL_Renderer* renderer, std::string text, SDL_Rect& btnRect, Point& textSizes, float scale, int interline, int textStartX, int textStartY) {
+void Font::RenderTextCenterPred(SDL_Renderer* renderer, const std::string& text, SDL_Rect& btnRect, Point& textSizes, float scale, int interline, int textStartX, int textStartY) {
     textSizes.x *= 0.5;
     textSizes.y *= 0.5;
     Point center = GetRectangleCenter(btnRect);

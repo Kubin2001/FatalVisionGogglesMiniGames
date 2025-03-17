@@ -7,7 +7,7 @@
 #include "Font.h"
 #include "TextureManager.h"
 #include "unordered_map"
-
+#include "SoundManager.h"
 
 class TemplateUIElement {
 protected:
@@ -45,6 +45,8 @@ protected:
     bool hoverable = false; // Is hover filter aplied with mouse collisojn
 
     unsigned char hooverFilter[4] = { 0,0,0,0 };
+
+    std::string hooverSound = "";
 
 public:
 
@@ -112,7 +114,9 @@ public:
 
     void SetHover(bool temp);
 
-    void SetHoverFilter(const bool filter,const unsigned char R, const unsigned char G, const unsigned char B, const unsigned char A);
+    void SetHoverFilter(const bool filter,const unsigned char R, const unsigned char G, const unsigned char B, const unsigned char A, const std::string &sound = "");
+
+    std::string& GetHooverSound();
 
 };
 
@@ -121,6 +125,8 @@ class InteractionBox : public TemplateUIElement {
 private:
     bool status = false;
     bool turnedOn = true;
+
+    std::string clickSound = "";
 public:
     bool GetStatus();
 
@@ -133,6 +139,11 @@ public:
     void TurnOff();
 
     bool IsOn();
+
+    void SetClickSound(const std::string &temp);
+
+    std::string &GetClickSound();
+
 
 };
 
@@ -168,6 +179,8 @@ private:
     std::unordered_map<std::string, InteractionBox*> InteractionBoxesMap;
 
     FontManager* fontManager;
+
+    Point lastMousePos;
 
 public:
 
