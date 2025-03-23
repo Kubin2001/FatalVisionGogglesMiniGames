@@ -18,6 +18,13 @@ void Game::Start() {
     SDL_Init(SDL_INIT_EVERYTHING);
     window = SDL_CreateWindow("Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, Global::windowWidth, Global::windowHeight, SDL_WINDOW_SHOWN);
     renderer = SDL_CreateRenderer(window, -1,SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+
+    SDL_GetWindowSize(window, &Global::windowWidth, &Global::windowHeight);
+
+    std::cout << "X: " << Global::windowWidth << "Y: " << Global::windowHeight << "\n";
+
+
 
     Global::defaultDrawColor[0] = 30;
     Global::defaultDrawColor[1] = 30;

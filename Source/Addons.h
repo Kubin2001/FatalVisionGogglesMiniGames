@@ -220,3 +220,5 @@ class RefPtr {
     }
 
 };
+
+void ScaleRectanglesToScreen(std::vector<SDL_Rect>& vec, int count, int desiredY, int width, int height, int xSpace,bool clearVec = true);

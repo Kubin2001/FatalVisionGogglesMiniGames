@@ -6,6 +6,7 @@
 #include <string>
 #include <algorithm>
 #include <cctype>
+#include "Addons.h"
 
 bool IsNumeric(const std::string& str) {
 	return std::all_of(str.begin(), str.end(), ::isdigit);
@@ -141,18 +142,28 @@ void MiniGameFive::SetUpShowingStage() {
 
 
 void MiniGameFive::SetUpQuestionStage() {
-	ui->CreateButton("StarsIcon", 100, 300, 100, 100, TextureManager::GetTextureByName("StarIcon"), nullptr, "", 1.0f, 0, 0, 5);
+	std::vector <SDL_Rect> vec;
+	ScaleRectanglesToScreen(vec, 3, 300, 100, 100, 100);
+	ui->CreateButton("StarsIcon", vec[0].x, vec[0].y, vec[0].w, vec[0].h,
+		TextureManager::GetTextureByName("StarIcon"), nullptr, "", 1.0f, 0, 0, 5);
 	ui->SetUIElementBorderColor("StarsIcon", 135, 206, 250);
-	ui->CreateButton("TrianglesIcon", 650, 300, 100, 100, TextureManager::GetTextureByName("TriangleIcon"), nullptr, "", 1.0f, 0, 0, 5);
+	ui->CreateButton("TrianglesIcon", vec[1].x, vec[1].y, vec[1].w, vec[1].h,
+		TextureManager::GetTextureByName("TriangleIcon"), nullptr, "", 1.0f, 0, 0, 5);
 	ui->SetUIElementBorderColor("TrianglesIcon", 135, 206, 250);
-	ui->CreateButton("ThundersIcon", 1200, 300, 100, 100, TextureManager::GetTextureByName("ThunderIcon"), nullptr, "", 1.0f, 0, 0, 5);
+	ui->CreateButton("ThundersIcon", vec[2].x, vec[2].y, vec[2].w, vec[2].h,
+		TextureManager::GetTextureByName("ThunderIcon"), nullptr, "", 1.0f, 0, 0, 5);
 	ui->SetUIElementBorderColor("ThundersIcon", 135, 206, 250);
 
-	ui->CreateMassageBox("StarsIconMS", 100, 450, 100, 100, nullptr, ui->GetFont("arial40px"), "", 1.0f, 30, 30, 5);
-	ui->CreateMassageBox("TrianglesIconMS", 650, 450, 100, 100, nullptr, ui->GetFont("arial40px"), "", 1.0f, 30, 30, 5);
-	ui->CreateMassageBox("ThundersIconMS", 1200, 450, 100, 100, nullptr, ui->GetFont("arial40px"), "", 1.0f, 30, 30, 5);
+	ScaleRectanglesToScreen(vec, 3, 450, 100, 100, 100);
 
-	ui->CreateInteractionBox("SubmitButton", 500, 600, 400, 100, nullptr, ui->GetFont("arial40px"), "   Submit", 1.0f, 10, 10, 5);
+	ui->CreateMassageBox("StarsIconMS", vec[0].x, vec[0].y, vec[0].w, vec[0].h, nullptr, ui->GetFont("arial40px"), "", 1.0f, 30, 30, 5);
+	ui->CreateMassageBox("TrianglesIconMS", vec[1].x, vec[1].y, vec[1].w, vec[1].h, nullptr, ui->GetFont("arial40px"), "", 1.0f, 30, 30, 5);
+	ui->CreateMassageBox("ThundersIconMS", vec[2].x, vec[2].y, vec[2].w, vec[2].h, nullptr, ui->GetFont("arial40px"), "", 1.0f, 30, 30, 5);
+
+
+
+	ScaleRectanglesToScreen(vec, 1, 600, 400, 100, 100);
+	ui->CreateInteractionBox("SubmitButton", vec[0].x, vec[0].y, vec[0].w, vec[0].h, nullptr, ui->GetFont("arial40px"), "   Submit", 1.0f, 10, 10, 5);
 	ui->SetUIElementBorderColor("SubmitButton", 60, 179, 113);
 }
 
@@ -164,7 +175,7 @@ void MiniGameFive::ManageStages() {
 			time--;
 		}
 		ui->GetButtonByName("TimeButton")->SetText("Time: " + std::to_string(GetTime()));
-		if (Global::frameCounter - timer > 120) {// 600 = 10 sekund
+		if (Global::frameCounter - timer > 600) {// 600 = 10 sekund
 			SetUpQuestionStage();
 			PopingFigures.clear();
 			currentGameState = 1;

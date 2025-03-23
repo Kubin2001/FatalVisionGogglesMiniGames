@@ -20,21 +20,41 @@ void EndScreen::Init(SDL_Renderer* renderer, UI* ui) {
     this->renderer = renderer;
     this->ui = ui;
 
-    ui->CreateButton("MainMenuIcon", 200, 400, 200, 200, TextureManager::GetTextureByName("MenuIcon"), ui->GetFont("arial20px"),
+    std::vector<SDL_Rect> vec1;
+    ScaleRectanglesToScreen(vec1, 3, 400, 200, 200, 250);
+
+    ui->CreateButton("MainMenuIcon", vec1[0].x, vec1[0].y, vec1[0].w, vec1[0].h,
+        TextureManager::GetTextureByName("MenuIcon"), ui->GetFont("arial20px"),
         "", 0, 0, 0, 5);
     ui->SetUIElementBorderColor("MainMenuIcon", 135, 206, 250);
 
-    ui->CreateInteractionBox("MainMenuButton", 200, 600, 200, 100,
+    ui->CreateInteractionBox("ScoreBoardIcon", vec1[1].x, vec1[1].y, vec1[1].w, vec1[1].h,
+        TextureManager::GetTextureByName("ScoreIcon"), ui->GetFont("arial20px"),
+        "", 0, 0, 0, 5);
+    ui->SetUIElementBorderColor("ScoreBoardIcon", 135, 206, 250);
+
+    ui->CreateButton("RetryIcon", vec1[2].x, vec1[2].y, vec1[2].w, vec1[2].h,
+        TextureManager::GetTextureByName("RetryIcon"), ui->GetFont("arial20px"),
+        "", 0, 0, 0, 5);
+    ui->SetUIElementBorderColor("RetryIcon", 135, 206, 250);
+
+
+
+
+    ScaleRectanglesToScreen(vec1, 3, 625, 200, 100, 250);
+    ui->CreateInteractionBox("MainMenuButton", vec1[0].x, vec1[0].y, vec1[0].w, vec1[0].h,
         TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
         "      Main Menu", 1, 8, 40, 5);
     ui->SetUIElementBorderColor("MainMenuButton", 135, 206, 250);
     ui->SetUIElementFontColor("MainMenuButton", 255, 168, 0);
 
-    ui->CreateButton("RetryIcon", Global::windowWidth - 400, 400, 200, 200, TextureManager::GetTextureByName("RetryIcon"), ui->GetFont("arial20px"),
-        "", 0, 0, 0, 5);
-    ui->SetUIElementBorderColor("RetryIcon", 135, 206, 250);
+    ui->CreateInteractionBox("ScoreBoardButton", vec1[1].x, vec1[1].y, vec1[1].w, vec1[1].h,
+        TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+        "      Submit", 1, 8, 40, 5);
+    ui->SetUIElementBorderColor("ScoreBoardButton", 135, 206, 250);
+    ui->SetUIElementFontColor("ScoreBoardButton", 255, 168, 0);
 
-    ui->CreateInteractionBox("RetryButton", Global::windowWidth - 400, 600, 200, 100,
+    ui->CreateInteractionBox("RetryButton", vec1[2].x, vec1[2].y, vec1[2].w, vec1[2].h,
         TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
         "         Retry", 1, 8, 40, 5);
     ui->SetUIElementBorderColor("RetryButton", 135, 206, 250);
@@ -42,18 +62,9 @@ void EndScreen::Init(SDL_Renderer* renderer, UI* ui) {
 
 
 
-    ui->CreateInteractionBox("ScoreBoardIcon", 600, 400, 200, 200, TextureManager::GetTextureByName("ScoreIcon"), ui->GetFont("arial20px"),
-        "", 0, 0, 0, 5);
-    ui->SetUIElementBorderColor("ScoreBoardIcon", 135, 206, 250);
-
-    ui->CreateInteractionBox("ScoreBoardButton", 600, 600, 200, 100,
-        TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
-        "      Submit", 1, 8, 40, 5);
-    ui->SetUIElementBorderColor("ScoreBoardButton", 135, 206, 250);
-    ui->SetUIElementFontColor("ScoreBoardButton", 255, 168, 0);
-
     for (auto& it : ui->GetInteractionBoxes()) {
-        it->SetHoverFilter(true, 255, 255, 255, 150);
+        it->SetHoverFilter(true, 255, 255, 255, 150, "hoverSound");
+        it->SetClickSound("click");
     }
 }
 

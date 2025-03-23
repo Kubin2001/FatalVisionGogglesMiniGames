@@ -1,4 +1,5 @@
 #include "Addons.h"
+#include "GlobalVariables.h"
 
 Point::Point() {
 
@@ -283,3 +284,33 @@ unsigned int PointsDistance(const Point point, const Point point2) {
 	return std::abs(point.x - point2.x) + std::abs(point.y - point2.y);
 }
 
+void ScaleRectanglesToScreen(std::vector<SDL_Rect>& vec, int count, int desiredY, int width, int height, int xSpace, bool clearVec) {
+	if (clearVec) { vec.clear(); }
+	vec.reserve(count);
+
+	if ((count & 1) == 1) { // nieparzyste
+		int centerPoint = (Global::windowWidth / 2) - (width / 2); //Center x of the screen minus half of width
+
+		int jump = width + xSpace;
+		int startX = centerPoint - (jump * (count /(2)));
+
+		for (int i = 0; i < count; i++){
+			vec.emplace_back(startX, desiredY, width, height);
+			startX += jump;
+
+		}
+	}
+	else{
+		int centerPoint = (Global::windowWidth / 2) - (width + (xSpace /2)); //Possition of lower half rectangle
+
+
+		int jump = width + xSpace;
+		int startX = centerPoint - (jump * (count / (2 +1)));
+
+		for (int i = 0; i < count; i++) {
+			vec.emplace_back(startX, desiredY, width, height);
+			startX += jump;
+
+		}
+	}
+}
