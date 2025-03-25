@@ -75,8 +75,8 @@ void MainMenu::Init(SDL_Renderer* renderer, UI* ui) {
     ui->SetUIElementFontColor("GameTab5", 255, 168, 0);
 
     ui->CreateButton("GameTab6", vec1[2].x, vec1[2].y, vec1[2].w, vec1[2].h,
-        TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
-        "Precision2", 1, 8, 12, 5);
+        TextureManager::GetTextureByName("GameIcon6"), ui->GetFont("arial20px"),
+        "", 1, 8, 12, 5);
     ui->SetUIElementBorderColor("GameTab6", 135, 206, 250);
     ui->SetUIElementFontColor("GameTab6", 255, 168, 0);
 
@@ -98,9 +98,15 @@ void MainMenu::Init(SDL_Renderer* renderer, UI* ui) {
 
     ui->CreateInteractionBox("GameSubTab6", vec1[2].x, vec1[2].y, vec1[2].w, vec1[2].h,
         TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
-        "Game6", 1, 8, 12, 5);
+        "Stres Test", 1, 8, 12, 5);
     ui->SetUIElementBorderColor("GameSubTab6", 135, 206, 250);
     ui->SetUIElementFontColor("GameSubTab6", 255, 168, 0);
+
+    ui->CreateInteractionBox("Exit", Global::windowWidth - 100, 0, 100, 100,
+        TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+        "Exit", 1, 8, 12, 5);
+    ui->SetUIElementBorderColor("Exit", 135, 206, 250);
+    ui->SetUIElementFontColor("Exit", 255, 168, 0);
 
 
     for (auto& it : ui->GetInteractionBoxes()) {
@@ -143,6 +149,16 @@ void MainMenu::Input(SDL_Event& event) {
         SceneManager::GetData<int>("Game State") = 1;
         SceneManager::GetData<int>("Current Game") = 5;
         SceneManager::SwitchScene("MiniGameFive", renderer, ui);
+    }
+
+    else if (ui->GetInteractionBoxByName("GameSubTab6")->ConsumeStatus()) {
+        SceneManager::GetData<int>("Game State") = 1;
+        SceneManager::GetData<int>("Current Game") = 6;
+        SceneManager::SwitchScene("MiniGameSix", renderer, ui);
+    }
+
+    else if (ui->GetInteractionBoxByName("Exit")->ConsumeStatus()) {
+        Global::status = false;
     }
 }
 

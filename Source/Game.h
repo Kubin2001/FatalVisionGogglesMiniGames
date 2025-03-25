@@ -7,6 +7,7 @@
 #include "MiniGameThree.h"
 #include "MiniGameFour.h"
 #include "MiniGameFive.h"
+#include "MiniGameSix.h"
 #include "UI.h"
 #include <memory>
 

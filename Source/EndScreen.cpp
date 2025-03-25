@@ -123,6 +123,14 @@ void EndScreen::Input(SDL_Event& event) {
                 return;
             }
 
+        case 6:
+            if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
+                SceneManager::GetData<int>("Game State") = 1;
+                SceneManager::GetData<int>("Current Game") = 6;
+                SceneManager::SwitchScene("MiniGameSix", renderer, ui);
+                return;
+            }
+
             break;
     }
     ScoreBoardInput(event);

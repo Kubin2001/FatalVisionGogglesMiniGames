@@ -56,6 +56,8 @@ void Game::Start() {
 
     MiniGameFive* miniGameFive = new MiniGameFive();
 
+    MiniGameSix* miniGameSix = new MiniGameSix();
+
     EndScreen* endScreen = new EndScreen();
 
     SceneManager::AddScene(mainMenu,"Main Menu");
@@ -69,6 +71,8 @@ void Game::Start() {
     SceneManager::AddScene(miniGameFour, "MiniGameFour");
 
     SceneManager::AddScene(miniGameFive, "MiniGameFive");
+
+    SceneManager::AddScene(miniGameSix, "MiniGameSix");
 
     SceneManager::AddScene(endScreen, "EndScreen");
 
