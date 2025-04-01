@@ -57,15 +57,16 @@ void Logger::SetUpNewSession(const std::string& playerName, int gameType) {
 			if (name == playerName) {
 				currentPath = entry.path().string() + "/" + std::to_string(LogFileCount(entry.path().string())) + ".txt";
 				std::ofstream logFile(currentPath);
+				Logger::Log(std::to_string(SceneManager::GetData<bool>("UsesGoogles")) + "\n");
 				return;
 			}
 		}
-		std::cout << name << "\n";
     }
 	std::filesystem::path newFolder = directory +"/" + playerName;
 	if (std::filesystem::create_directory(newFolder)) {
 		currentPath = newFolder.string() + "/1.txt";
 		std::ofstream logFile(currentPath);
+		Logger::Log(std::to_string(SceneManager::GetData<bool>("UsesGoogles")) + "\n");
 
 	}
 	else {

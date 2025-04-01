@@ -5,10 +5,11 @@ Added:
 - Added Completion Screen
 - 6 unique games
 - Added Scoreboard
+- All data Logging
+- Username before start
 
 To add
-- All data saving
-- Username before game start 
+
 - Info box
 
 

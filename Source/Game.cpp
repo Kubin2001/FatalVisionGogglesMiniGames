@@ -79,8 +79,9 @@ void Game::Start() {
     SceneManager::SwitchScene("Main Menu",renderer,ui.get());
 
 
-    //Ustawianie na pocz¹tek pustego nicku gracza
+    //Ustawianie na pocz¹tek pustego nicku gracza i false jako ¿e gra leci bez googli 
     SceneManager::AddData<std::string>("PlayerName", "");
+    SceneManager::AddData<bool>("UsesGoogles",false);
 }
 
 

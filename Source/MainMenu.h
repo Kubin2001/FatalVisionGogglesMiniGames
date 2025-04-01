@@ -19,4 +19,6 @@ class MainMenu :public Scene{
 
 	private:
 		void ManagePlayerName(SDL_Event& event);
+
+		void ManageDrunkBox();
 };
