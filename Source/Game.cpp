@@ -77,6 +77,10 @@ void Game::Start() {
     SceneManager::AddScene(endScreen, "EndScreen");
 
     SceneManager::SwitchScene("Main Menu",renderer,ui.get());
+
+
+    //Ustawianie na pocz¹tek pustego nicku gracza
+    SceneManager::AddData<std::string>("PlayerName", "");
 }
 
 

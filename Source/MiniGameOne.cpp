@@ -4,6 +4,7 @@
 #include "TextureManager.h"
 #include "Colision.h"
 #include <string>
+#include "Logger.h"
 
 
 PopingCricle::PopingCricle(int x, int y, int w, int h) {
@@ -36,6 +37,8 @@ void MiniGameOne::Init(SDL_Renderer* renderer, UI* ui) {
 		"Time: " + std::to_string(GetTime()), 1, 8, 12, 5);
 	ui->SetUIElementBorderColor("TimeButton", 135, 206, 250);
 	ui->SetUIElementFontColor("TimeButton", 255, 168, 0);
+
+	Logger::SetUpNewSession(SceneManager::GetData<std::string>("PlayerName"), SceneManager::GetData<int>("Current Game"));
 }
 
 
@@ -48,7 +51,7 @@ void MiniGameOne::FrameUpdate() {
 	if (Global::frameCounter % 60 == 0) {
 		ManageTime();
 		ui->GetButtons()[1]->SetText("Time: " + std::to_string(GetTime()));
-		if (GetTime() < 28) { //bazowo na 1
+		if (GetTime() < 10) { //bazowo na 1
 			SceneManager::GetData<int>("Game State") = 2;
 			SceneManager::GetData<int>("Current Game") = 1;
 			SceneManager::SwitchScene("EndScreen",renderer,ui);
@@ -72,6 +75,7 @@ void MiniGameOne::ManageLifespan() {
 			if (PopingCircles.size() > 0) {
 				i--;
 			}
+			Logger::Log(std::to_string(Global::frameCounter) + ",Cricle Died not clicked");
 
 		}
 	}
@@ -86,6 +90,7 @@ void MiniGameOne::ManageCreation() {
 			int w = (rand() % 60) + 10;
 			int h = w;
 			CreateCircle(x, y, w, h);
+			Logger::Log(std::to_string(Global::frameCounter) + ",Circle Created");
 		}
 	}
 }
@@ -107,7 +112,12 @@ void MiniGameOne::Input(SDL_Event &event) {
 				score++;
 				PopingCircles.erase(PopingCircles.begin() + i);
 				SoundManager::PlaySound("coin");
+				Logger::Log(std::to_string(Global::frameCounter) + ",Circle Clicked by player");
 				break;
+			}
+			else
+			{
+				Logger::Log(std::to_string(Global::frameCounter) + ",PLayer clicked but missed circle");
 			}
 		}
 	}

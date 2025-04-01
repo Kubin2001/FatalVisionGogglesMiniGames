@@ -10,6 +10,7 @@ void MiniGameSix::Init(SDL_Renderer* renderer, UI* ui) {
 	time = 0;
 	speed = 1.0f;
 	score = 0;
+	spawnChance = 0;
 
 	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),

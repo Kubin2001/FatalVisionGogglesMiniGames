@@ -108,6 +108,9 @@ void MainMenu::Init(SDL_Renderer* renderer, UI* ui) {
     ui->SetUIElementBorderColor("Exit", 135, 206, 250);
     ui->SetUIElementFontColor("Exit", 255, 168, 0);
 
+    ui->CreateMassageBox("PlayerNameBox", Global::windowWidth - 100, Global::windowHeight - 100, 100, 100,
+        TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"), "", 1, 8, 12, 5);
+
 
     for (auto& it : ui->GetInteractionBoxes()) {
         it->SetHoverFilter(true, 255, 255, 255, 150,"hoverSound");
@@ -125,6 +128,8 @@ void MainMenu::FrameUpdate() {
 }
 
 void MainMenu::Input(SDL_Event& event) {
+    ManagePlayerName(event);
+
     if (ui->GetInteractionBoxByName("GameSubTab1")->ConsumeStatus()) {
         SceneManager::GetData<int>("Game State") = 1;
         SceneManager::GetData<int>("Current Game") = 1;
@@ -168,4 +173,14 @@ void MainMenu::Render() {
 
 void MainMenu::Clear() {
     ui->ClearAllButtons();
+}
+
+
+void MainMenu::ManagePlayerName(SDL_Event &event) {
+    if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_RETURN) { 
+        ui->GetMassageBoxByName("PlayerNameBox")->GetText().pop_back(); // bo jest \n na koñcu
+        std::string playerName = ui->GetMassageBoxByName("PlayerNameBox")->GetText();
+        ui->GetMassageBoxByName("PlayerNameBox")->GetText().clear();
+        SceneManager::GetData<std::string>("PlayerName") = playerName;
+    }
 }

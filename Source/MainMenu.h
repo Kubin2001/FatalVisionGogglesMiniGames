@@ -16,4 +16,7 @@ class MainMenu :public Scene{
 		void Render()override;
 
 		void Clear()override;
+
+	private:
+		void ManagePlayerName(SDL_Event& event);
 };
