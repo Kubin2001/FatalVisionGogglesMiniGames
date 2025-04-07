@@ -31,7 +31,6 @@ class MiniGameTwo : public Scene{
 		int score = 10000;
 		unsigned short tries = 6;
 		unsigned int clicks = 0;
-		int delay = 15;
 		bool colided = false;
 
 		unsigned short moveSpeed = 6;

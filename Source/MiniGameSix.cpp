@@ -1,6 +1,7 @@
 #include "MiniGameSix.h"
 #include "GlobalVariables.h"
 #include "Colision.h"
+#include "Logger.h"
 
 
 void MiniGameSix::Init(SDL_Renderer* renderer, UI* ui) {
@@ -39,6 +40,8 @@ void MiniGameSix::Init(SDL_Renderer* renderer, UI* ui) {
 	SDL_Rect upRect{ 0,150,Global::windowWidth,100 };
 	*borderUp.GetRectangle() = upRect;
 	borderUp.SetTexture(TextureManager::GetTextureByName("GenericOrangeSquare"));
+
+	Logger::SetUpNewSession(SceneManager::GetData<std::string>("PlayerName"), SceneManager::GetData<int>("Current Game"));
 
 }
 
@@ -80,7 +83,7 @@ void MiniGameSix::LogicUpdate() {
 		if (collided) {
 			SceneManager::GetData<int>("Game State") = 2;
 			SceneManager::GetData<int>("Current Game") = 6;
-			SceneManager::SwitchScene("EndScreen", renderer, ui);
+			SceneManager::SwitchResetScene("EndScreen", renderer, ui);
 		}
 	}
 	

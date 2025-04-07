@@ -7,6 +7,14 @@
 #include <algorithm>
 #include <cctype>
 #include "Addons.h"
+#include "Logger.h"
+
+
+/*
+Lista logów
+1: Ile czego siê zespawnowa³o gwiazdy , trójk¹ty, pioruny
+2 : Co siê dobrze zgad³o gwiazdy , trójk¹ty, pioruny
+*/
 
 bool IsNumeric(const std::string& str) {
 	return std::all_of(str.begin(), str.end(), ::isdigit);
@@ -79,6 +87,8 @@ void MiniGameFive::Init(SDL_Renderer* renderer, UI* ui) {
 	ui->SetUIElementBorderColor("TimeButton", 135, 206, 250);
 	ui->SetUIElementFontColor("TimeButton", 255, 168, 0);
 	currentGameState = 0;
+
+	Logger::SetUpNewSession(SceneManager::GetData<std::string>("PlayerName"), SceneManager::GetData<int>("Current Game"));
 }
 
 void MiniGameFive::ReStage() {
@@ -108,7 +118,7 @@ void MiniGameFive::FrameUpdate() {
 	if (GetTries() == 0) {
 		SceneManager::GetData<int>("Game State") = 2;
 		SceneManager::GetData<int>("Current Game") = 5;
-		SceneManager::SwitchScene("EndScreen", renderer, ui);
+		SceneManager::SwitchResetScene("EndScreen", renderer, ui);
 	}
 }
 
@@ -137,6 +147,9 @@ void MiniGameFive::SetUpShowingStage() {
 		}
 	}
 	std::cout << "Stars: " << starCount << " Thunders: " << thunderCount << " Triangles: " << triangleCount << "\n";
+	Logger::Log(std::to_string(Global::frameCounter) + ",1," + std::to_string(starCount) + "," 
+		+ std::to_string(triangleCount) + ","
+		+ std::to_string(thunderCount));
 	timer = Global::frameCounter;
 }
 
@@ -202,15 +215,24 @@ void MiniGameFive::ManageStages() {
 		if (ui->GetInteractionBoxByName("SubmitButton")->GetStatus() && !text1.empty() && !text2.empty()&& !text3.empty()) {
 			ui->GetInteractionBoxByName("SubmitButton")->SetStatus(0);
 			if (IsNumeric(text1) && IsNumeric(text2) && IsNumeric(text3)) {
+				bool st = false;
+				bool tr = false;
+				bool th = false; // ile siê dobrze zgad³o
 				if (std::stoi(text1) == starCount) {
 					score++;
+					st = true;
 				}
 				if (std::stoi(text2) == triangleCount) {
 					score++;
+					tr = true;
 				}
 				if (std::stoi(text3) == thunderCount) {
 					score++;
+					th = true;
 				}
+				Logger::Log(std::to_string(Global::frameCounter) + ",2," + std::to_string(st) + ","
+					+ std::to_string(tr) + ","
+					+ std::to_string(th));
 				ui->ClearAllButtons();
 				tries--;
 				ReStage();

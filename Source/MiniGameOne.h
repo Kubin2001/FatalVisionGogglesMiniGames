@@ -11,6 +11,7 @@ class PopingCricle :public GameObjectBasic{
 	public:
 		int lifeSpan = 200; //5 sekund
 		PopingCricle(int x, int y, int w, int h);
+		unsigned int id = 0;
 };
 
 

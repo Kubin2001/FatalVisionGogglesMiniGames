@@ -4,7 +4,15 @@
 #include "TextureManager.h"
 #include "Colision.h"
 #include <string>
+#include "Logger.h"
 
+/*
+Lista logów
+1: Ko³o stworzone
+2: Ko³o umar³o ze staroœci przez brak klikniêcia
+3: Ko³o klikniête przez gracza
+4: Gracz nie trafi³ w ko³o klikna³ poza nie
+*/
 
 PopingCricleTwo::PopingCricleTwo(int x, int y, int w, int h) {
 	this->rectangle.x = x;
@@ -35,7 +43,7 @@ void MiniGameFour::Init(SDL_Renderer* renderer, UI* ui) {
 	score = 0;
 	time = 30;
 	clicks = 0;
-	delay = 15;
+	createdCircles = 0;
 
 	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
@@ -48,6 +56,8 @@ void MiniGameFour::Init(SDL_Renderer* renderer, UI* ui) {
 		"Time: " + std::to_string(GetTime()), 1, 8, 12, 5);
 	ui->SetUIElementBorderColor("TimeButton", 135, 206, 250);
 	ui->SetUIElementFontColor("TimeButton", 255, 168, 0);
+
+	Logger::SetUpNewSession(SceneManager::GetData<std::string>("PlayerName"), SceneManager::GetData<int>("Current Game"));
 }
 
 void MiniGameFour::LogicUpdate() {
@@ -64,12 +74,16 @@ void MiniGameFour::FrameUpdate() {
 
 void MiniGameFour::CreateCircle(int x, int y, int w, int h) {
 	PopingCircles.emplace_back(x, y, w, h);
+	createdCircles++;
+	PopingCircles.back().id = createdCircles;
+	Logger::Log(std::to_string(Global::frameCounter) + ",1," + std::to_string(PopingCircles.back().id));
 }
 
 void MiniGameFour::ManageLifespan() {
 	for (size_t i = 0; i < PopingCircles.size(); i++) {
 		PopingCircles[i].lifeSpan--;
 		if (PopingCircles[i].lifeSpan < 1) {
+			Logger::Log(std::to_string(Global::frameCounter) + ",2," + std::to_string(PopingCircles[i].id));
 			PopingCircles.erase(PopingCircles.begin() + i);
 			if (PopingCircles.size() > 0) {
 				i--;
@@ -95,38 +109,35 @@ void MiniGameFour::ManageCreation() {
 void MiniGameFour::ManageTime() {
 	time--;
 	ui->GetButtonByName("TimeButton")->SetText("Time: " + std::to_string(GetTime()));
-	if (GetTime() < 25) { //bazowo na 1
+	if (GetTime() < 1) { //bazowo na 1
 		SceneManager::GetData<int>("Game State") = 1;
 		SceneManager::GetData<int>("Current Game") = 4;
-		SceneManager::SwitchScene("EndScreen", renderer, ui);
+		SceneManager::SwitchResetScene("EndScreen", renderer, ui);
 	}
 }
 
 void MiniGameFour::Input(SDL_Event& event) {
-	if (event.button.button == SDL_BUTTON_LEFT) {
-		if (delay < 1) {
-			clicks++;
-			int x, y;
-			SDL_GetMouseState(&x, &y);
-			SDL_Rect mouse{ x,y,1,1 };
-			for (size_t i = 0; i < PopingCircles.size(); i++)
-			{
-				if (CircleMouseCollision(*PopingCircles[i].GetRectangle(), mouse)) {
+	if (event.type == SDL_MOUSEBUTTONUP) {
+		clicks++;
+		int x, y;
+		SDL_GetMouseState(&x, &y);
+		SDL_Rect mouse{ x,y,1,1 };
+		for (size_t i = 0; i < PopingCircles.size(); i++)
+		{
+			if (CircleMouseCollision(*PopingCircles[i].GetRectangle(), mouse)) {
 
-					score++;
-					PopingCircles.erase(PopingCircles.begin() + i);
-					ui->GetButtons()[0]->SetText("Score: " + std::to_string(GetScore()));
-					SoundManager::PlaySound("coin");
-					break;
-				}
+				score++;
+				Logger::Log(std::to_string(Global::frameCounter) + ",3," + std::to_string(PopingCircles[i].id));
+				PopingCircles.erase(PopingCircles.begin() + i);
+				ui->GetButtons()[0]->SetText("Score: " + std::to_string(GetScore()));
+				SoundManager::PlaySound("coin");
+				break;
 			}
-			delay = 6;
+			else{
+				Logger::Log(std::to_string(Global::frameCounter) + ",4," + std::to_string(PopingCircles[i].id));
+			}
 		}
-
-
-
 	}
-	delay--;
 
 }
 

@@ -60,23 +60,23 @@ void Game::Start() {
 
     EndScreen* endScreen = new EndScreen();
 
-    SceneManager::AddScene(mainMenu,"Main Menu");
+    SceneManager::AddRegisterScene(mainMenu,"Main Menu", []() { return new MainMenu(); });
 
-    SceneManager::AddScene(miniGameOne, "MiniGameOne");
+    SceneManager::AddRegisterScene(miniGameOne, "MiniGameOne", []() { return new MiniGameOne(); });
 
-    SceneManager::AddScene(miniGameTwo, "MiniGameTwo");
+    SceneManager::AddRegisterScene(miniGameTwo, "MiniGameTwo", []() { return new MiniGameTwo; });
 
-    SceneManager::AddScene(miniGameThree, "MiniGameThree");
+    SceneManager::AddRegisterScene(miniGameThree, "MiniGameThree", []() { return new MiniGameThree(); });
 
-    SceneManager::AddScene(miniGameFour, "MiniGameFour");
+    SceneManager::AddRegisterScene(miniGameFour, "MiniGameFour", []() { return new MiniGameFour(); });
 
-    SceneManager::AddScene(miniGameFive, "MiniGameFive");
+    SceneManager::AddRegisterScene(miniGameFive, "MiniGameFive", []() { return new MiniGameFive; });
 
-    SceneManager::AddScene(miniGameSix, "MiniGameSix");
+    SceneManager::AddRegisterScene(miniGameSix, "MiniGameSix", []() { return new MiniGameSix; });
 
-    SceneManager::AddScene(endScreen, "EndScreen");
+    SceneManager::AddRegisterScene(endScreen, "EndScreen", []() { return new EndScreen(); });
 
-    SceneManager::SwitchScene("Main Menu",renderer,ui.get());
+    SceneManager::SwitchResetScene("Main Menu",renderer,ui.get());
 
 
     //Ustawianie na pocz¹tek pustego nicku gracza i false jako ¿e gra leci bez googli 

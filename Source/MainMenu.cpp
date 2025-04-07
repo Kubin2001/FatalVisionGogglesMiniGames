@@ -140,33 +140,33 @@ void MainMenu::Input(SDL_Event& event) {
     if (ui->GetInteractionBoxByName("GameSubTab1")->ConsumeStatus()) {
         SceneManager::GetData<int>("Game State") = 1;
         SceneManager::GetData<int>("Current Game") = 1;
-        SceneManager::SwitchScene("MiniGameOne", renderer, ui);
+        SceneManager::SwitchResetScene("MiniGameOne", renderer, ui);
     }
     else if (ui->GetInteractionBoxByName("GameSubTab2")->ConsumeStatus()) {
         SceneManager::GetData<int>("Game State") = 1;
         SceneManager::GetData<int>("Current Game") = 2;
-        SceneManager::SwitchScene("MiniGameTwo", renderer, ui);
+        SceneManager::SwitchResetScene("MiniGameTwo", renderer, ui);
     }
     else if (ui->GetInteractionBoxByName("GameSubTab3")->ConsumeStatus()) {
         SceneManager::GetData<int>("Game State") = 1;
         SceneManager::GetData<int>("Current Game") = 3;
-        SceneManager::SwitchScene("MiniGameThree", renderer, ui);
+        SceneManager::SwitchResetScene("MiniGameThree", renderer, ui);
     }
     else if (ui->GetInteractionBoxByName("GameSubTab4")->ConsumeStatus()) {
         SceneManager::GetData<int>("Game State") = 1;
         SceneManager::GetData<int>("Current Game") = 4;
-        SceneManager::SwitchScene("MiniGameFour", renderer, ui);
+        SceneManager::SwitchResetScene("MiniGameFour", renderer, ui);
     }
     else if (ui->GetInteractionBoxByName("GameSubTab5")->ConsumeStatus()) {
         SceneManager::GetData<int>("Game State") = 1;
         SceneManager::GetData<int>("Current Game") = 5;
-        SceneManager::SwitchScene("MiniGameFive", renderer, ui);
+        SceneManager::SwitchResetScene("MiniGameFive", renderer, ui);
     }
 
     else if (ui->GetInteractionBoxByName("GameSubTab6")->ConsumeStatus()) {
         SceneManager::GetData<int>("Game State") = 1;
         SceneManager::GetData<int>("Current Game") = 6;
-        SceneManager::SwitchScene("MiniGameSix", renderer, ui);
+        SceneManager::SwitchResetScene("MiniGameSix", renderer, ui);
     }
 
     else if (ui->GetInteractionBoxByName("Exit")->ConsumeStatus()) {

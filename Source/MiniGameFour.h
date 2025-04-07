@@ -6,11 +6,10 @@
 #include "SceneManager.h"
 
 class PopingCricleTwo :public GameObject {
-private:
-
-public:
-	int lifeSpan = 1000; //20 sekund
-	PopingCricleTwo(int x, int y, int w, int h);
+	public:
+		int lifeSpan = 1000; //20 sekund
+		PopingCricleTwo(int x, int y, int w, int h);
+		unsigned int id = 0;
 };
 
 
@@ -20,7 +19,8 @@ private:
 	int score = 0;
 	unsigned short time = 30;
 	unsigned int clicks = 0;
-	int delay = 15;
+	unsigned int createdCircles = 0;
+
 public:
 	void Init(SDL_Renderer* renderer = nullptr, UI* ui = nullptr)override;
 

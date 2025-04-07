@@ -6,16 +6,18 @@
 #include "UI.h"
 #include <memory>
 #include "Addons.h"
+#include <functional>
 
 
 
 class Scene {
 	protected: 
-		std::string name;
 		UI* ui = nullptr;
 		SDL_Renderer *renderer = nullptr;
 
 	public:
+		std::string name;
+
 		virtual void Init(SDL_Renderer* renderer = nullptr,UI* ui = nullptr) = 0;
 
 		virtual void LogicUpdate() = 0;   
@@ -40,9 +42,13 @@ class SceneManager {
 	public:
 		static void AddScene(Scene *scene, const std::string &sceneName);
 
+		static void AddRegisterScene(Scene* scene, const std::string& sceneName, std::function<Scene* ()> factoryFn);
+
 		static void SetScene(const std::string& sceneName);
 
 		static void SwitchScene(const std::string& sceneName, SDL_Renderer* renderer = nullptr, UI* ui = nullptr);
+
+		static void SwitchResetScene(const std::string& sceneName, SDL_Renderer* renderer = nullptr, UI* ui = nullptr);
 
 		static void Clear();
 
@@ -58,6 +64,19 @@ class SceneManager {
 
 		static void ClearAllData();
 };
+
+class SceneFactory {
+	private:
+		static std::unordered_map<std::string, std::function<Scene* ()>> factories;
+
+	public:
+		static void RegisterScene(const std::string& shapeName, std::function<Scene* ()> factoryFn);
+
+		static Scene* CreateScene(const std::string& shapeName);
+		
+};
+
+
 
 template <typename T>
 static void SceneManager::AddData(const std::string& key, T data) {

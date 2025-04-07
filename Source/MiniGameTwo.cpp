@@ -5,6 +5,7 @@
 #include "Colision.h"
 #include <string>
 #include "Addons.h"
+#include "Logger.h"
 
 SDL_Rect* Square::GetRectangle() {
 	return &rectangle;
@@ -42,7 +43,6 @@ void MiniGameTwo::Init(SDL_Renderer* renderer, UI* ui) {
 	score = 10000;
 	tries = 6;
 	clicks = 0;
-	delay = 15;
 	colided = false;
 
 	unsigned short moveSpeed = 6;
@@ -60,6 +60,8 @@ void MiniGameTwo::Init(SDL_Renderer* renderer, UI* ui) {
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"), "Times Left: ", 1, 8, 12, 5);
 	ui->SetUIElementBorderColor("TimesLeftButton", 135, 206, 250);
 	ui->SetUIElementFontColor("TimesLeftButton", 255, 168, 0);
+
+	Logger::SetUpNewSession(SceneManager::GetData<std::string>("PlayerName"), SceneManager::GetData<int>("Current Game"));
 }
 
 void MiniGameTwo::LogicUpdate() {
@@ -74,7 +76,7 @@ void MiniGameTwo::FrameUpdate() {
 	if (getTries() == 0) {
 		SceneManager::GetData<int>("Game State") = 2;
 		SceneManager::GetData<int>("Current Game") = 2;
-		SceneManager::SwitchScene("EndScreen", renderer, ui);
+		SceneManager::SwitchResetScene("EndScreen", renderer, ui);
 	}
 }
 
@@ -101,12 +103,10 @@ void MiniGameTwo::SetUpSquares() {
 void MiniGameTwo::Input(SDL_Event& event) {
 	if (event.type == SDL_KEYDOWN) {
 		if (event.key.keysym.sym == SDLK_SPACE) {
-			if (delay < 1) {
-				tries--;
-				score -= CalculateEuclidean(colliderMoving.x, colliderStatic.x, colliderMoving.y, colliderStatic.y);
-				colided = true;
-				delay = 20;
-			}
+			tries--;
+			score -= CalculateEuclidean(colliderMoving.x, colliderStatic.x, colliderMoving.y, colliderStatic.y);
+			colided = true;
+			Logger::Log(std::to_string(Global::frameCounter) + "," + std::to_string(CalculateEuclidean(colliderMoving.x, colliderStatic.x, colliderMoving.y, colliderStatic.y)));
 		}
 	}
 
@@ -125,7 +125,6 @@ void MiniGameTwo::UpdateColliders() {
 }
 
 void MiniGameTwo::MoveSquares() {
-	delay--;
 	UpdateColliders();
 	if (SimpleCollision(colliderMoving, colliderStatic)) {
 		colided = true;

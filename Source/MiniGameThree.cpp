@@ -3,8 +3,16 @@
 #include "TextureManager.h"
 #include "Colision.h"
 #include <string>
+#include "Logger.h"
 
 /////////////////////////////////////////////
+
+/*
+Lista logów
+1: Gracz poruszy³ siê do góry  (czyli spacja)
+2: Gracz zdoby³ punkt
+3: Kolizja ze œcian¹ (gra przegrana)
+*/
 
 void MiniGameThree::Init(SDL_Renderer* renderer, UI* ui) {
 	this->renderer = renderer;
@@ -52,6 +60,8 @@ void MiniGameThree::Init(SDL_Renderer* renderer, UI* ui) {
 		startX += 800;
 	}
 	maxX = startX - 800;
+
+	Logger::SetUpNewSession(SceneManager::GetData<std::string>("PlayerName"), SceneManager::GetData<int>("Current Game"));
 }
 
 void MiniGameThree::LogicUpdate() {
@@ -67,9 +77,10 @@ void MiniGameThree::FrameUpdate() {
 
 
 	if (Collision()) {
+		Logger::Log(std::to_string(Global::frameCounter) + ",3");
 		SceneManager::GetData<int>("Game State") = 2;
 		SceneManager::GetData<int>("Current Game") = 3;
-		SceneManager::SwitchScene("EndScreen", renderer, ui);
+		SceneManager::SwitchResetScene("EndScreen", renderer, ui);
 	}
 }
 
@@ -78,6 +89,7 @@ void MiniGameThree::Input(SDL_Event& event) {
 	if (event.type == SDL_KEYDOWN) {
 		if (event.key.keysym.sym == SDLK_SPACE) {
 			if (playerMoveTimer < 1) {
+				Logger::Log(std::to_string(Global::frameCounter) + ",1");
 				playerMoveTimer += 10;
 				playerMovement = 1;
 			}
@@ -127,6 +139,7 @@ bool MiniGameThree::Collision() {
 		if (SimpleCollision(*it.centerCollider.GetRectangle(), *player.GetRectangle())) {
 			score++;
 			ui->GetButtonByName("ScoreButton")->SetText("Score: " + std::to_string(GetScore()));
+			Logger::Log(std::to_string(Global::frameCounter) + ",2");
 			it.centerCollider.GetRectangle()->y = -4000; // Do góry aby kolizja by³a tylko raz
 		}
 		if (SimpleCollision(*it.upperWall.GetRectangle(), *player.GetRectangle())) {

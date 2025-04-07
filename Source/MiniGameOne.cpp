@@ -6,6 +6,14 @@
 #include <string>
 #include "Logger.h"
 
+/*
+Lista logów
+1: Ko³o stworzone
+2: Ko³o umar³o ze staroœci przez brak klikniêcia
+3: Ko³o klikniête przez gracza
+4: Gracz nie trafi³ w ko³o klikna³ poza nie
+*/
+
 
 PopingCricle::PopingCricle(int x, int y, int w, int h) {
 	this->rectangle.x = x;
@@ -20,11 +28,6 @@ void MiniGameOne::Init(SDL_Renderer* renderer, UI* ui) {
 	this->ui = ui;
 	this->texture = TextureManager::GetTextureByName("Cricle");
 
-	PopingCircles.clear();
-	score = 0;
-	time = 30;
-	clicks = 0;
-	createdCircles = 0;
 
 	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
 		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
@@ -51,10 +54,11 @@ void MiniGameOne::FrameUpdate() {
 	if (Global::frameCounter % 60 == 0) {
 		ManageTime();
 		ui->GetButtons()[1]->SetText("Time: " + std::to_string(GetTime()));
-		if (GetTime() < 10) { //bazowo na 1
+		if (GetTime() < 20) { //bazowo na 1
 			SceneManager::GetData<int>("Game State") = 2;
 			SceneManager::GetData<int>("Current Game") = 1;
-			SceneManager::SwitchScene("EndScreen",renderer,ui);
+			//SceneManager::SwitchScene("EndScreen",renderer,ui);
+			SceneManager::SwitchResetScene("EndScreen", renderer, ui);
 
 		}
 	}
@@ -65,18 +69,19 @@ void MiniGameOne::FrameUpdate() {
 void MiniGameOne::CreateCircle(int x, int y, int w, int h) {
 	PopingCircles.emplace_back(x,y,w,h);
 	createdCircles++;
+	PopingCircles.back().id = createdCircles;
+	Logger::Log(std::to_string(Global::frameCounter) + ",1," + std::to_string(PopingCircles.back().id));
 }
 
 void MiniGameOne::ManageLifespan() {
 	for (size_t i = 0; i < PopingCircles.size(); i++) {
 		PopingCircles[i].lifeSpan--;
 		if (PopingCircles[i].lifeSpan < 1) {
+			Logger::Log(std::to_string(Global::frameCounter) + ",2," + std::to_string(PopingCircles[i].id));
 			PopingCircles.erase(PopingCircles.begin() + i);
 			if (PopingCircles.size() > 0) {
 				i--;
 			}
-			Logger::Log(std::to_string(Global::frameCounter) + ",Cricle Died not clicked");
-
 		}
 	}
 }
@@ -90,7 +95,6 @@ void MiniGameOne::ManageCreation() {
 			int w = (rand() % 60) + 10;
 			int h = w;
 			CreateCircle(x, y, w, h);
-			Logger::Log(std::to_string(Global::frameCounter) + ",Circle Created");
 		}
 	}
 }
@@ -110,14 +114,15 @@ void MiniGameOne::Input(SDL_Event &event) {
 			if (CircleMouseCollision(*PopingCircles[i].GetRectangle(), mouse)) {
 
 				score++;
+				Logger::Log(std::to_string(Global::frameCounter) + ",3," + std::to_string(PopingCircles[i].id));
 				PopingCircles.erase(PopingCircles.begin() + i);
 				SoundManager::PlaySound("coin");
-				Logger::Log(std::to_string(Global::frameCounter) + ",Circle Clicked by player");
+
 				break;
 			}
 			else
 			{
-				Logger::Log(std::to_string(Global::frameCounter) + ",PLayer clicked but missed circle");
+				Logger::Log(std::to_string(Global::frameCounter) + ",4," + std::to_string(PopingCircles[i].id));
 			}
 		}
 	}
