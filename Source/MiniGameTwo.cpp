@@ -194,6 +194,7 @@ void MiniGameTwo::Clear() {
 	ui->SetUIElementBorderColor("FinalScore", 135, 206, 250);
 	ui->SetUIElementFontColor("FinalScore", 255, 168, 0);
 
+	Logger::Log(std::to_string(Global::frameCounter) + ",Wynik:" + std::to_string(score));
 	SceneManager::AddData<int>("Final Score", score);
 	SceneManager::AddData<std::string>("Score File Path", "Data/gameTwoScores.txt");
 }

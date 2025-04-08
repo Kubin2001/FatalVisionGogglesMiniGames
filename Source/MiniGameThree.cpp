@@ -198,6 +198,7 @@ void MiniGameThree::Clear() {
 	ui->SetUIElementBorderColor("FinalTime", 135, 206, 250);
 	ui->SetUIElementFontColor("FinalTime", 255, 168, 0);
 
+	Logger::Log(std::to_string(Global::frameCounter) + ",Wynik:" + std::to_string(score));
 	SceneManager::AddData<int>("Final Score", score);
 	SceneManager::AddData<std::string>("Score File Path", "Data/gameThreeScores.txt");
 }

@@ -174,6 +174,7 @@ void MiniGameFour::Clear() {
 	ui->SetUIElementBorderColor("FinalAccuracy", 135, 206, 250);
 	ui->SetUIElementFontColor("FinalAccuracy", 255, 168, 0);
 
+	Logger::Log(std::to_string(Global::frameCounter) + ",Wynik:" + std::to_string(finalScore));
 	SceneManager::AddData<int>("Final Score", finalScore);
 	SceneManager::AddData<std::string>("Score File Path", "Data/gameFourScores.txt");
 }

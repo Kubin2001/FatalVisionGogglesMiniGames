@@ -54,7 +54,7 @@ void MiniGameOne::FrameUpdate() {
 	if (Global::frameCounter % 60 == 0) {
 		ManageTime();
 		ui->GetButtons()[1]->SetText("Time: " + std::to_string(GetTime()));
-		if (GetTime() < 20) { //bazowo na 1
+		if (GetTime() < 1) { //bazowo na 1
 			SceneManager::GetData<int>("Game State") = 2;
 			SceneManager::GetData<int>("Current Game") = 1;
 			//SceneManager::SwitchScene("EndScreen",renderer,ui);
@@ -165,7 +165,7 @@ void MiniGameOne::Clear() {
 	ui->SetUIElementBorderColor("FinalScore", 135, 206, 250);
 	ui->SetUIElementFontColor("FinalScore", 255, 168, 0);
 
-
+	Logger::Log(std::to_string(Global::frameCounter) + ",Wynik:" + std::to_string(finalScore));
 	SceneManager::AddData<int>("Final Score", finalScore);
 	SceneManager::AddData<std::string>("Score File Path", "Data/gameOneScores.txt");
 

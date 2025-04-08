@@ -14,9 +14,10 @@ void MainMenu::Init(SDL_Renderer* renderer, UI* ui) {
 
     ui->CreateButton("MenuInfo", vec1[0].x, vec1[0].y, vec1[0].w, vec1[0].h,
         nullptr, ui->GetFont("arial40px"),
-        "                Choose a test", 1, 3, 40, 5);
+        "Choose Game", 1, 0, 0, 5);
     ui->SetUIElementBorderColor("MenuInfo", 135, 206, 250);
     ui->SetUIElementFontColor("MenuInfo", 255, 168, 0);
+    ui->GetButtonByName("MenuInfo")->SetRenderTextType(2);
 
     ScaleRectanglesToScreen(vec1, 3, 300, 200, 200, 200);
 
