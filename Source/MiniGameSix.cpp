@@ -117,11 +117,12 @@ void MiniGameSix::Render() {
 void MiniGameSix::Clear() {
 	ui->ClearAllButtons();
 
-	ui->CreateButton("FinalScore", Global::windowWidth * 0.6, 0, Global::windowWidth - (Global::windowWidth * 0.6), 200,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth, 200,
+		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
 		"FinalScore: " + std::to_string(score), 1, 8, 12, 5);
 	ui->SetUIElementBorderColor("FinalScore", 135, 206, 250);
 	ui->SetUIElementFontColor("FinalScore", 255, 168, 0);
+	ui->GetButtonByName("FinalScore")->SetRenderTextType(2);
 
 	SceneManager::AddData<int>("Final Score", score);
 	SceneManager::AddData<std::string>("Score File Path", "Data/gameSixScores.txt");

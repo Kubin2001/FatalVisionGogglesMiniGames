@@ -7,9 +7,6 @@ Added:
 - Added Scoreboard
 - All data Logging
 - Username before start
-
-To add
-
-- Info box
+- All done
 
 

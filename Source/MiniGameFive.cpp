@@ -67,7 +67,7 @@ void MiniGameFive::Init(SDL_Renderer* renderer, UI* ui) {
 	currentGameState = 0;
 	timer = 0;
 
-	tries = 5;
+	tries = 1;
 
 	starCount = 0;
 	triangleCount = 0;
@@ -262,11 +262,12 @@ void MiniGameFive::Render() {
 
 void MiniGameFive::Clear() {
 	ui->ClearAllButtons();
-	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth * 0.5, 200,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth, 200,
+		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
 		"Final Score: " + std::to_string(score), 1, 8, 12, 5);
 	ui->SetUIElementBorderColor("FinalScore", 135, 206, 250);
 	ui->SetUIElementFontColor("FinalScore", 255, 168, 0);
+	ui->GetButtonByName("FinalScore")->SetRenderTextType(2);
 
 	SceneManager::AddData<int>("Final Score", score);
 	SceneManager::AddData<std::string>("Score File Path", "Data/gameFiveScores.txt");

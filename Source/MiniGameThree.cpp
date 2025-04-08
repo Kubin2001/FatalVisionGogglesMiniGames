@@ -77,6 +77,7 @@ void MiniGameThree::FrameUpdate() {
 
 
 	if (Collision()) {
+		SoundManager::PlaySound("lose");
 		Logger::Log(std::to_string(Global::frameCounter) + ",3");
 		SceneManager::GetData<int>("Game State") = 2;
 		SceneManager::GetData<int>("Current Game") = 3;
@@ -92,6 +93,7 @@ void MiniGameThree::Input(SDL_Event& event) {
 				Logger::Log(std::to_string(Global::frameCounter) + ",1");
 				playerMoveTimer += 10;
 				playerMovement = 1;
+				SoundManager::PlaySound("fling");
 			}
 		}
 	}
@@ -141,6 +143,7 @@ bool MiniGameThree::Collision() {
 			ui->GetButtonByName("ScoreButton")->SetText("Score: " + std::to_string(GetScore()));
 			Logger::Log(std::to_string(Global::frameCounter) + ",2");
 			it.centerCollider.GetRectangle()->y = -4000; // Do góry aby kolizja by³a tylko raz
+			SoundManager::PlaySound("point");
 		}
 		if (SimpleCollision(*it.upperWall.GetRectangle(), *player.GetRectangle())) {
 			SDL_Delay(500);
