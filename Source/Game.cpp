@@ -77,7 +77,6 @@ void Game::Start() {
     SceneManager::AddRegisterScene(endScreen, "EndScreen", []() { return new EndScreen(); });
 
     SceneManager::SwitchResetScene("Main Menu",renderer,ui.get());
-    SceneManager::SwitchResetScene("Main Menu", renderer, ui.get());
 
 
     //Ustawianie na pocz¹tek pustego nicku gracza i false jako ¿e gra leci bez googli 

@@ -60,6 +60,8 @@ class SceneManager {
 		template <typename T>
 		static T& GetData(const std::string& key);
 
+		static bool IsData(const std::string& key);
+
 		static void ClearData(const std::string& key);
 
 		static void ClearAllData();
@@ -95,3 +97,4 @@ static T& SceneManager::GetData(const std::string& key) {
 		return SharedData[key]->Get<T>();
 	}
 }
+

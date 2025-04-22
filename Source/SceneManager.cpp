@@ -100,6 +100,12 @@ Scene* SceneManager::GetCurrentScene() {
 	return currentScene;
 }
 
+bool SceneManager::IsData(const std::string& key) {
+	if (SharedData.find(key) != SharedData.end()) {
+		return true;
+	}
+	return false;
+}
 
 void SceneManager::ClearData(const std::string& key) {
 	if (SharedData.find(key) != SharedData.end()) {

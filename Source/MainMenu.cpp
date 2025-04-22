@@ -115,7 +115,7 @@ void MainMenu::Init(SDL_Renderer* renderer, UI* ui) {
     ui->CreateInteractionBox("DrunkBox", Global::windowWidth - 100, Global::windowHeight - 200, 100, 100,
         nullptr, ui->GetFont("arial20px"), "", 1, 8, 12, 5);
 
-    ui->SetUIElementColor("DrunkBox", 0, 255, 0);
+
 
 
 
@@ -123,6 +123,19 @@ void MainMenu::Init(SDL_Renderer* renderer, UI* ui) {
         it->SetHoverFilter(true, 255, 255, 255, 150,"hoverSound");
         it->SetClickSound("click");
     }
+
+    if (SceneManager::IsData("UsesGoogles")) {
+        if (SceneManager::GetData<bool>("UsesGoogles")) { 
+            ui->SetUIElementColor("DrunkBox", 255, 0, 0);
+        }
+        else {
+            ui->SetUIElementColor("DrunkBox", 0, 255, 0);
+        }
+    }
+    else{ // jak pierwszy raz siê gra odpala (czyli nie ma jeszcze info) to jest zielone
+        ui->SetUIElementColor("DrunkBox", 0, 255, 0);
+    }
+
 }
 
 
