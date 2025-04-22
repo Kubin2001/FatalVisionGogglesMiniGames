@@ -60,17 +60,26 @@ void EndScreen::Init(SDL_Renderer* renderer, UI* ui) {
     ui->SetUIElementBorderColor("RetryButton", 135, 206, 250);
     ui->SetUIElementFontColor("RetryButton", 255, 168, 0);
 
-
+    ui->CreateInteractionBox("DrunkBox", Global::windowWidth - 100, Global::windowHeight - 200, 100, 100,
+        nullptr, ui->GetFont("arial20px"), "", 1, 8, 12, 5);
 
     for (auto& it : ui->GetInteractionBoxes()) {
         it->SetHoverFilter(true, 255, 255, 255, 150, "hoverSound");
         it->SetClickSound("click");
+    }
+
+    if (SceneManager::GetData<bool>("UsesGoogles")) {
+        ui->SetUIElementColor("DrunkBox", 255, 0, 0);
+    }
+    else {
+        ui->SetUIElementColor("DrunkBox", 0, 255, 0);
     }
 }
 
 void EndScreen::LogicUpdate(){}
 void EndScreen::FrameUpdate(){
     ManageScoreBoard();
+    ManageDrunkBox();
 }
 
 void EndScreen::Input(SDL_Event& event) {
@@ -382,6 +391,20 @@ void EndScreen::SetUpScoreBoard(int entries) {
 }
 
 void EndScreen::Render() {}
+
+void EndScreen::ManageDrunkBox() {
+    if (ui->GetInteractionBoxByName("DrunkBox")->ConsumeStatus()) {
+        if (SceneManager::GetData<bool>("UsesGoogles")) { //zielony jak nie u¿ywa czyli jak false a czerwony jak true czyli u¿ywa
+            SceneManager::GetData<bool>("UsesGoogles") = false;
+            ui->SetUIElementColor("DrunkBox", 0, 255, 0);
+        }
+        else {
+            SceneManager::GetData<bool>("UsesGoogles") = true;
+            ui->SetUIElementColor("DrunkBox", 255, 0, 0);
+        }
+    }
+}
+
 void EndScreen::Clear() {
     ui->ClearAllButtons();
 };

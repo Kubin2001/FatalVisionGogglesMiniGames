@@ -29,7 +29,7 @@ class EndScreen : public Scene{
 		void Render() override;
 		void Clear() override;
 
-
+		void ManageDrunkBox();
 
 		void ManageScoreBoard();
 
