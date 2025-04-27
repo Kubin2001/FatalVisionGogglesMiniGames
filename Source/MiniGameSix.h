@@ -6,14 +6,10 @@
 
 
 class MovingCircle :public GameObject{
-
 	public:
 		float speedX = 2.0f;
 		float speedY = 2.0f;
 		int lifeTime = 0;
-		
-
-
 };
 
 
@@ -41,6 +37,8 @@ class MiniGameSix :public Scene {
 
 		int score = 0;
 
+		SDL_Rect cursorRect{ 0,0,18,27 };
+
 	public:
 		void Init(SDL_Renderer* renderer = nullptr, UI* ui = nullptr)override;
 
@@ -55,6 +53,8 @@ class MiniGameSix :public Scene {
 		void Clear()override;
 
 	private:
+		void UpdateCursor();
+
 		void CreateCircle();
 
 		void CircleLifeTime();

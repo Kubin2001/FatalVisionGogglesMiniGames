@@ -3,17 +3,27 @@
 #include "SoundManager.h"
 #include <filesystem>
 
-std::unordered_map<std::string, Mix_Chunk*> SoundManager::Sounds;
+std::unordered_map<std::string, Mix_Chunk*> SoundMan::Sounds;
 
 
-void SoundManager::Innit() {
+void SoundMan::Innit() {
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         std::cerr << "Failed to sound manager (sdl_mixer error): " << Mix_GetError() << "\n";
 
     }
 }
 
-void SoundManager::LoadSound(const char* filePath, const std::string& name) {
+void SoundMan::Print() {
+    std::cout << "------------------------\n";
+    std::cout << "Loaded Sounds Names: \n";
+    std::cout << "------------------------\n";
+    for (auto it = Sounds.begin(); it != Sounds.end(); ++it) {
+        std::cout << it->first << "\n";
+    }
+    std::cout << "------------------------\n";
+}
+
+void SoundMan::LoadSound(const char* filePath, const std::string& name) {
     if (Sounds.find(name) != Sounds.end()) {
         std::cout << "Sound already loaded: " << name << "\n";
         return;
@@ -28,7 +38,7 @@ void SoundManager::LoadSound(const char* filePath, const std::string& name) {
     }
 }
 
-void SoundManager::LoadSounds(const std::string& directory) {
+void SoundMan::LoadSounds(const std::string& directory) {
     for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(directory)) {
         if (entry.path().extension() == ".wav") {
             std::string pathString = entry.path().string();
@@ -39,7 +49,7 @@ void SoundManager::LoadSounds(const std::string& directory) {
     }
 }
 
-void SoundManager::PlaySound(const std::string& name) {
+void SoundMan::PlaySound(const std::string& name) {
     auto it = Sounds.find(name);
     if (it != Sounds.end()) {
         Mix_PlayChannel(-1, it->second, 0);
@@ -49,7 +59,7 @@ void SoundManager::PlaySound(const std::string& name) {
     return ;
 }
 
-Mix_Chunk *SoundManager::GetSound(const std::string& name) {
+Mix_Chunk *SoundMan::GetSound(const std::string& name) {
     auto it = Sounds.find(name);
     if (it != Sounds.end()) {
         return it->second;
@@ -58,7 +68,7 @@ Mix_Chunk *SoundManager::GetSound(const std::string& name) {
     return nullptr;
 }
 
-bool SoundManager::DeleteSound(const std::string& name) {
+bool SoundMan::DeleteSound(const std::string& name) {
     auto it = Sounds.find(name);
     if (it != Sounds.end()) {
         Mix_FreeChunk(it->second);
@@ -69,7 +79,7 @@ bool SoundManager::DeleteSound(const std::string& name) {
     return false;
 }
 
-void SoundManager::Clear() {
+void SoundMan::Clear() {
     for (auto& pair : Sounds) {
         Mix_FreeChunk(pair.second);
     }

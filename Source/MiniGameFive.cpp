@@ -33,17 +33,17 @@ PopingFigure::PopingFigure(int x, int y, int w, int h, int type) {
 	switch (type)
 	{
 		case 0:
-			this->texture = TextureManager::GetTextureByName("Star");
+			this->texture = TexMan::GetTex("Star");
 			break;
 		case 1:
-			this->texture = TextureManager::GetTextureByName("Thunder");
+			this->texture = TexMan::GetTex("Thunder");
 			break;
 		case 2:
-			this->texture = TextureManager::GetTextureByName("Triangle");
+			this->texture = TexMan::GetTex("Triangle");
 			break;
 		default:
 			std::cout << "Type overflow case have gone to default shape (star)\n";
-			this->texture = TextureManager::GetTextureByName("Star");
+			this->texture = TexMan::GetTex("Star");
 			break;
 	}
 }
@@ -61,7 +61,7 @@ void MiniGameFive::Init(SDL_Renderer* renderer, UI* ui) {
 	this->ui = ui;
 
 	PopingFigures.clear();
-	this->texture = TextureManager::GetTextureByName("Cricle");
+	this->texture = TexMan::GetTex("Cricle");
 	score = 0;
 	time = 10;
 	currentGameState = 0;
@@ -76,34 +76,34 @@ void MiniGameFive::Init(SDL_Renderer* renderer, UI* ui) {
 
 	SetUpShowingStage();
 	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
+		TexMan::GetTex("buttonModern"), ui->GetFont("arial40px"),
 		"Score: 0", 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("ScoreButton", 135, 206, 250);
-	ui->SetUIElementFontColor("ScoreButton", 255, 168, 0);
+	ui->SetElementBorderColor("ScoreButton", 135, 206, 250);
+	ui->SetElementFontColor("ScoreButton", 255, 168, 0);
 
 	ui->CreateButton("TimeButton", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 150,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
+		TexMan::GetTex("buttonModern"), ui->GetFont("arial40px"),
 		"Time: " + std::to_string(GetTime()), 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("TimeButton", 135, 206, 250);
-	ui->SetUIElementFontColor("TimeButton", 255, 168, 0);
+	ui->SetElementBorderColor("TimeButton", 135, 206, 250);
+	ui->SetElementFontColor("TimeButton", 255, 168, 0);
 	currentGameState = 0;
 
-	Logger::SetUpNewSession(SceneManager::GetData<std::string>("PlayerName"), SceneManager::GetData<int>("Current Game"));
+	Logger::SetUpNewSession(SceneMan::GetData<std::string>("PlayerName"), SceneMan::GetData<int>("Current Game"));
 }
 
 void MiniGameFive::ReStage() {
 	SetUpShowingStage();
 	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
+		TexMan::GetTex("buttonModern"), ui->GetFont("arial40px"),
 		"Score: 0", 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("ScoreButton", 135, 206, 250);
-	ui->SetUIElementFontColor("ScoreButton", 255, 168, 0);
+	ui->SetElementBorderColor("ScoreButton", 135, 206, 250);
+	ui->SetElementFontColor("ScoreButton", 255, 168, 0);
 
 	ui->CreateButton("TimeButton", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 150,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
+		TexMan::GetTex("buttonModern"), ui->GetFont("arial40px"),
 		"Time: " + std::to_string(GetTime()), 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("TimeButton", 135, 206, 250);
-	ui->SetUIElementFontColor("TimeButton", 255, 168, 0);
+	ui->SetElementBorderColor("TimeButton", 135, 206, 250);
+	ui->SetElementFontColor("TimeButton", 255, 168, 0);
 	currentGameState = 0;
 }
 
@@ -116,9 +116,9 @@ void MiniGameFive::FrameUpdate() {
 	ManageStages();
 
 	if (GetTries() == 0) {
-		SceneManager::GetData<int>("Game State") = 2;
-		SceneManager::GetData<int>("Current Game") = 5;
-		SceneManager::SwitchResetScene("EndScreen", renderer, ui);
+		SceneMan::GetData<int>("Game State") = 2;
+		SceneMan::GetData<int>("Current Game") = 5;
+		SceneMan::SwitchResetScene("EndScreen", renderer, ui);
 	}
 }
 
@@ -158,36 +158,36 @@ void MiniGameFive::SetUpQuestionStage() {
 	std::vector <SDL_Rect> vec;
 	ScaleRectanglesToScreen(vec, 3, 300, 100, 100, 100);
 	ui->CreateButton("StarsIcon", vec[0].x, vec[0].y, vec[0].w, vec[0].h,
-		TextureManager::GetTextureByName("StarIcon"), nullptr, "", 1.0f, 0, 0, 5);
-	ui->SetUIElementBorderColor("StarsIcon", 135, 206, 250);
+		TexMan::GetTex("StarIcon"), nullptr, "", 1.0f, 0, 0, 5);
+	ui->SetElementBorderColor("StarsIcon", 135, 206, 250);
 	ui->CreateButton("TrianglesIcon", vec[1].x, vec[1].y, vec[1].w, vec[1].h,
-		TextureManager::GetTextureByName("TriangleIcon"), nullptr, "", 1.0f, 0, 0, 5);
-	ui->SetUIElementBorderColor("TrianglesIcon", 135, 206, 250);
+		TexMan::GetTex("TriangleIcon"), nullptr, "", 1.0f, 0, 0, 5);
+	ui->SetElementBorderColor("TrianglesIcon", 135, 206, 250);
 	ui->CreateButton("ThundersIcon", vec[2].x, vec[2].y, vec[2].w, vec[2].h,
-		TextureManager::GetTextureByName("ThunderIcon"), nullptr, "", 1.0f, 0, 0, 5);
-	ui->SetUIElementBorderColor("ThundersIcon", 135, 206, 250);
+		TexMan::GetTex("ThunderIcon"), nullptr, "", 1.0f, 0, 0, 5);
+	ui->SetElementBorderColor("ThundersIcon", 135, 206, 250);
 
 	ScaleRectanglesToScreen(vec, 3, 450, 100, 100, 100);
 
-	ui->CreateMassageBox("StarsIconMS", vec[0].x, vec[0].y, vec[0].w, vec[0].h, nullptr, ui->GetFont("arial40px"), "", 1.0f, 30, 30, 5);
-	ui->CreateMassageBox("TrianglesIconMS", vec[1].x, vec[1].y, vec[1].w, vec[1].h, nullptr, ui->GetFont("arial40px"), "", 1.0f, 30, 30, 5);
-	ui->CreateMassageBox("ThundersIconMS", vec[2].x, vec[2].y, vec[2].w, vec[2].h, nullptr, ui->GetFont("arial40px"), "", 1.0f, 30, 30, 5);
+	ui->CreateTextBox("StarsIconMS", vec[0].x, vec[0].y, vec[0].w, vec[0].h, nullptr, ui->GetFont("arial40px"), "", 1.0f, 30, 30, 5);
+	ui->CreateTextBox("TrianglesIconMS", vec[1].x, vec[1].y, vec[1].w, vec[1].h, nullptr, ui->GetFont("arial40px"), "", 1.0f, 30, 30, 5);
+	ui->CreateTextBox("ThundersIconMS", vec[2].x, vec[2].y, vec[2].w, vec[2].h, nullptr, ui->GetFont("arial40px"), "", 1.0f, 30, 30, 5);
 
 
 
 	ScaleRectanglesToScreen(vec, 1, 600, 400, 100, 100);
-	ui->CreateInteractionBox("SubmitButton", vec[0].x, vec[0].y, vec[0].w, vec[0].h, nullptr, ui->GetFont("arial40px"), "   Submit", 1.0f, 10, 10, 5);
-	ui->SetUIElementBorderColor("SubmitButton", 60, 179, 113);
+	ui->CreateClickBox("SubmitButton", vec[0].x, vec[0].y, vec[0].w, vec[0].h, nullptr, ui->GetFont("arial40px"), "   Submit", 1.0f, 10, 10, 5);
+	ui->SetElementBorderColor("SubmitButton", 60, 179, 113);
 }
 
 
 void MiniGameFive::ManageStages() {
-	ui->GetButtonByName("ScoreButton")->SetText("Score: " + std::to_string(score));
+	ui->GetButton("ScoreButton")->SetText("Score: " + std::to_string(score));
 	if (currentGameState == 0) {
 		if (Global::frameCounter % 60 == 0) {
 			time--;
 		}
-		ui->GetButtonByName("TimeButton")->SetText("Time: " + std::to_string(GetTime()));
+		ui->GetButton("TimeButton")->SetText("Time: " + std::to_string(GetTime()));
 		if (Global::frameCounter - timer > 600) {// 600 = 10 sekund
 			SetUpQuestionStage();
 			PopingFigures.clear();
@@ -196,24 +196,24 @@ void MiniGameFive::ManageStages() {
 	}
 	else
 	{
-		std::string text1 = ui->GetMassageBoxByName("StarsIconMS")->GetText();;
-		std::string text2 = ui->GetMassageBoxByName("TrianglesIconMS")->GetText();
-		std::string text3 = ui->GetMassageBoxByName("ThundersIconMS")->GetText();
-		if (ui->GetMassageBoxByName("StarsIconMS")->GetText().length() > 2) {
+		std::string text1 = ui->GetTextBox("StarsIconMS")->GetText();;
+		std::string text2 = ui->GetTextBox("TrianglesIconMS")->GetText();
+		std::string text3 = ui->GetTextBox("ThundersIconMS")->GetText();
+		if (ui->GetTextBox("StarsIconMS")->GetText().length() > 2) {
 			text1 = text1.substr(0, 2); 
-			ui->GetMassageBoxByName("StarsIconMS")->SetText(text1);
+			ui->GetTextBox("StarsIconMS")->SetText(text1);
 		}
-		if (ui->GetMassageBoxByName("TrianglesIconMS")->GetText().length() > 2) {
+		if (ui->GetTextBox("TrianglesIconMS")->GetText().length() > 2) {
 			text2 = text2.substr(0, 2); 
-			ui->GetMassageBoxByName("TrianglesIconMS")->SetText(text2);
+			ui->GetTextBox("TrianglesIconMS")->SetText(text2);
 		}
-		if (ui->GetMassageBoxByName("ThundersIconMS")->GetText().length() > 2) {
+		if (ui->GetTextBox("ThundersIconMS")->GetText().length() > 2) {
 			text3 = text3.substr(0, 2); 
-			ui->GetMassageBoxByName("ThundersIconMS")->SetText(text3);
+			ui->GetTextBox("ThundersIconMS")->SetText(text3);
 		}
 
-		if (ui->GetInteractionBoxByName("SubmitButton")->GetStatus() && !text1.empty() && !text2.empty()&& !text3.empty()) {
-			ui->GetInteractionBoxByName("SubmitButton")->SetStatus(0);
+		if (ui->GetClickBox("SubmitButton")->GetStatus() && !text1.empty() && !text2.empty()&& !text3.empty()) {
+			ui->GetClickBox("SubmitButton")->SetStatus(0);
 			if (IsNumeric(text1) && IsNumeric(text2) && IsNumeric(text3)) {
 				bool st = false;
 				bool tr = false;
@@ -239,9 +239,8 @@ void MiniGameFive::ManageStages() {
 				time = 10;
 			}
 		}
-		else
-		{
-			ui->GetInteractionBoxByName("SubmitButton")->SetStatus(0);
+		else{
+			ui->GetClickBox("SubmitButton")->SetStatus(0);
 		}
 
 
@@ -263,15 +262,15 @@ void MiniGameFive::Render() {
 void MiniGameFive::Clear() {
 	ui->ClearAllButtons();
 	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth, 200,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
+		TexMan::GetTex("buttonModern"), ui->GetFont("arial40px"),
 		"Final Score: " + std::to_string(score), 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("FinalScore", 135, 206, 250);
-	ui->SetUIElementFontColor("FinalScore", 255, 168, 0);
-	ui->GetButtonByName("FinalScore")->SetRenderTextType(2);
+	ui->SetElementBorderColor("FinalScore", 135, 206, 250);
+	ui->SetElementFontColor("FinalScore", 255, 168, 0);
+	ui->GetButton("FinalScore")->SetRenderTextType(2);
 
 	Logger::Log(std::to_string(Global::frameCounter) + ",Wynik:" + std::to_string(score));
-	SceneManager::AddData<int>("Final Score", score);
-	SceneManager::AddData<std::string>("Score File Path", "Data/gameFiveScores.txt");
+	SceneMan::AddData<int>("Final Score", score);
+	SceneMan::AddData<std::string>("Score File Path", "Data/gameFiveScores.txt");
 }
 
 

@@ -7,13 +7,13 @@
 #include "TextureManager.h"
 
 
-std::unordered_map<std::string, SDL_Texture*> TextureManager::Textures;
-std::vector<std::string> TextureManager::SupportedFormats;
-SDL_Renderer* TextureManager::renderer = nullptr;
-bool TextureManager::isInnit = false;
+std::unordered_map<std::string, SDL_Texture*> TexMan::Textures;
+std::vector<std::string> TexMan::SupportedFormats;
+SDL_Renderer* TexMan::renderer = nullptr;
+bool TexMan::isInnit = false;
 
 
-bool TextureManager::Start(SDL_Renderer *ren) {
+bool TexMan::Start(SDL_Renderer *ren) {
    renderer = ren;
    if (renderer != nullptr) {
        isInnit = true;
@@ -36,18 +36,28 @@ bool TextureManager::Start(SDL_Renderer *ren) {
 }
 
 
-bool TextureManager::isWorking() {
+bool TexMan::IsWorking() {
     return isInnit;
 }
 
-bool TextureManager::IsFormatSupported(const std::string& format) {
+void TexMan::Print() {
+    std::cout << "------------------------\n";
+    std::cout << "Loaded Textures Names: \n";
+    std::cout << "------------------------\n";
+    for (auto it = Textures.begin(); it != Textures.end(); ++it) {
+        std::cout << it->first<<"\n";
+    }
+    std::cout << "------------------------\n";
+}
+
+bool TexMan::IsFormatSupported(const std::string& format) {
     for (const auto& it : SupportedFormats) {
         if (format == it) { return true; }
     }
     return false;
 }
 
-void TextureManager::LoadSingleTexture(const char* filePath, const std::string& name) {
+void TexMan::LoadSingle(const char* filePath, const std::string& name) {
     if (Textures.find(name) != Textures.end()) {
         std::cout << "Texture: " << name << " is already loaded\n";
         return;
@@ -60,19 +70,19 @@ void TextureManager::LoadSingleTexture(const char* filePath, const std::string& 
 
 
 
-void TextureManager::LoadMultipleTextures(const std::string& directory){
+void TexMan::LoadMultiple(const std::string& directory){
     for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(directory)) {
         if (IsFormatSupported(entry.path().extension().string())) {
             std::string pathString = entry.path().string();
             const char* path = pathString.c_str();
             std::string name = entry.path().stem().string();
-            LoadSingleTexture(path, name);
+            LoadSingle(path, name);
         }
     }
 }
 
-void TextureManager::DeepLoad(const std::string& directory) {
-    LoadMultipleTextures(directory);
+void TexMan::DeepLoad(const std::string& directory) {
+    LoadMultiple(directory);
     for (const std::filesystem::directory_entry& entry : std::filesystem::directory_iterator(directory)) {
         if (entry.is_directory()) {
             const std::string path = entry.path().string();
@@ -82,7 +92,7 @@ void TextureManager::DeepLoad(const std::string& directory) {
 }
 
 
-SDL_Texture* TextureManager::GetTextureByName(const std::string& name) {
+SDL_Texture* TexMan::GetTex(const std::string& name) {
     auto it = Textures.find(name);
     if (it != Textures.end()) {
         return it->second;
@@ -91,7 +101,7 @@ SDL_Texture* TextureManager::GetTextureByName(const std::string& name) {
     return nullptr;
 }
 
-bool TextureManager::DeleteTexture(const std::string& name) {
+bool TexMan::DeleteTexture(const std::string& name) {
     auto it = Textures.find(name);
     if (it != Textures.end()) {
         SDL_DestroyTexture(it->second);
@@ -104,7 +114,7 @@ bool TextureManager::DeleteTexture(const std::string& name) {
     }
 }
 
-Point TextureManager::GetTextureSize(const std::string& name) {
+Point TexMan::GetTextureSize(const std::string& name) {
     Point p(-1, -1);
     auto it = Textures.find(name);
     if (it != Textures.end()) {
@@ -115,7 +125,7 @@ Point TextureManager::GetTextureSize(const std::string& name) {
     return p;
 }
 
-void TextureManager::Clear() {
+void TexMan::Clear() {
     for (auto& pair : Textures) {
         SDL_DestroyTexture(pair.second);
     }

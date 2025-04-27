@@ -14,35 +14,35 @@ void MiniGameSix::Init(SDL_Renderer* renderer, UI* ui) {
 	spawnChance = 0;
 
 	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
+		TexMan::GetTex("buttonModern"), ui->GetFont("arial40px"),
 		"Score: 0", 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("ScoreButton", 135, 206, 250);
-	ui->SetUIElementFontColor("ScoreButton", 255, 168, 0);
+	ui->SetElementBorderColor("ScoreButton", 135, 206, 250);
+	ui->SetElementFontColor("ScoreButton", 255, 168, 0);
 
 	ui->CreateButton("TimeButton", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 150,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
+		TexMan::GetTex("buttonModern"), ui->GetFont("arial40px"),
 		"Time: " + std::to_string(time), 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("TimeButton", 135, 206, 250);
-	ui->SetUIElementFontColor("TimeButton", 255, 168, 0);
+	ui->SetElementBorderColor("TimeButton", 135, 206, 250);
+	ui->SetElementFontColor("TimeButton", 255, 168, 0);
 
 	SDL_Rect leftRect{ 0,150,100,Global::windowHeight };
 	*borderLeft.GetRectangle() = leftRect;
-	borderLeft.SetTexture(TextureManager::GetTextureByName("GenericOrangeSquare"));
+	borderLeft.SetTexture(TexMan::GetTex("GenericOrangeSquare"));
 
 	SDL_Rect downRect{ 0,Global::windowHeight - 100,Global::windowWidth,100 };
 	*borderDown.GetRectangle() = downRect;
-	borderDown.SetTexture(TextureManager::GetTextureByName("GenericOrangeSquare"));
+	borderDown.SetTexture(TexMan::GetTex("GenericOrangeSquare"));
 
 	SDL_Rect rectRight{ Global::windowWidth - 100,150,100,Global::windowHeight };
 	*borderRight.GetRectangle() = rectRight;
-	borderRight.SetTexture(TextureManager::GetTextureByName("GenericOrangeSquare"));
+	borderRight.SetTexture(TexMan::GetTex("GenericOrangeSquare"));
 
 	SDL_Rect upRect{ 0,150,Global::windowWidth,100 };
 	*borderUp.GetRectangle() = upRect;
-	borderUp.SetTexture(TextureManager::GetTextureByName("GenericOrangeSquare"));
+	borderUp.SetTexture(TexMan::GetTex("GenericOrangeSquare"));
 
-	Logger::SetUpNewSession(SceneManager::GetData<std::string>("PlayerName"), SceneManager::GetData<int>("Current Game"));
-
+	Logger::SetUpNewSession(SceneMan::GetData<std::string>("PlayerName"), SceneMan::GetData<int>("Current Game"));
+	SDL_ShowCursor(SDL_DISABLE);
 }
 
 void MiniGameSix::LogicUpdate() {
@@ -66,24 +66,16 @@ void MiniGameSix::LogicUpdate() {
 	}
 
 	if (time > 2) {
-		int x, y;
-		SDL_GetMouseState(&x, &y);
-		SDL_Rect mouseRect{ x,y,1,1 };
 		bool collided = false;
 
-		if (SimpleCollision(*borderLeft.GetRectangle(), mouseRect)) { collided = true; }
-		if (SimpleCollision(*borderUp.GetRectangle(), mouseRect)) { collided = true; }
-		if (SimpleCollision(*borderRight.GetRectangle(), mouseRect)) { collided = true; }
-		if (SimpleCollision(*borderDown.GetRectangle(), mouseRect)) { collided = true; }
-
 		for (auto it : movingCircles) {
-			if (SimpleCollision(*it.GetRectangle(), mouseRect)) { collided = true; }
+			if (SimpleCollision(*it.GetRectangle(), cursorRect)) { collided = true; }
 		}
 
 		if (collided) {
-			SceneManager::GetData<int>("Game State") = 2;
-			SceneManager::GetData<int>("Current Game") = 6;
-			SceneManager::SwitchResetScene("EndScreen", renderer, ui);
+			SceneMan::GetData<int>("Game State") = 2;
+			SceneMan::GetData<int>("Current Game") = 6;
+			SceneMan::SwitchResetScene("EndScreen", renderer, ui);
 		}
 	}
 	
@@ -91,8 +83,9 @@ void MiniGameSix::LogicUpdate() {
 }
 
 void MiniGameSix::FrameUpdate() {
-	ui->GetButtonByName("TimeButton")->SetText("Time: " + std::to_string(time));
-	ui->GetButtonByName("ScoreButton")->SetText("Score: " + std::to_string(score));
+	ui->GetButton("TimeButton")->SetText("Time: " + std::to_string(time));
+	ui->GetButton("ScoreButton")->SetText("Score: " + std::to_string(score));
+	UpdateCursor();
 	
 }
 
@@ -112,23 +105,44 @@ void MiniGameSix::Render() {
 	SDL_RenderCopy(renderer, borderDown.GetTexture(), nullptr, borderDown.GetRectangle());
 
 	SDL_RenderCopy(renderer, borderRight.GetTexture(), nullptr, borderRight.GetRectangle());
+
+	SDL_RenderCopy(renderer, TexMan::GetTex("cursor"), nullptr, &cursorRect);
 }
 
 void MiniGameSix::Clear() {
+	SDL_ShowCursor(SDL_ENABLE);
 	ui->ClearAllButtons();
 
 	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth, 200,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
+		TexMan::GetTex("buttonModern"), ui->GetFont("arial40px"),
 		"FinalScore: " + std::to_string(score), 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("FinalScore", 135, 206, 250);
-	ui->SetUIElementFontColor("FinalScore", 255, 168, 0);
-	ui->GetButtonByName("FinalScore")->SetRenderTextType(2);
+	ui->SetElementBorderColor("FinalScore", 135, 206, 250);
+	ui->SetElementFontColor("FinalScore", 255, 168, 0);
+	ui->GetButton("FinalScore")->SetRenderTextType(2);
 
 	Logger::Log(std::to_string(Global::frameCounter) + ",Wynik:" + std::to_string(score));
-	SceneManager::AddData<int>("Final Score", score);
-	SceneManager::AddData<std::string>("Score File Path", "Data/gameSixScores.txt");
+	SceneMan::AddData<int>("Final Score", score);
+	SceneMan::AddData<std::string>("Score File Path", "Data/gameSixScores.txt");
 }
 
+void MiniGameSix::UpdateCursor() {
+	int x, y;
+	SDL_GetMouseState(&x,&y);
+	cursorRect.x = x;
+	cursorRect.y = y;
+	if (cursorRect.x < borderLeft.GetRectangle()->x + borderLeft.GetRectangle()->w) { //left
+		cursorRect.x = borderLeft.GetRectangle()->x + borderLeft.GetRectangle()->w;
+	}
+	if (cursorRect.y < borderUp.GetRectangle()->y + borderUp.GetRectangle()->h) { //up
+		cursorRect.y = borderUp.GetRectangle()->y + borderUp.GetRectangle()->h;
+	}
+	if (cursorRect.x > borderRight.GetRectangle()->x) { //right
+		cursorRect.x = borderRight.GetRectangle()->x - cursorRect.w;
+	}
+	if (cursorRect.y > borderDown.GetRectangle()->y) { //down
+		cursorRect.y = borderDown.GetRectangle()->y - cursorRect.h;
+	}
+}
 
 void MiniGameSix::CreateCircle() {
 	movingCircles.emplace_back();
@@ -162,7 +176,7 @@ void MiniGameSix::CreateCircle() {
 	}
 	movingCircles.back().GetRectangle()->w = 30;
 	movingCircles.back().GetRectangle()->h = 30;
-	movingCircles.back().SetTexture(TextureManager::GetTextureByName("MovingCircle"));
+	movingCircles.back().SetTexture(TexMan::GetTex("MovingCircle"));
 
 
 

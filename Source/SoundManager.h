@@ -6,12 +6,14 @@
 
 
 
-class SoundManager
+class SoundMan
 {
     private:
         static std::unordered_map<std::string, Mix_Chunk*> Sounds;
     public:
 		static void Innit();
+
+		static void Print();
 
 		static void LoadSound(const char* filePath, const std::string& name);
 

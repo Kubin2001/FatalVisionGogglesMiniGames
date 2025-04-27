@@ -22,7 +22,7 @@ void Game::Start() {
 
     SDL_GetWindowSize(window, &Global::windowWidth, &Global::windowHeight);
 
-    std::cout << "X: " << Global::windowWidth << "Y: " << Global::windowHeight << "\n";
+    //std::cout << "X: " << Global::windowWidth << "Y: " << Global::windowHeight << "\n";
 
 
 
@@ -30,19 +30,19 @@ void Game::Start() {
     Global::defaultDrawColor[1] = 30;
     Global::defaultDrawColor[2] = 30;
     SDL_SetRenderDrawColor(renderer, Global::defaultDrawColor[0], Global::defaultDrawColor[1], Global::defaultDrawColor[2], 255);
-    TextureManager::Start(renderer);
-    SoundManager::Innit();
-    SoundManager::LoadSounds("Sounds");
+    TexMan::Start(renderer);
+    SoundMan::Innit();
+    SoundMan::LoadSounds("Sounds");
     LoadTextures();
 
     ui = std::make_unique<UI>(renderer);
-    ui->CreateFont("arial40px", TextureManager::GetTextureByName("arial40px"), "Textures/Interface/Fonts/arial40px.json");
-    ui->CreateFont("arial20px", TextureManager::GetTextureByName("arial20px"), "Textures/Interface/Fonts/arial20px.json");
-    ui->CreateFont("arial12px", TextureManager::GetTextureByName("arial12px"), "Textures/Interface/Fonts/arial12px.json");
+    ui->CreateFont("arial40px", TexMan::GetTex("arial40px"), "Textures/Interface/Fonts/arial40px.json");
+    ui->CreateFont("arial20px", TexMan::GetTex("arial20px"), "Textures/Interface/Fonts/arial20px.json");
+    ui->CreateFont("arial12px", TexMan::GetTex("arial12px"), "Textures/Interface/Fonts/arial12px.json");
 
-    SceneManager::AddData("Game State", 0);
+    SceneMan::AddData("Game State", 0);
 
-    SceneManager::AddData("Current Game", 0);
+    SceneMan::AddData("Current Game", 0);
 
     MainMenu* mainMenu = new MainMenu();
 
@@ -60,39 +60,39 @@ void Game::Start() {
 
     EndScreen* endScreen = new EndScreen();
 
-    SceneManager::AddRegisterScene(mainMenu,"Main Menu", []() { return new MainMenu(); });
+    SceneMan::AddRegisterScene(mainMenu,"Main Menu", []() { return new MainMenu(); });
 
-    SceneManager::AddRegisterScene(miniGameOne, "MiniGameOne", []() { return new MiniGameOne(); });
+    SceneMan::AddRegisterScene(miniGameOne, "MiniGameOne", []() { return new MiniGameOne(); });
 
-    SceneManager::AddRegisterScene(miniGameTwo, "MiniGameTwo", []() { return new MiniGameTwo; });
+    SceneMan::AddRegisterScene(miniGameTwo, "MiniGameTwo", []() { return new MiniGameTwo; });
 
-    SceneManager::AddRegisterScene(miniGameThree, "MiniGameThree", []() { return new MiniGameThree(); });
+    SceneMan::AddRegisterScene(miniGameThree, "MiniGameThree", []() { return new MiniGameThree(); });
 
-    SceneManager::AddRegisterScene(miniGameFour, "MiniGameFour", []() { return new MiniGameFour(); });
+    SceneMan::AddRegisterScene(miniGameFour, "MiniGameFour", []() { return new MiniGameFour(); });
 
-    SceneManager::AddRegisterScene(miniGameFive, "MiniGameFive", []() { return new MiniGameFive; });
+    SceneMan::AddRegisterScene(miniGameFive, "MiniGameFive", []() { return new MiniGameFive; });
 
-    SceneManager::AddRegisterScene(miniGameSix, "MiniGameSix", []() { return new MiniGameSix; });
+    SceneMan::AddRegisterScene(miniGameSix, "MiniGameSix", []() { return new MiniGameSix; });
 
-    SceneManager::AddRegisterScene(endScreen, "EndScreen", []() { return new EndScreen(); });
+    SceneMan::AddRegisterScene(endScreen, "EndScreen", []() { return new EndScreen(); });
 
-    SceneManager::SwitchResetScene("Main Menu",renderer,ui.get());
+    SceneMan::SwitchResetScene("Main Menu",renderer,ui.get());
 
 
     //Ustawianie na pocz¹tek pustego nicku gracza i false jako ¿e gra leci bez googli 
-    SceneManager::AddData<std::string>("PlayerName", "");
-    SceneManager::AddData<bool>("UsesGoogles",false);
+    SceneMan::AddData<std::string>("PlayerName", "");
+    SceneMan::AddData<bool>("UsesGoogles",false);
 }
 
 
 
 void Game::LoadTextures() {
-    TextureManager::LoadMultipleTextures("Textures/Objects");
+    TexMan::LoadMultiple("Textures/Objects");
 }
 
 void Game::Logic() {
     Global::frameCounter++;
-    SceneManager::GetCurrentScene()->LogicUpdate();
+    SceneMan::GetCurrentScene()->LogicUpdate();
 }
 
 
@@ -106,10 +106,10 @@ void Game::Constant() {
 
 
 void Game::EventsConstant() {
-    SceneManager::GetCurrentScene()->FrameUpdate();
+    SceneMan::GetCurrentScene()->FrameUpdate();
     while (SDL_PollEvent(&event)) {
         ui->ManageInput(event);
-        SceneManager::GetCurrentScene()->Input(event);
+        SceneMan::GetCurrentScene()->Input(event);
         Exit();
     }
 
@@ -128,14 +128,14 @@ void Game::Exit() {
 
 void Game::Render() {
     SDL_RenderClear(renderer);
-    SceneManager::GetCurrentScene()->Render();
+    SceneMan::GetCurrentScene()->Render();
     ui->Render();
     SDL_RenderPresent(renderer);
 }
 
 Game::~Game() {
-    TextureManager::Clear();
-    SceneManager::Clear();
+    TexMan::Clear();
+    SceneMan::Clear();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

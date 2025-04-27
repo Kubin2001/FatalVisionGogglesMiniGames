@@ -24,55 +24,55 @@ void EndScreen::Init(SDL_Renderer* renderer, UI* ui) {
     ScaleRectanglesToScreen(vec1, 3, 400, 200, 200, 250);
 
     ui->CreateButton("MainMenuIcon", vec1[0].x, vec1[0].y, vec1[0].w, vec1[0].h,
-        TextureManager::GetTextureByName("MenuIcon"), ui->GetFont("arial20px"),
+        TexMan::GetTex("MenuIcon"), ui->GetFont("arial20px"),
         "", 0, 0, 0, 5);
-    ui->SetUIElementBorderColor("MainMenuIcon", 135, 206, 250);
+    ui->SetElementBorderColor("MainMenuIcon", 135, 206, 250);
 
-    ui->CreateInteractionBox("ScoreBoardIcon", vec1[1].x, vec1[1].y, vec1[1].w, vec1[1].h,
-        TextureManager::GetTextureByName("ScoreIcon"), ui->GetFont("arial20px"),
+    ui->CreateClickBox("ScoreBoardIcon", vec1[1].x, vec1[1].y, vec1[1].w, vec1[1].h,
+        TexMan::GetTex("ScoreIcon"), ui->GetFont("arial20px"),
         "", 0, 0, 0, 5);
-    ui->SetUIElementBorderColor("ScoreBoardIcon", 135, 206, 250);
+    ui->SetElementBorderColor("ScoreBoardIcon", 135, 206, 250);
 
     ui->CreateButton("RetryIcon", vec1[2].x, vec1[2].y, vec1[2].w, vec1[2].h,
-        TextureManager::GetTextureByName("RetryIcon"), ui->GetFont("arial20px"),
+        TexMan::GetTex("RetryIcon"), ui->GetFont("arial20px"),
         "", 0, 0, 0, 5);
-    ui->SetUIElementBorderColor("RetryIcon", 135, 206, 250);
+    ui->SetElementBorderColor("RetryIcon", 135, 206, 250);
 
 
 
 
     ScaleRectanglesToScreen(vec1, 3, 625, 200, 100, 250);
-    ui->CreateInteractionBox("MainMenuButton", vec1[0].x, vec1[0].y, vec1[0].w, vec1[0].h,
-        TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+    ui->CreateClickBox("MainMenuButton", vec1[0].x, vec1[0].y, vec1[0].w, vec1[0].h,
+        TexMan::GetTex("buttonModern"), ui->GetFont("arial20px"),
         "      Main Menu", 1, 8, 40, 5);
-    ui->SetUIElementBorderColor("MainMenuButton", 135, 206, 250);
-    ui->SetUIElementFontColor("MainMenuButton", 255, 168, 0);
+    ui->SetElementBorderColor("MainMenuButton", 135, 206, 250);
+    ui->SetElementFontColor("MainMenuButton", 255, 168, 0);
 
-    ui->CreateInteractionBox("ScoreBoardButton", vec1[1].x, vec1[1].y, vec1[1].w, vec1[1].h,
-        TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+    ui->CreateClickBox("ScoreBoardButton", vec1[1].x, vec1[1].y, vec1[1].w, vec1[1].h,
+        TexMan::GetTex("buttonModern"), ui->GetFont("arial20px"),
         "      Submit", 1, 8, 40, 5);
-    ui->SetUIElementBorderColor("ScoreBoardButton", 135, 206, 250);
-    ui->SetUIElementFontColor("ScoreBoardButton", 255, 168, 0);
+    ui->SetElementBorderColor("ScoreBoardButton", 135, 206, 250);
+    ui->SetElementFontColor("ScoreBoardButton", 255, 168, 0);
 
-    ui->CreateInteractionBox("RetryButton", vec1[2].x, vec1[2].y, vec1[2].w, vec1[2].h,
-        TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+    ui->CreateClickBox("RetryButton", vec1[2].x, vec1[2].y, vec1[2].w, vec1[2].h,
+        TexMan::GetTex("buttonModern"), ui->GetFont("arial20px"),
         "         Retry", 1, 8, 40, 5);
-    ui->SetUIElementBorderColor("RetryButton", 135, 206, 250);
-    ui->SetUIElementFontColor("RetryButton", 255, 168, 0);
+    ui->SetElementBorderColor("RetryButton", 135, 206, 250);
+    ui->SetElementFontColor("RetryButton", 255, 168, 0);
 
-    ui->CreateInteractionBox("DrunkBox", Global::windowWidth - 100, Global::windowHeight - 200, 100, 100,
+    ui->CreateClickBox("DrunkBox", Global::windowWidth - 100, Global::windowHeight - 200, 100, 100,
         nullptr, ui->GetFont("arial20px"), "", 1, 8, 12, 5);
 
-    for (auto& it : ui->GetInteractionBoxes()) {
+    for (auto& it : ui->GetClickBoxes()) {
         it->SetHoverFilter(true, 255, 255, 255, 150, "hoverSound");
         it->SetClickSound("click");
     }
 
-    if (SceneManager::GetData<bool>("UsesGoogles")) {
-        ui->SetUIElementColor("DrunkBox", 255, 0, 0);
+    if (SceneMan::GetData<bool>("UsesGoogles")) {
+        ui->SetElementColor("DrunkBox", 255, 0, 0);
     }
     else {
-        ui->SetUIElementColor("DrunkBox", 0, 255, 0);
+        ui->SetElementColor("DrunkBox", 0, 255, 0);
     }
 }
 
@@ -83,60 +83,60 @@ void EndScreen::FrameUpdate(){
 }
 
 void EndScreen::Input(SDL_Event& event) {
-    if (ui->GetInteractionBoxByName("MainMenuButton")->ConsumeStatus()) {
-        SceneManager::GetData<int>("Game State") = 0;
-        SceneManager::GetData<int>("Current Game") = 0;
-        SceneManager::SwitchResetScene("Main Menu", renderer, ui);
+    if (ui->GetClickBox("MainMenuButton")->ConsumeStatus()) {
+        SceneMan::GetData<int>("Game State") = 0;
+        SceneMan::GetData<int>("Current Game") = 0;
+        SceneMan::SwitchResetScene("Main Menu", renderer, ui);
         return;
     }
-    int currentGame = SceneManager::GetData<int>("Current Game");
+    int currentGame = SceneMan::GetData<int>("Current Game");
     switch (currentGame) {
         case 1:
-            if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
-                SceneManager::GetData<int>("Game State") = 1;
-                SceneManager::GetData<int>("Current Game") = 1;
-                SceneManager::SwitchResetScene("MiniGameOne", renderer, ui);
+            if (ui->GetClickBox("RetryButton")->ConsumeStatus()) {
+                SceneMan::GetData<int>("Game State") = 1;
+                SceneMan::GetData<int>("Current Game") = 1;
+                SceneMan::SwitchResetScene("MiniGameOne", renderer, ui);
                 return;
             }
             break;
         case 2:
-            if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
-                SceneManager::GetData<int>("Game State") = 1;
-                SceneManager::GetData<int>("Current Game") = 2;
-                SceneManager::SwitchResetScene("MiniGameTwo", renderer, ui);
+            if (ui->GetClickBox("RetryButton")->ConsumeStatus()) {
+                SceneMan::GetData<int>("Game State") = 1;
+                SceneMan::GetData<int>("Current Game") = 2;
+                SceneMan::SwitchResetScene("MiniGameTwo", renderer, ui);
                 return;
             }
             break;
         case 3:
-            if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
-                SceneManager::GetData<int>("Game State") = 1;
-                SceneManager::GetData<int>("Current Game") = 3;
-                SceneManager::SwitchResetScene("MiniGameThree", renderer, ui);
+            if (ui->GetClickBox("RetryButton")->ConsumeStatus()) {
+                SceneMan::GetData<int>("Game State") = 1;
+                SceneMan::GetData<int>("Current Game") = 3;
+                SceneMan::SwitchResetScene("MiniGameThree", renderer, ui);
                 return;
             }
             break;
         case 4:
-            if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
-                SceneManager::GetData<int>("Game State") = 1;
-                SceneManager::GetData<int>("Current Game") = 4;
-                SceneManager::SwitchResetScene("MiniGameFour", renderer, ui);
+            if (ui->GetClickBox("RetryButton")->ConsumeStatus()) {
+                SceneMan::GetData<int>("Game State") = 1;
+                SceneMan::GetData<int>("Current Game") = 4;
+                SceneMan::SwitchResetScene("MiniGameFour", renderer, ui);
                 return;
             }
             break;
 
         case 5:
-            if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
-                SceneManager::GetData<int>("Game State") = 1;
-                SceneManager::GetData<int>("Current Game") = 5;
-                SceneManager::SwitchResetScene("MiniGameFive", renderer, ui);
+            if (ui->GetClickBox("RetryButton")->ConsumeStatus()) {
+                SceneMan::GetData<int>("Game State") = 1;
+                SceneMan::GetData<int>("Current Game") = 5;
+                SceneMan::SwitchResetScene("MiniGameFive", renderer, ui);
                 return;
             }
 
         case 6:
-            if (ui->GetInteractionBoxByName("RetryButton")->ConsumeStatus()) {
-                SceneManager::GetData<int>("Game State") = 1;
-                SceneManager::GetData<int>("Current Game") = 6;
-                SceneManager::SwitchResetScene("MiniGameSix", renderer, ui);
+            if (ui->GetClickBox("RetryButton")->ConsumeStatus()) {
+                SceneMan::GetData<int>("Game State") = 1;
+                SceneMan::GetData<int>("Current Game") = 6;
+                SceneMan::SwitchResetScene("MiniGameSix", renderer, ui);
                 return;
             }
 
@@ -146,20 +146,20 @@ void EndScreen::Input(SDL_Event& event) {
 }
 
 void EndScreen::ManageScoreBoard() {
-    if (ui->GetInteractionBoxByName("ScoreBoardButton")->ConsumeStatus()) { // Sprawdzanie czy trzeba utworzyæ submission button
+    if (ui->GetClickBox("ScoreBoardButton")->ConsumeStatus()) { // Sprawdzanie czy trzeba utworzyæ submission button
         if (submissionButtonRef == nullptr) {
 
-            scoreButtonRef = ui->GetInteractionBoxByName("ScoreBoardButton");
-            ui->GetInteractionBoxByName("ScoreBoardButton")->TurnOff();
-            ui->GetInteractionBoxByName("ScoreBoardButton")->Hide();
-            ui->CreateMassageBox("SubmissionButton", scoreButtonRef->GetRectangle()->x, scoreButtonRef->GetRectangle()->y,
+            scoreButtonRef = ui->GetClickBox("ScoreBoardButton");
+            ui->GetClickBox("ScoreBoardButton")->TurnOff();
+            ui->GetClickBox("ScoreBoardButton")->Hide();
+            ui->CreateTextBox("SubmissionButton", scoreButtonRef->GetRectangle()->x, scoreButtonRef->GetRectangle()->y,
                 scoreButtonRef->GetRectangle()->w, scoreButtonRef->GetRectangle()->h, nullptr, ui->GetFont("arial40px"), "", 1.0f, 0, 0, 5);
 
 
-            submissionButtonRef = ui->GetMassageBoxByName("SubmissionButton");
-            ui->SetUIElementColor("SubmissionButton", 255, 255, 255);
-            ui->SetUIElementBorderColor("SubmissionButton", 135, 206, 250);
-            ui->SetUIElementFontColor("SubmissionButton", 255, 168, 0);
+            submissionButtonRef = ui->GetTextBox("SubmissionButton");
+            ui->SetElementColor("SubmissionButton", 255, 255, 255);
+            ui->SetElementBorderColor("SubmissionButton", 135, 206, 250);
+            ui->SetElementFontColor("SubmissionButton", 255, 168, 0);
             submissionButtonRef->SetRenderTextType(2);
 
         }
@@ -173,31 +173,31 @@ void EndScreen::ManageScoreBoard() {
         }
     }
 
-    if (ui->GetInteractionBoxByName("ScoreBoardIcon")->ConsumeStatus()) {
+    if (ui->GetClickBox("ScoreBoardIcon")->ConsumeStatus()) {
         for (auto& it : ui->GetButtons()) {
             it->Hide();
         }
-        for (auto& it : ui->GetInteractionBoxes()) {
+        for (auto& it : ui->GetClickBoxes()) {
             it->Hide();
             it->TurnOff();
         }
-        for (auto& it : ui->GetMassageBoxes()) {
+        for (auto& it : ui->GetTextBoxes()) {
             it->Hide();
         }
         SetUpScoreBoard(5);
         
     }
 
-    if (ui->GetInteractionBoxByName("X") != nullptr) {
-        if (ui->GetInteractionBoxByName("X")->ConsumeStatus()) {
+    if (ui->GetClickBox("X") != nullptr) {
+        if (ui->GetClickBox("X")->ConsumeStatus()) {
             for (auto& it : ui->GetButtons()) {
                 it->Show();
             }
-            for (auto& it : ui->GetInteractionBoxes()) {
+            for (auto& it : ui->GetClickBoxes()) {
                 it->Show();
                 it->TurnOn();
             }
-            for (auto& it : ui->GetMassageBoxes()) {
+            for (auto& it : ui->GetTextBoxes()) {
                 it->Show();
             }
             ui->DeleteAnyButton("SCOREBOARD");
@@ -243,9 +243,9 @@ void EndScreen::ScoreBoardInput(SDL_Event& event) {
     if (submissionButtonRef != nullptr) {
         if (event.type == SDL_KEYUP && event.key.keysym.sym == SDLK_RETURN) { // Return to enter  
             // Wczytywanie i sortowanie pliku
-            int finalScore = SceneManager::GetData<int>("Final Score");
+            int finalScore = SceneMan::GetData<int>("Final Score");
             if (submissionButtonRef->GetText().length() < 6 && submissionButtonRef->GetText().length() > 2) {
-                std::ifstream scoreFile(SceneManager::GetData<std::string>("Score File Path"));
+                std::ifstream scoreFile(SceneMan::GetData<std::string>("Score File Path"));
 
                 std::string line;
                 if (scoreFile.is_open()) {
@@ -293,7 +293,7 @@ void EndScreen::ScoreBoardInput(SDL_Event& event) {
                 }
 
                 //Zapisywanie wyników
-                std::ofstream file(SceneManager::GetData<std::string>("Score File Path"));
+                std::ofstream file(SceneMan::GetData<std::string>("Score File Path"));
                 if (file.is_open()) {
                     for (const auto& it : ScoreContainer) {
                         file <<it.name<<','<<it.score<<'\n';
@@ -305,7 +305,7 @@ void EndScreen::ScoreBoardInput(SDL_Event& event) {
                 }
 
                 //Czyszczenie i usuwanie przycisku
-                ui->DeleteMassageBox("SubmissionButton");
+                ui->DeleteTextBox("SubmissionButton");
                 submissionButtonRef = nullptr;
                 scoreButtonRef->Show();
                 scoreButtonRef->TurnOn();
@@ -324,40 +324,34 @@ void EndScreen::SetUpScoreBoard(int entries) {
     int h = (100 * entries);
     ui->CreateButton("SCOREBOARD", p.x - (w / 2), 130, w, h, nullptr, ui->GetFont("arial40px"), "test",
         1.0f,20);
-    ui->GetButtonByName("SCOREBOARD")->SetBorder(true);
-    ui->GetButtonByName("SCOREBOARD")->SetBorderThickness(8);
-    ui->GetButtonByName("SCOREBOARD")->SetBorderRGB(255, 168, 0);
-    ui->GetButtonByName("SCOREBOARD")->SetFontColor(255, 168, 0);
+    ui->GetButton("SCOREBOARD")->SetBorder(8, 255, 168, 0);
+    ui->GetButton("SCOREBOARD")->SetFontColor(255, 168, 0);
 
 
     ui->CreateButton("SCOREBOARDTOP", p.x - (w / 2), 50, w, 80, nullptr, ui->GetFont("arial40px"), "SCOREBOARD ",
         1.0f, 12, 12);
 
-    ui->GetButtonByName("SCOREBOARDTOP")->SetBorder(true);
-    ui->GetButtonByName("SCOREBOARDTOP")->SetBorderThickness(8);
-    ui->GetButtonByName("SCOREBOARDTOP")->SetBorderRGB(255, 168, 0);
-    ui->GetButtonByName("SCOREBOARDTOP")->SetFontColor(255, 168, 0);
-    ui->GetButtonByName("SCOREBOARDTOP")->SetRenderTextType(2);
+    ui->GetButton("SCOREBOARDTOP")->SetBorder(8, 255, 168, 0);
+    ui->GetButton("SCOREBOARDTOP")->SetFontColor(255, 168, 0);
+    ui->GetButton("SCOREBOARDTOP")->SetRenderTextType(2);
 
 
-    int xCord = ui->GetButtonByName("SCOREBOARD")->GetRectangle()->x +
-        ui->GetButtonByName("SCOREBOARD")->GetRectangle()->w;
-    int yCord = ui->GetButtonByName("SCOREBOARD")->GetRectangle()->y;
+    int xCord = ui->GetButton("SCOREBOARD")->GetRectangle()->x +
+        ui->GetButton("SCOREBOARD")->GetRectangle()->w;
+    int yCord = ui->GetButton("SCOREBOARD")->GetRectangle()->y;
 
-    ui->CreateInteractionBox("X", xCord, yCord, 50, 50, nullptr, ui->GetFont("arial40px"), "X",
+    ui->CreateClickBox("X", xCord, yCord, 50, 50, nullptr, ui->GetFont("arial40px"), "X",
         1.0f, 0, 5);
 
-    ui->GetInteractionBoxByName("X")->SetBorder(true);
-    ui->GetInteractionBoxByName("X")->SetBorderThickness(2);
-    ui->GetInteractionBoxByName("X")->SetBorderRGB(255, 168, 0);
-    ui->GetInteractionBoxByName("X")->SetFontColor(255, 168, 0);
-    ui->GetInteractionBoxByName("X")->SetRenderTextType(2);
-    ui->GetInteractionBoxByName("X")->SetHoverFilter(true, 255, 255, 255, 150);
+    ui->GetClickBox("X")->SetBorder(2, 255, 168, 0);
+    ui->GetClickBox("X")->SetFontColor(255, 168, 0);
+    ui->GetClickBox("X")->SetRenderTextType(2);
+    ui->GetClickBox("X")->SetHoverFilter(true, 255, 255, 255, 150);
 
 
 
     //Wczytywanie danych do tekstu
-    std::ifstream scoreFile(SceneManager::GetData<std::string>("Score File Path"));
+    std::ifstream scoreFile(SceneMan::GetData<std::string>("Score File Path"));
 
     std::string line;
     if (scoreFile.is_open()) {
@@ -385,7 +379,7 @@ void EndScreen::SetUpScoreBoard(int entries) {
         scoreBoardText += ScoreContainer[i].name + " :" + 
             std::to_string(ScoreContainer[i].score) + "\n\n";
     }
-    ui->GetButtonByName("SCOREBOARD")->SetText(scoreBoardText);
+    ui->GetButton("SCOREBOARD")->SetText(scoreBoardText);
 
     ScoreContainer.clear();
 }
@@ -393,14 +387,14 @@ void EndScreen::SetUpScoreBoard(int entries) {
 void EndScreen::Render() {}
 
 void EndScreen::ManageDrunkBox() {
-    if (ui->GetInteractionBoxByName("DrunkBox")->ConsumeStatus()) {
-        if (SceneManager::GetData<bool>("UsesGoogles")) { //zielony jak nie u¿ywa czyli jak false a czerwony jak true czyli u¿ywa
-            SceneManager::GetData<bool>("UsesGoogles") = false;
-            ui->SetUIElementColor("DrunkBox", 0, 255, 0);
+    if (ui->GetClickBox("DrunkBox")->ConsumeStatus()) {
+        if (SceneMan::GetData<bool>("UsesGoogles")) { //zielony jak nie u¿ywa czyli jak false a czerwony jak true czyli u¿ywa
+            SceneMan::GetData<bool>("UsesGoogles") = false;
+            ui->SetElementColor("DrunkBox", 0, 255, 0);
         }
         else {
-            SceneManager::GetData<bool>("UsesGoogles") = true;
-            ui->SetUIElementColor("DrunkBox", 255, 0, 0);
+            SceneMan::GetData<bool>("UsesGoogles") = true;
+            ui->SetElementColor("DrunkBox", 255, 0, 0);
         }
     }
 }

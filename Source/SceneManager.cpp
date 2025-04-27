@@ -1,16 +1,24 @@
 #include "SceneManager.h"
 #include "iostream"
 
-std::unordered_map<std::string, Scene*> SceneManager::Scenes;
-std::unordered_map<std::string, std::unique_ptr<AnyData>> SceneManager::SharedData;
-Scene* SceneManager::currentScene = nullptr;
+std::unordered_map<std::string, Scene*> SceneMan::Scenes;
+std::unordered_map<std::string, std::unique_ptr<AnyData>> SceneMan::SharedData;
+Scene* SceneMan::currentScene = nullptr;
 
 std::unordered_map<std::string, std::function<Scene* ()>> SceneFactory::factories;
 
 
+void SceneMan::Print() {
+	std::cout << "------------------------\n";
+	std::cout << "Loaded Scenes Names: \n";
+	std::cout << "------------------------\n";
+	for (auto it = Scenes.begin(); it != Scenes.end(); ++it) {
+		std::cout << it->first << "\n";
+	}
+	std::cout << "------------------------\n";
+}
 
-
-void SceneManager::AddScene(Scene* scene, const std::string& sceneName) {
+void SceneMan::AddScene(Scene* scene, const std::string& sceneName) {
 	if (Scenes.find(sceneName) == Scenes.end()) {
 		scene->name = sceneName;
 		Scenes.insert(std::make_pair(sceneName, scene));
@@ -22,11 +30,11 @@ void SceneManager::AddScene(Scene* scene, const std::string& sceneName) {
 
 }
 
-void SceneManager::AddRegisterScene(Scene* scene, const std::string& sceneName, std::function<Scene* ()> factoryFn) {
+void SceneMan::AddRegisterScene(Scene* scene, const std::string& sceneName, std::function<Scene* ()> factoryFn) {
 	if (Scenes.find(sceneName) == Scenes.end()) {
 		scene->name = sceneName;
 		Scenes.insert(std::make_pair(sceneName, scene));
-		SceneFactory::RegisterScene(sceneName,factoryFn);
+		SceneFactory::RegisterScene(sceneName, factoryFn);
 	}
 	else
 	{
@@ -35,7 +43,7 @@ void SceneManager::AddRegisterScene(Scene* scene, const std::string& sceneName, 
 
 }
 
-void SceneManager::SetScene(const std::string& sceneName) {
+void SceneMan::SetScene(const std::string& sceneName) {
 	if (Scenes.find(sceneName) != Scenes.end()) {
 		currentScene = Scenes[sceneName];
 
@@ -46,13 +54,13 @@ void SceneManager::SetScene(const std::string& sceneName) {
 	}
 }
 
-void SceneManager::SwitchScene(const std::string& sceneName, SDL_Renderer* renderer, UI* ui) {
+void SceneMan::SwitchScene(const std::string& sceneName, SDL_Renderer* renderer, UI* ui) {
 	if (Scenes.find(sceneName) != Scenes.end()) {
 		if (currentScene != nullptr) {
 			currentScene->Clear();
 		}
 		currentScene = Scenes[sceneName];
-		currentScene->Init(renderer,ui);
+		currentScene->Init(renderer, ui);
 
 	}
 	else
@@ -61,7 +69,7 @@ void SceneManager::SwitchScene(const std::string& sceneName, SDL_Renderer* rende
 	}
 }
 
-void SceneManager::SwitchResetScene(const std::string& sceneName, SDL_Renderer* renderer, UI* ui) {
+void SceneMan::SwitchResetScene(const std::string& sceneName, SDL_Renderer* renderer, UI* ui) {
 	if (Scenes.find(sceneName) != Scenes.end()) {
 		if (currentScene != nullptr) { // usuwanie obecnej sceny
 			currentScene->Clear();
@@ -88,7 +96,7 @@ void SceneManager::SwitchResetScene(const std::string& sceneName, SDL_Renderer* 
 	}
 }
 
-void SceneManager::Clear() {
+void SceneMan::Clear() {
 	for (auto& pair : Scenes) {
 		delete pair.second;
 	}
@@ -96,24 +104,24 @@ void SceneManager::Clear() {
 }
 
 
-Scene* SceneManager::GetCurrentScene() {
+Scene* SceneMan::GetCurrentScene() {
 	return currentScene;
 }
 
-bool SceneManager::IsData(const std::string& key) {
+bool SceneMan::IsData(const std::string& key) {
 	if (SharedData.find(key) != SharedData.end()) {
 		return true;
 	}
 	return false;
 }
 
-void SceneManager::ClearData(const std::string& key) {
+void SceneMan::ClearData(const std::string& key) {
 	if (SharedData.find(key) != SharedData.end()) {
 		SharedData.erase(key);
 	}
 }
 
-void SceneManager::ClearAllData() {
+void SceneMan::ClearAllData() {
 	SharedData.clear();
 }
 

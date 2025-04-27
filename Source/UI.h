@@ -48,6 +48,10 @@ protected:
 
     std::string hooverSound = "";
 
+    bool GetBorder();
+
+    void SetBorder(bool temp);
+
 public:
 
     SDL_Texture* GetTexture();
@@ -68,13 +72,11 @@ public:
     int GetInterLine();
     void SetInterLine(int temp);
 
-    bool GetBorder();
-
-    void SetBorder(bool temp);
-
     int GetBorderThickness();
 
-    void SetBorderThickness(int temp);
+    void SetBorderThickness(const int temp);
+
+    void SetBorder(const int width, const unsigned char R, const unsigned char G, const unsigned char B);
 
     int GetTextStartX();
     void SetTextStartX(int temp);
@@ -88,11 +90,11 @@ public:
 
     void SetFont(Font* font);
 
-    void SetButtonColor(unsigned char R, unsigned char G, unsigned char B);
+    void SetButtonColor(const unsigned char R, const unsigned char G, const unsigned char B);
 
-    void SetBorderRGB(unsigned char R, unsigned char G, unsigned char B);
+    void SetBorderRGB(const unsigned char R, const unsigned char G, const unsigned char B);
 
-    void SetFontColor(unsigned char R, unsigned char G, unsigned char B);
+    void SetFontColor(const unsigned char R, const unsigned char G, const unsigned char B);
 
     void Render(SDL_Renderer *renderer);
 
@@ -121,7 +123,7 @@ public:
 };
 
 // A button that can be clicked with a mouse
-class InteractionBox : public TemplateUIElement {
+class ClickBox : public TemplateUIElement {
 private:
     bool status = false;
     bool turnedOn = true;
@@ -144,39 +146,40 @@ public:
 
     std::string &GetClickSound();
 
-
+    friend class UI;
 };
 
 
 // Button that can accept text input
-class MassageBox : public TemplateUIElement {
+class TextBox : public TemplateUIElement {
 private:
     bool turnedOn = false;
 public:
     void CheckInteraction(SDL_Event& event);
 
     void ManageTextInput(SDL_Event& event);
+    friend class UI;
 };
 
 // Basic non interactive button
 class Button : public TemplateUIElement {
-
+    public:
+        friend class UI;
 
 };
 
 // To propelly start the UI you need to pleace manage input function in event loop and render in rendering loop
-class UI
-{
+class UI{
 private:
     SDL_Renderer* renderer;
 
     std::vector<Button*> Buttons;
-    std::vector<MassageBox*> MassageBoxes;
-    std::vector<InteractionBox*> InteractionBoxes;
+    std::vector<TextBox*> TextBoxes;
+    std::vector<ClickBox*> ClickBoxes;
 
     std::unordered_map<std::string, Button*> ButtonsMap;
-    std::unordered_map<std::string, MassageBox*> MassageBoxesMap;
-    std::unordered_map<std::string, InteractionBox*> InteractionBoxesMap;
+    std::unordered_map<std::string, TextBox*> TextBoxesMap;
+    std::unordered_map<std::string, ClickBox*> ClickBoxesMap;
 
     FontManager* fontManager;
 
@@ -188,40 +191,40 @@ public:
 
     void LoadTextures();
 
-    void CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font = nullptr,
+    Button* CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font = nullptr,
         std::string text = "", float textScale = 1.0f, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
 
-    void CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font = nullptr,
+    TextBox* CreateTextBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font = nullptr,
         std::string text = "", float textScale = 1.0f, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
 
-    void CreateInteractionBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font = nullptr,
+    ClickBox* CreateClickBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font = nullptr,
         std::string text = "", float textScale = 1.0f, int textStartX = 0, int textStartY = 0, int borderThickness = 0);
 
 
     void CheckHover();
 
-    void CheckMasageBoxInteraction(SDL_Event& event);
+    void CheckTextBoxInteraction(SDL_Event& event);
 
-    void ManageMassageBoxTextInput(SDL_Event& event);
+    void ManageTextBoxTextInput(SDL_Event& event);
 
-    void CheckInteractionBoxes(SDL_Event& event);
+    void CheckClickBoxes(SDL_Event& event);
 
-    Button* GetButtonByName(const std::string& name);
-    MassageBox* GetMassageBoxByName(const std::string& name);
-    InteractionBox* GetInteractionBoxByName(const std::string& name);
+    Button* GetButton(const std::string& name);
+    TextBox* GetTextBox(const std::string& name);
+    ClickBox* GetClickBox(const std::string& name);
 
-    void SetUIElementColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B);
+    void SetElementColor(const std::string& name, const unsigned char R, unsigned char G, unsigned char B);
 
-    void SetUIElementBorderColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B);
-    void SetUIElementFontColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B);
+    void SetElementBorderColor(const std::string& name, const unsigned char R, const unsigned char G, const unsigned char B);
+    void SetElementFontColor(const std::string& name, const unsigned char R, const unsigned char G, const unsigned char B);
 
     void ManageInput(SDL_Event& event);
 
     bool DeleteButton(const std::string& name);
 
-    bool DeleteMassageBox(const std::string& name);
+    bool DeleteTextBox(const std::string& name);
 
-    bool DeleteInteractionBox(const std::string& name);
+    bool DeleteClickBox(const std::string& name);
 
     bool DeleteAnyButton(const std::string& name);
 
@@ -229,9 +232,9 @@ public:
 
     std::vector<Button*>& GetButtons();
 
-    std::vector<MassageBox*>& GetMassageBoxes();
+    std::vector<TextBox*>& GetTextBoxes();
 
-    std::vector<InteractionBox*>& GetInteractionBoxes();
+    std::vector<ClickBox*>& GetClickBoxes();
 
     // You need to provide not name (made up by you) texture (needs to be already loaded by texture manager) path to pregenerated json file
     void CreateFont(const std::string& name, SDL_Texture* texture, const std::string& jsonPath);

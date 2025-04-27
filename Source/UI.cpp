@@ -72,8 +72,17 @@ int TemplateUIElement::GetBorderThickness() {
     return borderThickness;
 }
 
-void TemplateUIElement::SetBorderThickness(int temp) {
+void TemplateUIElement::SetBorderThickness(const int temp) {
     borderThickness = temp;
+    border = true;
+}
+
+void TemplateUIElement::SetBorder(const int width, const unsigned char R, const unsigned char G, const unsigned char B) {
+    border = true;
+    borderThickness = width;
+    borderRGB[0] = R;
+    borderRGB[1] = G;
+    borderRGB[2] = B;
 }
 
 int TemplateUIElement::GetTextStartX() {
@@ -97,7 +106,7 @@ void TemplateUIElement::SetTransparent(bool temp) {
     buttonTransparent = temp;
 }
 
-void TemplateUIElement::SetButtonColor(unsigned char R, unsigned char G, unsigned char B) {
+void TemplateUIElement::SetButtonColor(const unsigned char R, const unsigned char G, const unsigned char B) {
     if (buttonTransparent) {
         buttonTransparent = false;
     }
@@ -107,13 +116,13 @@ void TemplateUIElement::SetButtonColor(unsigned char R, unsigned char G, unsigne
 }
 
 
-void TemplateUIElement::SetBorderRGB(unsigned char R, unsigned char G, unsigned char B) {
+void TemplateUIElement::SetBorderRGB(const unsigned char R, const unsigned char G, const unsigned char B) {
     borderRGB[0] = R;
     borderRGB[1] = G;
     borderRGB[2] = B;
 }
 
-void TemplateUIElement::SetFontColor(unsigned char R, unsigned char G, unsigned char B) {
+void TemplateUIElement::SetFontColor(const unsigned char R, const unsigned char G, const unsigned char B) {
     if (font != nullptr) {
         if (font->GetTexture() != nullptr) {
             fontRGB[0] = R;
@@ -259,7 +268,7 @@ std::string& TemplateUIElement::GetHooverSound() {
 
 //BUTTON
 //MassageBox
-void MassageBox::CheckInteraction(SDL_Event& event) {
+void TextBox::CheckInteraction(SDL_Event& event) {
     if (event.button.button == SDL_BUTTON_LEFT) {
         SDL_Rect temprect{ event.button.x ,event.button.y,1,1 };
         if (SimpleCollision(*GetRectangle(), temprect)) {
@@ -271,7 +280,7 @@ void MassageBox::CheckInteraction(SDL_Event& event) {
     }
 }
 
-void MassageBox::ManageTextInput(SDL_Event& event) {
+void TextBox::ManageTextInput(SDL_Event& event) {
     if (turnedOn) {
         SDL_StartTextInput();
 
@@ -293,15 +302,15 @@ void MassageBox::ManageTextInput(SDL_Event& event) {
 
 //MassageBox
 //InteractionBox
-bool InteractionBox::GetStatus() {
+bool ClickBox::GetStatus() {
     return status;
 }
 
-void InteractionBox::SetStatus(bool value) {
+void ClickBox::SetStatus(bool value) {
     status = value;
 }
 
-bool InteractionBox::ConsumeStatus() {
+bool ClickBox::ConsumeStatus() {
     if (status) {
         status = false;
         return true;
@@ -309,23 +318,23 @@ bool InteractionBox::ConsumeStatus() {
     return false;
 }
 
-void InteractionBox::TurnOn() {
+void ClickBox::TurnOn() {
     turnedOn = true;
 }
 
-void InteractionBox::TurnOff() {
+void ClickBox::TurnOff() {
     turnedOn = false;
 }
 
-bool InteractionBox::IsOn() {
+bool ClickBox::IsOn() {
     return turnedOn;
 }
 
-void InteractionBox::SetClickSound(const std::string& temp) {
+void ClickBox::SetClickSound(const std::string& temp) {
     this->clickSound = temp;
 }
 
-std::string& InteractionBox::GetClickSound() {
+std::string& ClickBox::GetClickSound() {
     return clickSound;
 }
 //InteractionBox
@@ -333,8 +342,11 @@ std::string& InteractionBox::GetClickSound() {
 UI::UI(SDL_Renderer* renderer) {
     fontManager = new FontManager();
     this->renderer = renderer;
-    if (TextureManager::isWorking()) {
+    if (TexMan::IsWorking()) {
         LoadTextures();
+    }
+    else{
+        std::cout << "Error Texture Manager is unicialized ui may not work propelly or even crash\n";
     }
 
     lastMousePos.x = -10000000;
@@ -343,9 +355,9 @@ UI::UI(SDL_Renderer* renderer) {
 
 
 void UI::LoadTextures() {
-    TextureManager::LoadMultipleTextures("Textures/Interface");
-    TextureManager::LoadMultipleTextures("Textures/Interface/Fonts");
-    TextureManager::LoadMultipleTextures("Textures/Interface/Others");
+    TexMan::LoadMultiple("Textures/Interface");
+    TexMan::LoadMultiple("Textures/Interface/Fonts");
+    TexMan::LoadMultiple("Textures/Interface/Others");
 }
 
 void UI::Render() {
@@ -354,24 +366,24 @@ void UI::Render() {
         it->Render(renderer);
     }
 
-    for (const auto& it : MassageBoxes)
+    for (const auto& it : TextBoxes)
     {
         it->Render(renderer);
     }
 
-    for (const auto& it : InteractionBoxes)
+    for (const auto& it : ClickBoxes)
     {
         it->Render(renderer);
     }
 }
 
 
-void UI::CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font,
+Button* UI::CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font,
     std::string text, float textScale, int textStartX, int textStartY, int borderThickness) {
 
-    if (GetButtonByName(name) != nullptr) {
+    if (GetButton(name) != nullptr) {
         std::cout << "Warning name collision button with name: " << name << " already exists addition abborted\n";
-        return;
+        return nullptr;
     }
 
     Buttons.emplace_back(new Button());
@@ -403,89 +415,90 @@ void UI::CreateButton(std::string name, int x, int y, int w, int h, SDL_Texture*
     }
 
     ButtonsMap.emplace(Buttons.back()->GetName(), Buttons.back());
+    return Buttons.back();
 }
 
-void UI::CreateMassageBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font,
+TextBox* UI::CreateTextBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font,
     std::string text, float textScale, int textStartX, int textStartY, int borderThickness) {
 
-    if (GetMassageBoxByName(name) != nullptr) {
+    if (GetTextBox(name) != nullptr) {
         std::cout << "Warning name collision massage box with name: " << name << " already exists addition abborted\n";
-        return;
+        return nullptr;
     }
 
-    MassageBoxes.emplace_back(new MassageBox());
-    MassageBoxes.back()->SetName(name);
-    MassageBoxes.back()->GetRectangle()->x = x;
-    MassageBoxes.back()->GetRectangle()->y = y;
-    MassageBoxes.back()->GetRectangle()->w = w;
-    MassageBoxes.back()->GetRectangle()->h = h;
+    TextBoxes.emplace_back(new TextBox());
+    TextBoxes.back()->SetName(name);
+    TextBoxes.back()->GetRectangle()->x = x;
+    TextBoxes.back()->GetRectangle()->y = y;
+    TextBoxes.back()->GetRectangle()->w = w;
+    TextBoxes.back()->GetRectangle()->h = h;
 
-    MassageBoxes.back()->SetTexture(texture);
+    TextBoxes.back()->SetTexture(texture);
     if (texture == nullptr) {
-        MassageBoxes.back()->SetTransparent(true);
+        TextBoxes.back()->SetTransparent(true);
     }
 
-    MassageBoxes.back()->SetText("");
+    TextBoxes.back()->SetText("");
 
-    MassageBoxes.back()->SetTextScale(textScale);
-    MassageBoxes.back()->SetFont(font);
+    TextBoxes.back()->SetTextScale(textScale);
+    TextBoxes.back()->SetFont(font);
     if (font != nullptr) {
-        MassageBoxes.back()->SetInterLine(font->GetStandardInterline());
+        TextBoxes.back()->SetInterLine(font->GetStandardInterline());
     }
 
-    MassageBoxes.back()->SetTextStartX(textStartX);
+    TextBoxes.back()->SetTextStartX(textStartX);
 
-    MassageBoxes.back()->SetTextStartY(textStartY);
+    TextBoxes.back()->SetTextStartY(textStartY);
 
 
     if (borderThickness > 0) {
-        MassageBoxes.back()->SetBorderThickness(borderThickness);
-        MassageBoxes.back()->SetBorder(true);
+        TextBoxes.back()->SetBorderThickness(borderThickness);
+        TextBoxes.back()->SetBorder(true);
     }
 
-    MassageBoxesMap.emplace(MassageBoxes.back()->GetName(), MassageBoxes.back());
-
-
+    TextBoxesMap.emplace(TextBoxes.back()->GetName(), TextBoxes.back());
+    return TextBoxes.back();
 }
 
-void UI::CreateInteractionBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font,
+ClickBox* UI::CreateClickBox(std::string name, int x, int y, int w, int h, SDL_Texture* texture, Font* font,
     std::string text, float textScale, int textStartX, int textStartY, int borderThickness) {
 
-    if (GetInteractionBoxByName(name) != nullptr) {
+    if (GetClickBox(name) != nullptr) {
         std::cout << "Warning name collision interaction box with name: " << name << " already exists addition abborted\n";
-        return;
+        return nullptr;
     }
 
-    InteractionBoxes.emplace_back(new InteractionBox());
-    InteractionBoxes.back()->SetName(name);
-    InteractionBoxes.back()->GetRectangle()->x = x;
-    InteractionBoxes.back()->GetRectangle()->y = y;
-    InteractionBoxes.back()->GetRectangle()->w = w;
-    InteractionBoxes.back()->GetRectangle()->h = h;
+    ClickBoxes.emplace_back(new ClickBox());
+    ClickBoxes.back()->SetName(name);
+    ClickBoxes.back()->GetRectangle()->x = x;
+    ClickBoxes.back()->GetRectangle()->y = y;
+    ClickBoxes.back()->GetRectangle()->w = w;
+    ClickBoxes.back()->GetRectangle()->h = h;
 
-    InteractionBoxes.back()->SetTexture(texture);
+    ClickBoxes.back()->SetTexture(texture);
     if (texture == nullptr) {
-        InteractionBoxes.back()->SetTransparent(true);
+        ClickBoxes.back()->SetTransparent(true);
     }
 
-    InteractionBoxes.back()->SetText(text);
+    ClickBoxes.back()->SetText(text);
 
-    InteractionBoxes.back()->SetTextScale(textScale);
-    InteractionBoxes.back()->SetFont(font);
+    ClickBoxes.back()->SetTextScale(textScale);
+    ClickBoxes.back()->SetFont(font);
     if (font != nullptr) {
-        InteractionBoxes.back()->SetInterLine(font->GetStandardInterline());
+        ClickBoxes.back()->SetInterLine(font->GetStandardInterline());
     }
 
-    InteractionBoxes.back()->SetTextStartX(textStartX);
+    ClickBoxes.back()->SetTextStartX(textStartX);
 
-    InteractionBoxes.back()->SetTextStartY(textStartY);
+    ClickBoxes.back()->SetTextStartY(textStartY);
 
     if (borderThickness > 0) {
-        InteractionBoxes.back()->SetBorderThickness(borderThickness);
-        InteractionBoxes.back()->SetBorder(true);
+        ClickBoxes.back()->SetBorderThickness(borderThickness);
+        ClickBoxes.back()->SetBorder(true);
     }
 
-    InteractionBoxesMap.emplace(InteractionBoxes.back()->GetName(), InteractionBoxes.back());
+    ClickBoxesMap.emplace(ClickBoxes.back()->GetName(), ClickBoxes.back());
+    return ClickBoxes.back();
 }
 
 
@@ -501,7 +514,7 @@ void UI::CheckHover() {
             if (it->GetHooverSound() != "") { 
                 SDL_Rect prevMousePos{ lastMousePos.x,lastMousePos.y,1,1 };
                 if (!SimpleCollision(prevMousePos, *it->GetRectangle())) {
-                    SoundManager::PlaySound(it->GetHooverSound());
+                    SoundMan::PlaySound(it->GetHooverSound());
                 }
             }
         }
@@ -510,14 +523,14 @@ void UI::CheckHover() {
             it->SetHover(false);
         }
     }
-    for (auto& it : MassageBoxes) {
+    for (auto& it : TextBoxes) {
         if (SimpleCollision(*it->GetRectangle(), rect)) {
             it->SetHover(true);
             // patrzenie czy mo¿e byæ wydany dŸwiêk tylko wtedy zadzia³a gdy mysz pierwszy raz jest na przycisku
             if (it->GetHooverSound() != "") {
                 SDL_Rect prevMousePos{ lastMousePos.x,lastMousePos.y,1,1 };
                 if (!SimpleCollision(prevMousePos, *it->GetRectangle())) {
-                    SoundManager::PlaySound(it->GetHooverSound());
+                    SoundMan::PlaySound(it->GetHooverSound());
                 }
             }
         }
@@ -526,14 +539,14 @@ void UI::CheckHover() {
             it->SetHover(false);
         }
     }
-    for (auto& it : InteractionBoxes) {
+    for (auto& it : ClickBoxes) {
         if (SimpleCollision(*it->GetRectangle(), rect)) {
             it->SetHover(true);
             // patrzenie czy mo¿e byæ wydany dŸwiêk tylko wtedy zadzia³a gdy mysz pierwszy raz jest na przycisku
             if (it->GetHooverSound() != "") {
                 SDL_Rect prevMousePos{ lastMousePos.x,lastMousePos.y,1,1 };
                 if (!SimpleCollision(prevMousePos, *it->GetRectangle())) {
-                    SoundManager::PlaySound(it->GetHooverSound());
+                    SoundMan::PlaySound(it->GetHooverSound());
                 }
             }
         }
@@ -544,27 +557,27 @@ void UI::CheckHover() {
     }
 }
 
-void  UI::CheckMasageBoxInteraction(SDL_Event& event) {
-    for (auto& it : MassageBoxes) {
+void  UI::CheckTextBoxInteraction(SDL_Event& event) {
+    for (auto& it : TextBoxes) {
         it->CheckInteraction(event);
     }
 }
 
-void UI::ManageMassageBoxTextInput(SDL_Event& event) {
-    for (auto& it : MassageBoxes) {
+void UI::ManageTextBoxTextInput(SDL_Event& event) {
+    for (auto& it : TextBoxes) {
         it->ManageTextInput(event);
     }
 }
 
-void UI::CheckInteractionBoxes(SDL_Event& event) {
+void UI::CheckClickBoxes(SDL_Event& event) {
     if (event.type == SDL_MOUSEBUTTONUP) {
-        for (size_t i = 0; i < InteractionBoxes.size(); i++) {
-            if (InteractionBoxes[i]->IsOn()) {
+        for (size_t i = 0; i < ClickBoxes.size(); i++) {
+            if (ClickBoxes[i]->IsOn()) {
                 SDL_Rect temprect{ event.button.x ,event.button.y,1,1 };
-                if (SimpleCollision(*InteractionBoxes[i]->GetRectangle(), temprect)) {
-                    InteractionBoxes[i]->SetStatus(true);
-                    if (InteractionBoxes[i]->GetClickSound() != "") {
-                        SoundManager::PlaySound(InteractionBoxes[i]->GetClickSound());
+                if (SimpleCollision(*ClickBoxes[i]->GetRectangle(), temprect)) {
+                    ClickBoxes[i]->SetStatus(true);
+                    if (ClickBoxes[i]->GetClickSound() != "") {
+                        SoundMan::PlaySound(ClickBoxes[i]->GetClickSound());
                     }
                 }
             }
@@ -572,7 +585,7 @@ void UI::CheckInteractionBoxes(SDL_Event& event) {
     }
 }
 
-Button* UI::GetButtonByName(const std::string& name) {
+Button* UI::GetButton(const std::string& name) {
     auto btnFind = ButtonsMap.find(name);
     if (btnFind != ButtonsMap.end()) {
         return btnFind->second;
@@ -582,9 +595,9 @@ Button* UI::GetButtonByName(const std::string& name) {
         return nullptr;
     }
 }
-MassageBox* UI::GetMassageBoxByName(const std::string& name) {
-    auto msBoxFind = MassageBoxesMap.find(name);
-    if (msBoxFind != MassageBoxesMap.end()) {
+TextBox* UI::GetTextBox(const std::string& name) {
+    auto msBoxFind = TextBoxesMap.find(name);
+    if (msBoxFind != TextBoxesMap.end()) {
         return msBoxFind->second;
     }
     else
@@ -592,9 +605,9 @@ MassageBox* UI::GetMassageBoxByName(const std::string& name) {
         return nullptr;
     }
 }
-InteractionBox* UI::GetInteractionBoxByName(const std::string& name) {
-    auto interBoxFind = InteractionBoxesMap.find(name);
-    if (interBoxFind != InteractionBoxesMap.end()) {
+ClickBox* UI::GetClickBox(const std::string& name) {
+    auto interBoxFind = ClickBoxesMap.find(name);
+    if (interBoxFind != ClickBoxesMap.end()) {
         return interBoxFind->second;
     }
     else
@@ -603,62 +616,62 @@ InteractionBox* UI::GetInteractionBoxByName(const std::string& name) {
     }
 }
 
-void UI::SetUIElementColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B) {
-    Button* button = GetButtonByName(name);
+void UI::SetElementColor(const std::string& name, const unsigned char R, const unsigned char G, const unsigned char B) {
+    Button* button = GetButton(name);
     if (button != nullptr) {
         button->SetButtonColor(R, G, B);
         return;
     }
 
-    MassageBox* massageBox = GetMassageBoxByName(name);
-    if (massageBox != nullptr) {
-        massageBox->SetButtonColor(R, G, B);
+    TextBox* textBox = GetTextBox(name);
+    if (textBox != nullptr) {
+        textBox->SetButtonColor(R, G, B);
         return;
     }
 
-    InteractionBox* interactionBox = GetInteractionBoxByName(name);
-    if (interactionBox != nullptr) {
-        interactionBox->SetButtonColor(R, G, B);
+    ClickBox* clickBox = GetClickBox(name);
+    if (clickBox != nullptr) {
+        clickBox->SetButtonColor(R, G, B);
         return;
     }
 }
 
-void UI::SetUIElementBorderColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B) {
-    Button* button = GetButtonByName(name);
+void UI::SetElementBorderColor(const std::string& name, const unsigned char R, const unsigned char G, const unsigned char B) {
+    Button* button = GetButton(name);
     if (button != nullptr) {
         button->SetBorderRGB(R, G, B);
         return;
     }
 
-    MassageBox* massageBox = GetMassageBoxByName(name);
-    if (massageBox != nullptr) {
-        massageBox->SetBorderRGB(R, G, B);
+    TextBox* textBox = GetTextBox(name);
+    if (textBox != nullptr) {
+        textBox->SetBorderRGB(R, G, B);
         return;
     }
 
-    InteractionBox* interactionBox = GetInteractionBoxByName(name);
-    if (interactionBox != nullptr) {
-        interactionBox->SetBorderRGB(R, G, B);
+    ClickBox* clickBox = GetClickBox(name);
+    if (clickBox != nullptr) {
+        clickBox->SetBorderRGB(R, G, B);
         return;
     }
 }
 
-void UI::SetUIElementFontColor(const std::string& name, unsigned char R, unsigned char G, unsigned char B) {
-    Button* button = GetButtonByName(name);
+void UI::SetElementFontColor(const std::string& name, const unsigned char R, const unsigned char G, const unsigned char B) {
+    Button* button = GetButton(name);
     if (button != nullptr) {
         button->SetFontColor(R, G, B);
         return;
     }
 
-    MassageBox* massageBox = GetMassageBoxByName(name);
-    if (massageBox != nullptr) {
-        massageBox->SetFontColor(R, G, B);
+    TextBox* textBox = GetTextBox(name);
+    if (textBox != nullptr) {
+        textBox->SetFontColor(R, G, B);
         return;
     }
 
-    InteractionBox* interactionBox = GetInteractionBoxByName(name);
-    if (interactionBox != nullptr) {
-        interactionBox->SetFontColor(R, G, B);
+    ClickBox* clickBox = GetClickBox(name);
+    if (clickBox != nullptr) {
+        clickBox->SetFontColor(R, G, B);
         return;
     }
 }
@@ -668,11 +681,11 @@ void UI::ManageInput(SDL_Event& event) {
 
     CheckHover();
 
-    CheckMasageBoxInteraction(event);
+    CheckTextBoxInteraction(event);
 
-    ManageMassageBoxTextInput(event);
+    ManageTextBoxTextInput(event);
 
-    CheckInteractionBoxes(event);
+    CheckClickBoxes(event);
 
     SDL_GetMouseState(&lastMousePos.x, &lastMousePos.y);
 }
@@ -690,26 +703,26 @@ bool UI::DeleteButton(const std::string& name) {
     return false;
 }
 
-bool UI::DeleteMassageBox(const std::string& name) {
-    MassageBoxesMap.erase(name);
-    for (size_t i = 0; i < MassageBoxes.size(); i++)
+bool UI::DeleteTextBox(const std::string& name) {
+    TextBoxesMap.erase(name);
+    for (size_t i = 0; i < TextBoxes.size(); i++)
     {
-        if (MassageBoxes[i]->GetName() == name) {
-            delete MassageBoxes[i];
-            MassageBoxes.erase(MassageBoxes.begin() + i);
+        if (TextBoxes[i]->GetName() == name) {
+            delete TextBoxes[i];
+            TextBoxes.erase(TextBoxes.begin() + i);
             return true;
         }
     }
     return false;
 }
 
-bool UI::DeleteInteractionBox(const std::string& name) {
-    InteractionBoxesMap.erase(name);
-    for (size_t i = 0; i < InteractionBoxes.size(); i++)
+bool UI::DeleteClickBox(const std::string& name) {
+    ClickBoxesMap.erase(name);
+    for (size_t i = 0; i < ClickBoxes.size(); i++)
     {
-        if (InteractionBoxes[i]->GetName() == name) {
-            delete InteractionBoxes[i];
-            InteractionBoxes.erase(InteractionBoxes.begin() + i);
+        if (ClickBoxes[i]->GetName() == name) {
+            delete ClickBoxes[i];
+            ClickBoxes.erase(ClickBoxes.begin() + i);
             return true;
         }
     }
@@ -718,8 +731,8 @@ bool UI::DeleteInteractionBox(const std::string& name) {
 
 bool UI::DeleteAnyButton(const std::string& name) {
     if (DeleteButton(name)) { return true; }
-    if (DeleteMassageBox(name)) { return true; }
-    if (DeleteInteractionBox(name)) { return true; }
+    if (DeleteTextBox(name)) { return true; }
+    if (DeleteClickBox(name)) { return true; }
     return false;
 }
 
@@ -727,12 +740,12 @@ std::vector<Button*>& UI::GetButtons() {
     return Buttons;
 }
 
-std::vector<MassageBox*>& UI::GetMassageBoxes() {
-    return MassageBoxes;
+std::vector<TextBox*>& UI::GetTextBoxes() {
+    return TextBoxes;
 }
 
-std::vector<InteractionBox*>& UI::GetInteractionBoxes() {
-    return InteractionBoxes;
+std::vector<ClickBox*>& UI::GetClickBoxes() {
+    return ClickBoxes;
 }
 
 void UI::CreateFont(const std::string& name, SDL_Texture* texture, const std::string& jsonPath) {
@@ -753,18 +766,18 @@ void UI::ClearAllButtons() {
     for (auto& it : Buttons) {
         delete it;
     }
-    for (auto& it : MassageBoxes) {
+    for (auto& it : TextBoxes) {
         delete it;
     }
-    for (auto& it : InteractionBoxes) {
+    for (auto& it : ClickBoxes) {
         delete it;
     }
     Buttons.clear();
-    MassageBoxes.clear();
-    InteractionBoxes.clear();
+    TextBoxes.clear();
+    ClickBoxes.clear();
     ButtonsMap.clear();
-    MassageBoxesMap.clear();
-    InteractionBoxesMap.clear();
+    TextBoxesMap.clear();
+    ClickBoxesMap.clear();
 }
 
 

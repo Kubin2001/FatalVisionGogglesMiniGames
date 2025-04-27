@@ -17,8 +17,8 @@ struct ScoreBox{
 
 class EndScreen : public Scene{
 	private:
-		InteractionBox* scoreButtonRef = nullptr;
-		MassageBox* submissionButtonRef = nullptr;
+		ClickBox* scoreButtonRef = nullptr;
+		TextBox* submissionButtonRef = nullptr;
 		std::vector<ScoreBox> ScoreContainer;
 
 	public:

@@ -23,13 +23,13 @@ PopingCricleTwo::PopingCricleTwo(int x, int y, int w, int h) {
 	switch (random)
 	{
 		case 0:
-			texture = TextureManager::GetTextureByName("CricleDim1");
+			texture = TexMan::GetTex("CricleDim1");
 			break;
 		case 1:
-			texture = TextureManager::GetTextureByName("CricleDim2");
+			texture = TexMan::GetTex("CricleDim2");
 			break;
 		case 2:
-			texture = TextureManager::GetTextureByName("CricleDim3");
+			texture = TexMan::GetTex("CricleDim3");
 			break;
 	}
 }
@@ -46,18 +46,18 @@ void MiniGameFour::Init(SDL_Renderer* renderer, UI* ui) {
 	createdCircles = 0;
 
 	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
+		TexMan::GetTex("buttonModern"), ui->GetFont("arial40px"),
 		"Score: 0", 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("ScoreButton", 135, 206, 250);
-	ui->SetUIElementFontColor("ScoreButton", 255, 168, 0);
+	ui->SetElementBorderColor("ScoreButton", 135, 206, 250);
+	ui->SetElementFontColor("ScoreButton", 255, 168, 0);
 
 	ui->CreateButton("TimeButton", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 150,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
+		TexMan::GetTex("buttonModern"), ui->GetFont("arial40px"),
 		"Time: " + std::to_string(GetTime()), 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("TimeButton", 135, 206, 250);
-	ui->SetUIElementFontColor("TimeButton", 255, 168, 0);
+	ui->SetElementBorderColor("TimeButton", 135, 206, 250);
+	ui->SetElementFontColor("TimeButton", 255, 168, 0);
 
-	Logger::SetUpNewSession(SceneManager::GetData<std::string>("PlayerName"), SceneManager::GetData<int>("Current Game"));
+	Logger::SetUpNewSession(SceneMan::GetData<std::string>("PlayerName"), SceneMan::GetData<int>("Current Game"));
 }
 
 void MiniGameFour::LogicUpdate() {
@@ -108,11 +108,11 @@ void MiniGameFour::ManageCreation() {
 
 void MiniGameFour::ManageTime() {
 	time--;
-	ui->GetButtonByName("TimeButton")->SetText("Time: " + std::to_string(GetTime()));
+	ui->GetButton("TimeButton")->SetText("Time: " + std::to_string(GetTime()));
 	if (GetTime() < 1) { //bazowo na 1
-		SceneManager::GetData<int>("Game State") = 1;
-		SceneManager::GetData<int>("Current Game") = 4;
-		SceneManager::SwitchResetScene("EndScreen", renderer, ui);
+		SceneMan::GetData<int>("Game State") = 1;
+		SceneMan::GetData<int>("Current Game") = 4;
+		SceneMan::SwitchResetScene("EndScreen", renderer, ui);
 	}
 }
 
@@ -130,7 +130,7 @@ void MiniGameFour::Input(SDL_Event& event) {
 				Logger::Log(std::to_string(Global::frameCounter) + ",3," + std::to_string(PopingCircles[i].id));
 				PopingCircles.erase(PopingCircles.begin() + i);
 				ui->GetButtons()[0]->SetText("Score: " + std::to_string(GetScore()));
-				SoundManager::PlaySound("coin");
+				SoundMan::PlaySound("coin");
 				break;
 			}
 			else{
@@ -163,20 +163,20 @@ void MiniGameFour::Clear() {
 
 	int finalScore = ((score * 100) * (accuracy / 100));
 	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth * 0.5, 200,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+		TexMan::GetTex("buttonModern"), ui->GetFont("arial20px"),
 		"Final Score: " + std::to_string(finalScore), 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("FinalScore", 135, 206, 250);
-	ui->SetUIElementFontColor("FinalScore", 255, 168, 0);
+	ui->SetElementBorderColor("FinalScore", 135, 206, 250);
+	ui->SetElementFontColor("FinalScore", 255, 168, 0);
 
 	ui->CreateButton("FinalAccuracy", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 200,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial20px"),
+		TexMan::GetTex("buttonModern"), ui->GetFont("arial20px"),
 		"Accuracy: " + std::to_string(accuracyInt) + "%", 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("FinalAccuracy", 135, 206, 250);
-	ui->SetUIElementFontColor("FinalAccuracy", 255, 168, 0);
+	ui->SetElementBorderColor("FinalAccuracy", 135, 206, 250);
+	ui->SetElementFontColor("FinalAccuracy", 255, 168, 0);
 
 	Logger::Log(std::to_string(Global::frameCounter) + ",Wynik:" + std::to_string(finalScore));
-	SceneManager::AddData<int>("Final Score", finalScore);
-	SceneManager::AddData<std::string>("Score File Path", "Data/gameFourScores.txt");
+	SceneMan::AddData<int>("Final Score", finalScore);
+	SceneMan::AddData<std::string>("Score File Path", "Data/gameFourScores.txt");
 }
 
 

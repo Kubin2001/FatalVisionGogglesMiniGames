@@ -48,20 +48,20 @@ void MiniGameTwo::Init(SDL_Renderer* renderer, UI* ui) {
 	unsigned short moveSpeed = 6;
 	SetUpSquares();
 
-	staticSquare.SetTexture(TextureManager::GetTextureByName("GenericPurpleSquare"));
-	movingSquare.SetTexture(TextureManager::GetTextureByName("GenericOrangeSquare"));
+	staticSquare.SetTexture(TexMan::GetTex("GenericPurpleSquare"));
+	movingSquare.SetTexture(TexMan::GetTex("GenericOrangeSquare"));
 
 	ui->CreateButton("ScoreButton", 0, 0, Global::windowWidth * 0.5, 150,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"), "Score: 0", 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("ScoreButton", 135, 206, 250);
-	ui->SetUIElementFontColor("ScoreButton", 255, 168, 0);
+		TexMan::GetTex("buttonModern"), ui->GetFont("arial40px"), "Score: 0", 1, 8, 12, 5);
+	ui->SetElementBorderColor("ScoreButton", 135, 206, 250);
+	ui->SetElementFontColor("ScoreButton", 255, 168, 0);
 
 	ui->CreateButton("TimesLeftButton", Global::windowWidth * 0.5, 0, Global::windowWidth * 0.5, 150,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"), "Times Left: ", 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("TimesLeftButton", 135, 206, 250);
-	ui->SetUIElementFontColor("TimesLeftButton", 255, 168, 0);
+		TexMan::GetTex("buttonModern"), ui->GetFont("arial40px"), "Times Left: ", 1, 8, 12, 5);
+	ui->SetElementBorderColor("TimesLeftButton", 135, 206, 250);
+	ui->SetElementFontColor("TimesLeftButton", 255, 168, 0);
 
-	Logger::SetUpNewSession(SceneManager::GetData<std::string>("PlayerName"), SceneManager::GetData<int>("Current Game"));
+	Logger::SetUpNewSession(SceneMan::GetData<std::string>("PlayerName"), SceneMan::GetData<int>("Current Game"));
 }
 
 void MiniGameTwo::LogicUpdate() {
@@ -74,9 +74,9 @@ void MiniGameTwo::FrameUpdate() {
 	UpdateScore();
 
 	if (getTries() == 0) {
-		SceneManager::GetData<int>("Game State") = 2;
-		SceneManager::GetData<int>("Current Game") = 2;
-		SceneManager::SwitchResetScene("EndScreen", renderer, ui);
+		SceneMan::GetData<int>("Game State") = 2;
+		SceneMan::GetData<int>("Current Game") = 2;
+		SceneMan::SwitchResetScene("EndScreen", renderer, ui);
 	}
 }
 
@@ -189,14 +189,14 @@ void MiniGameTwo::Render() {
 void MiniGameTwo::Clear() {
 	ui->ClearAllButtons();
 	ui->CreateButton("FinalScore", 0, 0, Global::windowWidth, 200,
-		TextureManager::GetTextureByName("buttonModern"), ui->GetFont("arial40px"),
+		TexMan::GetTex("buttonModern"), ui->GetFont("arial40px"),
 		"Final Score: " + std::to_string(score), 1, 8, 12, 5);
-	ui->SetUIElementBorderColor("FinalScore", 135, 206, 250);
-	ui->SetUIElementFontColor("FinalScore", 255, 168, 0);
+	ui->SetElementBorderColor("FinalScore", 135, 206, 250);
+	ui->SetElementFontColor("FinalScore", 255, 168, 0);
 
 	Logger::Log(std::to_string(Global::frameCounter) + ",Wynik:" + std::to_string(score));
-	SceneManager::AddData<int>("Final Score", score);
-	SceneManager::AddData<std::string>("Score File Path", "Data/gameTwoScores.txt");
+	SceneMan::AddData<int>("Final Score", score);
+	SceneMan::AddData<std::string>("Score File Path", "Data/gameTwoScores.txt");
 }
 
 
@@ -209,7 +209,7 @@ unsigned short MiniGameTwo::getTries() {
 }
 
 void MiniGameTwo::UpdateScore() {
-	ui->GetButtonByName("ScoreButton")->SetText("Score: " + std::to_string(score));
-	ui->GetButtonByName("TimesLeftButton")->SetText("Tries Left: " + std::to_string(tries));
+	ui->GetButton("ScoreButton")->SetText("Score: " + std::to_string(score));
+	ui->GetButton("TimesLeftButton")->SetText("Tries Left: " + std::to_string(tries));
 }
 
