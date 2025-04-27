@@ -68,6 +68,19 @@ Mix_Chunk *SoundMan::GetSound(const std::string& name) {
     return nullptr;
 }
 
+void SoundMan::SetVolume(const std::string& soundKey, unsigned char volume) {
+    if (Sounds.find(soundKey) != Sounds.end()) {
+        unsigned char newVolume = (volume * MIX_MAX_VOLUME) / 100;
+        if (newVolume > MIX_MAX_VOLUME) { newVolume = MIX_MAX_VOLUME; }
+        else if (newVolume < 0) { newVolume = 0; }
+        Mix_VolumeChunk(Sounds[soundKey], newVolume);
+    }
+    else{
+        std::cout << "Wrong sound key in SoundMan::SetVolume function: "<<soundKey<<"\n";
+    }
+
+}
+
 bool SoundMan::DeleteSound(const std::string& name) {
     auto it = Sounds.find(name);
     if (it != Sounds.end()) {

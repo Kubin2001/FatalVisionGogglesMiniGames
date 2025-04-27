@@ -82,6 +82,8 @@ void Game::Start() {
     //Ustawianie na pocz¹tek pustego nicku gracza i false jako ¿e gra leci bez googli 
     SceneMan::AddData<std::string>("PlayerName", "");
     SceneMan::AddData<bool>("UsesGoogles",false);
+
+    SoundMan::SetVolume("hoverSound", 40);
 }
 
 

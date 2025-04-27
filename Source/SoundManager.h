@@ -23,6 +23,8 @@ class SoundMan
 
 		static Mix_Chunk* GetSound(const std::string& name);
 
+		static void SetVolume(const std::string& soundKey, unsigned char volume);
+
 		static bool DeleteSound(const std::string& name);
 
 		static void Clear();
