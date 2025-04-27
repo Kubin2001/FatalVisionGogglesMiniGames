@@ -57,7 +57,6 @@ void MiniGameOne::FrameUpdate() {
 		if (GetTime() < 25) { //bazowo na 1
 			SceneMan::GetData<int>("Game State") = 2;
 			SceneMan::GetData<int>("Current Game") = 1;
-			//SceneManager::SwitchScene("EndScreen",renderer,ui);
 			SceneMan::SwitchResetScene("EndScreen", renderer, ui);
 
 		}
@@ -125,6 +124,11 @@ void MiniGameOne::Input(SDL_Event &event) {
 				Logger::Log(std::to_string(Global::frameCounter) + ",4," + std::to_string(PopingCircles[i].id));
 			}
 		}
+	}
+	if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
+		SceneMan::GetData<int>("Game State") = 2;
+		SceneMan::GetData<int>("Current Game") = 1;
+		SceneMan::SwitchResetScene("EndScreen", renderer, ui);
 	}
 }
 

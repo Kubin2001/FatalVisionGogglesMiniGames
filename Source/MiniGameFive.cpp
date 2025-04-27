@@ -249,7 +249,11 @@ void MiniGameFive::ManageStages() {
 }
 
 void MiniGameFive::Input(SDL_Event& event) {
-
+	if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
+		SceneMan::GetData<int>("Game State") = 2;
+		SceneMan::GetData<int>("Current Game") = 5;
+		SceneMan::SwitchResetScene("EndScreen", renderer, ui);
+	}
 }
 
 void MiniGameFive::Render() {

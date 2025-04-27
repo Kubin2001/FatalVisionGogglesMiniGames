@@ -109,6 +109,11 @@ void MiniGameTwo::Input(SDL_Event& event) {
 			Logger::Log(std::to_string(Global::frameCounter) + "," + std::to_string(CalculateEuclidean(colliderMoving.x, colliderStatic.x, colliderMoving.y, colliderStatic.y)));
 		}
 	}
+	if (event.type == SDL_KEYDOWN && event.key.keysym.scancode == SDL_SCANCODE_ESCAPE) {
+		SceneMan::GetData<int>("Game State") = 2;
+		SceneMan::GetData<int>("Current Game") = 2;
+		SceneMan::SwitchResetScene("EndScreen", renderer, ui);
+	}
 
 }
 
