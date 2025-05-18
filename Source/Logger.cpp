@@ -22,10 +22,10 @@ int LogFileCount(const std::string& path) {
 	return counter++;
 }
 
-void Logger::SetUpNewSession(const std::string& playerName, int gameType) {
+void Logger::SetUpNewSession(std::string playerName, int gameType) {
 	if (playerName == "") {
-		std::cout << "NameEmpty Logging Not possible\n";
-		return;
+		std::cout << "NameEmpty Logging Under (EmptyName) Player Name\n";
+		playerName = "EmptyName";
 	}
 	std::string directory = "";
 	switch (gameType){
@@ -75,10 +75,6 @@ void Logger::SetUpNewSession(const std::string& playerName, int gameType) {
 }
 
 void Logger::Log(const std::string& massage) {
-	if (SceneMan::GetData<std::string>("PlayerName") == "") {
-		std::cout << "NameEmpty Logging Not possible\n";
-		return;
-	}
 	std::ofstream logFile(currentPath,std::ios::app);
 
 	if (logFile.is_open()) {

@@ -198,6 +198,7 @@ void MiniGameTwo::Clear() {
 		"Final Score: " + std::to_string(score), 1, 8, 12, 5);
 	ui->SetElementBorderColor("FinalScore", 135, 206, 250);
 	ui->SetElementFontColor("FinalScore", 255, 168, 0);
+	ui->GetButton("FinalScore")->SetRenderTextType(2);
 
 	Logger::Log(std::to_string(Global::frameCounter) + ",Wynik:" + std::to_string(score));
 	SceneMan::AddData<int>("Final Score", score);

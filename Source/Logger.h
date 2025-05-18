@@ -9,7 +9,7 @@ class Logger {
 		//static void SetFilePath(std::string& path);
 
 
-		static void SetUpNewSession(const std::string& playerName, int gameType);
+		static void SetUpNewSession(std::string playerName, int gameType);
 
 		static void Log(const std::string& massage);
 		

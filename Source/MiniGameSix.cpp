@@ -86,6 +86,12 @@ void MiniGameSix::FrameUpdate() {
 	ui->GetButton("TimeButton")->SetText("Time: " + std::to_string(time));
 	ui->GetButton("ScoreButton")->SetText("Score: " + std::to_string(score));
 	UpdateCursor();
+
+	if (Global::frameCounter % 5 == 0) {
+		Point p = GetRectangleCenter(cursorRect);
+		std::string massage = std::to_string(p.x) + "," + std::to_string(p.y);
+		Logger::Log(std::to_string(Global::frameCounter) + ",1," + massage);
+	}
 	
 }
 
